@@ -79,7 +79,7 @@ const portfolioData = {
       items: [
         { name: "Flutter", percentage: 90 },
         { name: "React Native", percentage: 90 },
-        { name: "iOS Native", percentage: 80 },
+        // { name: "iOS Native", percentage: 80 },
       ],
     },
     {
@@ -87,7 +87,7 @@ const portfolioData = {
       items: [
         { name: "Firebase", percentage: 85 },
         { name: "REST APIs", percentage: 90 },
-        { name: "GraphQL", percentage: 70 },
+        // { name: "GraphQL", percentage: 70 },
       ],
     },
   ],
@@ -170,6 +170,7 @@ const portfolioData = {
   ],
 
   // Client testimonials
+  //! omit for now
   testimonialsSection: {
     subtitle: "Feedback from amazing people I've had the pleasure to work with",
     testimonials: [

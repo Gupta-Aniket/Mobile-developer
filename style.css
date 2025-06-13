@@ -948,6 +948,8 @@ select.form-input {
   gap: var(--spacing-lg);
   padding-top: var(--spacing-lg);
   border-top: 1px solid var(--separator);
+  padding-bottom: var(--spacing-lg);
+
 }
 
 .social-link {
@@ -1747,6 +1749,7 @@ html {
   margin-top: var(--spacing-xl);
   padding-top: var(--spacing-lg);
   border-top: 1px solid var(--separator);
+  padding-bottom: var(--spacing-sm);
 }
 
 .contact-alt-title {
