@@ -205,6 +205,4 @@ const portfolioData = {
     { icon: "🌟", target: 14, label: "Years Experience" },
   ],
 };
-
 export default portfolioData;
-
