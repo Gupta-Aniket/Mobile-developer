@@ -3,7 +3,8 @@ import portfolioData from "./data.js";
 const projects = portfolioData.projects;
 document.addEventListener("DOMContentLoaded", () => {
   const grid = document.querySelector(".projects-grid");
-  const filterButtons = document.querySelectorAll(".filter-btn");
+  const filterContainer = document.getElementById("filterButtonsContainer");
+
   renderHeroSection();
   loadContactSection();
   renderAboutSection();
@@ -19,12 +20,34 @@ document.addEventListener("DOMContentLoaded", () => {
     resumeAnchor.rel = "noopener noreferrer";
   }
 
-  if (!grid) {
-    console.error("⚠️ .projects-grid element not found");
+  if (!grid || !filterContainer) {
+    console.error("⚠️ Required elements missing in DOM");
     return;
   }
 
-  // Load projects dynamically
+  // 🔁 Get unique categories from projects
+  const categories = Array.from(
+    new Set(projects.map((p) => p.category.toLowerCase()))
+  );
+  categories.unshift("all"); // Add "all" to the beginning
+
+  // 🛠️ Render filter buttons dynamically
+  categories.forEach((category) => {
+    const btn = document.createElement("button");
+    btn.className = "filter-btn";
+    if (category === "all") btn.classList.add("active");
+    btn.dataset.filter = category;
+    btn.textContent =
+      category === "all"
+        ? "All Projects"
+        : category
+            .split("-")
+            .map((w) => w[0].toUpperCase() + w.slice(1))
+            .join(" ");
+    filterContainer.appendChild(btn);
+  });
+
+  // 🔃 Load projects dynamically
   projects.forEach((project) => {
     const card = document.createElement("div");
     card.className = "project-card";
@@ -58,9 +81,19 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Filter logic
+  // ✅ Attach filter logic AFTER buttons are rendered
+  document.querySelectorAll(".filter-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      document.querySelector(".filter-btn.active")?.classList.remove("active");
+      btn.classList.add("active");
+
+      const selectedCategory = btn.dataset.filter;
+      filterProjects(selectedCategory);
+    });
+  });
+
+  // 🧠 Filtering logic
   function filterProjects(category) {
-    // ! print () literally invode cmd+p
     console.log("🔍 Filtering projects by category:", category);
     const projectCards = document.querySelectorAll(".project-card");
 
@@ -73,18 +106,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Attach filter button click events
-  filterButtons.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      document.querySelector(".filter-btn.active")?.classList.remove("active");
-      btn.classList.add("active");
-
-      const selectedCategory = btn.dataset.filter;
-      filterProjects(selectedCategory);
-    });
-  });
-
-  // 👇 Trigger default filter on page load
+  // 👇 Trigger default filter
   filterProjects("all");
 });
 
