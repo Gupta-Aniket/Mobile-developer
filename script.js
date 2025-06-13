@@ -4,6 +4,20 @@ const projects = portfolioData.projects;
 document.addEventListener("DOMContentLoaded", () => {
   const grid = document.querySelector(".projects-grid");
   const filterButtons = document.querySelectorAll(".filter-btn");
+  renderHeroSection();
+  loadContactSection();
+  renderAboutSection();
+  loadSkills();
+  loadTestimonials();
+  loadStats();
+
+  const resumeAnchor = document.getElementById("resumeLink");
+  if (resumeAnchor) {
+    const resumeUrl = portfolioData.personalInfo.contact.resume;
+    resumeAnchor.href = resumeUrl;
+    resumeAnchor.target = "_blank";
+    resumeAnchor.rel = "noopener noreferrer";
+  }
 
   if (!grid) {
     console.error("⚠️ .projects-grid element not found");
@@ -74,6 +88,299 @@ document.addEventListener("DOMContentLoaded", () => {
   filterProjects("all");
 });
 
+function loadContactSection() {
+  const { contact, socialLinks } = portfolioData.personalInfo;
+  const { projectTypes, budgets } = portfolioData.formOptions;
+
+  // Email, Phone, Resume Links
+  const emailLink = document.querySelector("a[href^='mailto']");
+  const phoneLink = document.querySelector("a[href^='tel']");
+  const resumeLink = document.querySelector("a[onclick*='downloadResume']");
+  const emailText = emailLink?.querySelector(".contact-text");
+  const phoneText = phoneLink?.querySelector(".contact-text");
+
+  if (emailLink && contact.email) {
+    emailLink.href = `mailto:${contact.email}`;
+    emailText.textContent = contact.email;
+  }
+
+  if (phoneLink && contact.phone) {
+    phoneLink.href = `tel:${contact.phone.replace(/\s+/g, "")}`;
+    phoneText.textContent = contact.phone;
+  }
+
+  if (resumeLink && contact.resume) {
+    resumeLink.setAttribute("href", contact.resume);
+    resumeLink.setAttribute("download", "");
+    resumeLink.onclick = null; // remove old JS handler
+  }
+
+  // Social Links
+  const socialLinksContainer = document.querySelector(".social-links");
+  if (socialLinksContainer && socialLinks.length > 0) {
+    socialLinksContainer.innerHTML = "";
+    socialLinks.forEach((link) => {
+      const a = document.createElement("a");
+      a.href = link.url;
+      a.target = "_blank";
+      a.className = "social-link";
+      a.textContent = link.name;
+      socialLinksContainer.appendChild(a);
+    });
+  }
+
+  // Dynamic select options: Project Type
+  const projectSelect = document.getElementById("project");
+  if (projectSelect && projectTypes) {
+    projectSelect.innerHTML = `<option value="">Select project type</option>`;
+    projectTypes.forEach((opt) => {
+      const option = document.createElement("option");
+      option.value = opt.value;
+      option.textContent = opt.label;
+      projectSelect.appendChild(option);
+    });
+  }
+
+  // Dynamic select options: Budget Range
+  const budgetSelect = document.getElementById("budget");
+  if (budgetSelect && budgets) {
+    budgetSelect.innerHTML = `<option value="">Select budget range</option>`;
+    budgets.forEach((opt) => {
+      const option = document.createElement("option");
+      option.value = opt.value;
+      option.textContent = opt.label;
+      budgetSelect.appendChild(option);
+    });
+  }
+}
+
+function loadStats() {
+  const statsGrid = document.querySelector(".stats-grid");
+  if (!statsGrid || !portfolioData.finalStats) return;
+
+  portfolioData.finalStats.forEach((stat) => {
+    const card = document.createElement("div");
+    card.className = "stat-card";
+
+    const icon = document.createElement("div");
+    icon.className = "stat-icon";
+    icon.textContent = stat.icon;
+
+    const value = document.createElement("div");
+    value.className = "stat-value";
+    value.textContent = "0"; // starting point for animation
+    value.setAttribute("data-target", stat.target);
+
+    const label = document.createElement("div");
+    label.className = "stat-label";
+    label.textContent = stat.label;
+
+    card.appendChild(icon);
+    card.appendChild(value);
+    card.appendChild(label);
+    statsGrid.appendChild(card);
+  });
+
+  animateStats(); // Call animation after loading
+}
+
+function loadTestimonials() {
+  const subtitleEl = document.querySelector(".testimonials .section-subtitle");
+  const testimonialsGrid = document.querySelector(".testimonials-grid");
+
+  if (!portfolioData.testimonialsSection || !subtitleEl || !testimonialsGrid)
+    return;
+
+  const { subtitle, testimonials } = portfolioData.testimonialsSection;
+  subtitleEl.textContent = subtitle;
+
+  testimonials.forEach((t) => {
+    const card = document.createElement("div");
+    card.className = "testimonial-card";
+
+    const content = document.createElement("div");
+    content.className = "testimonial-content";
+
+    const quote = document.createElement("p");
+    quote.className = "testimonial-text";
+    quote.textContent = `"${t.quote}"`;
+
+    const author = document.createElement("div");
+    author.className = "testimonial-author";
+
+    const avatar = document.createElement("div");
+    avatar.className = "author-avatar";
+
+    if (t.avatarImage && t.avatarImage.trim() !== "") {
+      const img = document.createElement("img");
+      img.src = t.avatarImage;
+      img.alt = t.authorName;
+      avatar.appendChild(img);
+    } else {
+      avatar.textContent = getInitials(t.authorName);
+    }
+
+    const info = document.createElement("div");
+    info.className = "author-info";
+
+    const name = document.createElement("div");
+    name.className = "author-name";
+    name.textContent = t.authorName;
+
+    const role = document.createElement("div");
+    role.className = "author-role";
+    role.textContent = t.authorRole;
+
+    info.appendChild(name);
+    info.appendChild(role);
+
+    author.appendChild(avatar);
+    author.appendChild(info);
+
+    content.appendChild(quote);
+    content.appendChild(author);
+    card.appendChild(content);
+    testimonialsGrid.appendChild(card);
+  });
+}
+
+// Utility to generate initials from full name
+function getInitials(name) {
+  if (!name) return "?";
+  const parts = name.trim().split(" ");
+  return parts.length === 1
+    ? parts[0][0].toUpperCase()
+    : (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
+
+function loadSkills() {
+  const skillsGrid = document.getElementById("skillsGrid");
+  if (!skillsGrid || !portfolioData.skills) return;
+
+  portfolioData.skills.forEach((category) => {
+    const categoryDiv = document.createElement("div");
+    categoryDiv.className = "skill-category";
+
+    // Category Title
+    const categoryTitle = document.createElement("h3");
+    categoryTitle.className = "skill-category-title";
+    categoryTitle.textContent = category.category;
+    categoryDiv.appendChild(categoryTitle);
+
+    // Skill Items
+    category.items.forEach((skill) => {
+      const skillItem = document.createElement("div");
+      skillItem.className = "skill-item";
+
+      const skillInfo = document.createElement("div");
+      skillInfo.className = "skill-info";
+
+      const skillName = document.createElement("span");
+      skillName.className = "skill-name";
+      skillName.textContent = skill.name;
+
+      const skillPercent = document.createElement("span");
+      skillPercent.className = "skill-percentage";
+      skillPercent.textContent = `${skill.percentage}%`;
+
+      skillInfo.appendChild(skillName);
+      skillInfo.appendChild(skillPercent);
+
+      const skillBar = document.createElement("div");
+      skillBar.className = "skill-bar";
+
+      const skillProgress = document.createElement("div");
+      skillProgress.className = "skill-progress";
+      skillProgress.style.width = `${skill.percentage}%`;
+
+      skillBar.appendChild(skillProgress);
+
+      skillItem.appendChild(skillInfo);
+      skillItem.appendChild(skillBar);
+      categoryDiv.appendChild(skillItem);
+    });
+
+    skillsGrid.appendChild(categoryDiv);
+  });
+}
+
+function renderAboutSection() {
+  const about = portfolioData.about;
+  const avatarContainer = document.getElementById("about-avatar");
+  const initial = portfolioData.personalInfo.name?.[0] || "A";
+
+  // Clear previous avatar content
+  avatarContainer.innerHTML = "";
+
+  if (about.image && about.image.trim() !== "") {
+    const img = document.createElement("img");
+    img.src = about.image;
+    img.alt = "Avatar-image";
+    img.className = "avatar-image"; // style this in CSS
+    img.onerror = () => {
+      avatarContainer.textContent = initial; // fallback if image fails to load
+    };
+    avatarContainer.appendChild(img);
+  } else {
+    avatarContainer.textContent = initial;
+  }
+
+  // Title & subtitle
+  document.getElementById("about-title").textContent = about.title;
+  document.getElementById("about-subtitle").textContent = about.subtitle;
+
+  // Quote
+  document.getElementById("about-quote").textContent = `"${about.quote}"`;
+
+  // Bio
+  const bioContainer = document.getElementById("about-bio");
+  bioContainer.innerHTML = "";
+  about.bio.forEach((para) => {
+    const p = document.createElement("p");
+    p.className = "about-text";
+    p.textContent = para;
+    bioContainer.appendChild(p);
+  });
+
+  // Tech Stack
+  const stackContainer = document.getElementById("tech-stack");
+  stackContainer.innerHTML = "";
+  about.techStack.forEach((tech) => {
+    const div = document.createElement("div");
+    div.className = "tech-pill";
+    div.dataset.level = tech.level;
+    div.textContent = tech.name;
+    stackContainer.appendChild(div);
+  });
+}
+
+function renderHeroSection() {
+  const heroTitle = document.getElementById("hero-title");
+  const heroSubtitle = document.getElementById("hero-subtitle");
+  const heroStatsContainer = document.getElementById("hero-stats");
+
+  const { title, subtitle } = portfolioData.personalInfo;
+  const stats = portfolioData.heroStats;
+
+  // Set text content
+  heroTitle.textContent = title;
+  heroSubtitle.textContent = subtitle;
+
+  // Generate stats dynamically
+  heroStatsContainer.innerHTML = ""; // Clear if needed
+
+  stats.forEach((stat) => {
+    const statDiv = document.createElement("div");
+    statDiv.classList.add("hero-stat");
+
+    statDiv.innerHTML = `
+      <span class="hero-stat-number">${stat.value}</span>
+      <span class="hero-stat-label">${stat.label}</span>
+    `;
+
+    heroStatsContainer.appendChild(statDiv);
+  });
+}
 // Project Modal Functions
 function openProjectModal(projectId) {
   const project = projects.find((p) => p.id === projectId);
@@ -222,12 +529,12 @@ document.addEventListener("keydown", function (e) {
 });
 
 // Theme toggle functionality
-const themeToggle = document.getElementById("themeToggle");
-themeToggle.addEventListener("click", () => {
-  document.body.classList.toggle("dark-theme");
-  const isDark = document.body.classList.contains("dark-theme");
-  themeToggle.textContent = isDark ? "☀️" : "🌙";
-});
+// const themeToggle = document.getElementById("themeToggle");
+// themeToggle.addEventListener("click", () => {
+//   document.body.classList.toggle("dark-theme");
+//   const isDark = document.body.classList.contains("dark-theme");
+//   themeToggle.textContent = isDark ? "☀️" : "🌙";
+// });
 
 // Animate stats counters
 function animateStats() {
@@ -386,10 +693,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Any other initializations can go here
 });
-// Resume download function
-function downloadResume() {
-  // In a real implementation, this would link to a PDF
-  alert("Downloading resume...");
-  // window.location.href = "path/to/resume.pdf";
-}
+
 window.closeProjectModal = closeProjectModal;
