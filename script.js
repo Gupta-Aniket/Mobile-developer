@@ -237,6 +237,7 @@ function loadTestimonials() {
       const img = document.createElement("img");
       img.src = t.avatarImage;
       img.alt = t.authorName;
+
       avatar.appendChild(img);
     } else {
       avatar.textContent = getInitials(t.authorName);
@@ -338,7 +339,9 @@ function renderAboutSection() {
     const img = document.createElement("img");
     img.src = about.image;
     img.alt = "Avatar-image";
-    img.className = "avatar-image"; // style this in CSS
+    img.className = "avatar-image";
+    img.loading = "lazy";
+    img.onload = "this.classList.add('loaded')"; // style this in CSS
     img.onerror = () => {
       avatarContainer.textContent = initial; // fallback if image fails to load
     };

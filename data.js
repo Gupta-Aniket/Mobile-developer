@@ -13,8 +13,7 @@ const portfolioData = {
     contact: {
       email: "work.gupta.aniket@gmail.com",
       phone: "+91 8319906162",
-      resume:
-        "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+      resume:"https://drive.google.com/uc?export=download&id=1UKF42RcwFZOKyF_DW0hqCfaqS5SCshgD",
     },
   },
   formOptions: {

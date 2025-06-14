@@ -517,16 +517,7 @@ body {
   gap: var(--spacing-lg);
 }
 
-/* .project-card {
-  background-color: var(--tertiary-background);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-lg);
-  border: 1px solid var(--separator);
-  transition: all 0.3s ease;
-  cursor: pointer;
-  position: relative;
-  box-shadow: var(--shadow-sm);
-} */
+
 .project-card {
   display: flex;
   flex-direction: column;
@@ -1888,4 +1879,45 @@ html {
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+.tech-pill[title] {
+  position: relative;
+}
+
+.tech-pill[title]::after {
+  content: attr(title);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--label);
+  color: white;
+  padding: 4px 8px;
+  font-size: 12px;
+  border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 10;
+}
+
+.tech-pill:hover::after {
+  opacity: 1;
+}
+
+.project-link:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 4px;
+}
+
+/* --- Add lazy loading styling support (if used) --- */
+img[loading="lazy"] {
+  /* filter: blur(4px); */
+  transition: filter 0.3s ease;
+}
+
+img[loading="lazy"].loaded {
+  filter: none;
 }
