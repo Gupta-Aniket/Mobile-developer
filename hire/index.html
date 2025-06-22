@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aniket - Hire Me</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600;700;800&family=SF+Pro+Text:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="nav">
+      <div class="nav-content">
+        <div class="nav-title">Aniket</div>
+        <div class="nav-links">
+          <a href="#about" class="nav-link">About</a>
+          <a href="#projects" class="nav-link">Projects</a>
+          <a href="#contact" class="nav-link">Contact</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container">
+        <div class="hero-content">
+          <h1 class="hero-title" id="hero-title"></h1>
+          <p class="hero-subtitle" id="hero-subtitle"></p>
+          <div class="hero-stats" id="hero-stats"></div>
+          <a id="resumeButton" class="cta-button">Download Resume</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="section about" id="about">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title" id="about-title"></h2>
+          <p class="section-subtitle" id="about-subtitle"></p>
+        </div>
+        <div class="about-content">
+          <div class="about-avatar" id="about-avatar"></div>
+          <div>
+            <div class="about-quote" id="about-quote"></div>
+            <div id="about-bio"></div>
+            <div class="modal-section">
+              <h3 class="modal-section-title">Tech Stack & Expertise</h3>
+              <div class="tech-stack" id="tech-stack"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section class="section skills">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Skills & Proficiency</h2>
+          <p class="section-subtitle">
+            My expertise across different technologies and platforms
+          </p>
+        </div>
+        <div class="skills-grid" id="skillsGrid"></div>
+      </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section class="section projects" id="projects">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Featured Projects</h2>
+          <p class="section-subtitle">
+            A showcase of my recent work across different platforms and
+            industries
+          </p>
+        </div>
+        <div class="project-filters" id="filterButtonsContainer">
+          <!-- Filter buttons will be inserted here dynamically -->
+        </div>
+
+        <div class="projects-grid" id="projectsGrid">
+          <!-- Projects will be dynamically inserted here -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Info Section -->
+    <section class="section contact" id="contact">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Contact Me</h2>
+          <p class="section-subtitle">Direct ways to reach out to me</p>
+        </div>
+        <div class="contact-alternatives">
+          <div class="contact-methods">
+            <a href="#" id="emailLink" class="contact-method">
+              <span class="contact-icon">📧</span>
+              <span class="contact-text" id="emailText"></span>
+            </a>
+            <a href="#" id="phoneLink" class="contact-method">
+              <span class="contact-icon">📞</span>
+              <span class="contact-text" id="phoneText"></span>
+            </a>
+            <a id="resumeLink" class="contact-method">
+              <span class="contact-icon">📄</span>
+              <span class="contact-text">Download Resume</span>
+            </a>
+          </div>
+        </div>
+        <div class="social-links" id="socialLinksContainer"></div>
+      </div>
+    </section>
+
+    <!-- Project Modal -->
+    <div id="projectModal" class="modal-overlay">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 id="modalTitle" class="modal-title">Project Title</h2>
+          <button class="modal-close" aria-label="Close modal">✕</button>
+        </div>
+        <div class="modal-body" id="modalBody"></div>
+      </div>
+    </div>
+
+    <script src="script.js" type="module"></script>
+  </body>
+</html>

@@ -1,4 +1,4 @@
-import portfolioData from "./data.js";
+import portfolioData from "../data.js";
 
 const projects = portfolioData.projects;
 document.addEventListener("DOMContentLoaded", () => {
@@ -411,23 +411,19 @@ function openProjectModal(projectId) {
   const modal = document.getElementById("projectModal");
   const modalTitle = document.getElementById("modalTitle");
   const modalBody = document.getElementById("modalBody");
-
   modalTitle.innerText = project.title;
 
-  // Generate status with appropriate styling
   const statusClass =
     project.status === "working"
-      ? ""
+      ? "working"
       : project.status === "ongoing"
       ? "ongoing"
-      : "depricated";
+      : "deprecated";
 
-  // Generate tags HTML
   const tagsHTML = project.tags
     .map((tag) => `<span class="modal-tag">${tag}</span>`)
     .join("");
 
-  // Generate tech stack if available
   const techStackHTML = project.techStack
     ? `
       <div class="modal-section-title">Technologies</div>
@@ -439,94 +435,117 @@ function openProjectModal(projectId) {
     `
     : "";
 
-  // Generate action buttons
   const buttonsHTML = `
     <div class="modal-actions">
-        ${
-          project.live
-            ? `
-            <a href="${project.live}" target="_blank" class="modal-button">
-                <span>View Live</span>
-                <span class="modal-button-icon">↗</span>
-            </a>
-        `
-            : ""
-        }
-        ${
-          project.github
-            ? `
-            <a href="${project.github}" target="_blank" class="modal-button secondary">
-                <span>GitHub</span>
-                <span class="modal-button-icon">↗</span>
-            </a>
-        `
-            : ""
-        }
-        ${
-          project.demo
-            ? `
-            <a href="${project.demo}" target="_blank" class="modal-button secondary">
-                <span>Demo</span>
-                <span class="modal-button-icon">↗</span>
-            </a>
-        `
-            : ""
-        }
-        ${
-          project.documentation
-            ? `
-            <a href="${project.documentation}" target="_blank" class="modal-button secondary">
-                <span>Docs</span>
-                <span class="modal-button-icon">↗</span>
-            </a>
-        `
-            : ""
-        }
+      ${
+        project.github
+          ? `<a href="${project.github}" target="_blank" class="modal-button secondary">
+              <span>View on GitHub</span>
+              <span class="modal-button-icon">↗</span>
+            </a>`
+          : ""
+      }
+      ${
+        project.live
+          ? `<a href="${project.live}" target="_blank" class="modal-button">
+              <span>Try it Out</span>
+              <span class="modal-button-icon">🚀</span>
+            </a>`
+          : ""
+      }
     </div>
   `;
 
-  modalBody.innerHTML = `
-    <div class="modal-hero-image">
-        ${
-          project.image
-            ? `<img src="${project.image}" alt="${project.title}" />`
-            : `<div class="modal-hero-placeholder">No preview available</div>`
-        }
-    </div>
-    
-    <div class="modal-status ${statusClass}">
-        <span class="status-dot"></span>
-        <span>${
-          project.status.charAt(0).toUpperCase() + project.status.slice(1)
-        }</span>
-    </div>
-    
-    <p class="modal-description">${project.description}</p>
-    
-    ${project.details ? `<p class="modal-details">${project.details}</p>` : ""}
-    
-    ${
-      project.tags && project.tags.length > 0
-        ? `
-        <div class="modal-tags">
-            ${tagsHTML}
+  const sliderHTML =
+    project.images && project.images.length
+      ? `
+      <div class="modal-slider-wrapper">
+        <button class="slider-arrow left" aria-label="Previous image"> ➱ </button>
+        <div class="modal-slider">
+          ${project.images
+            .map(
+              (img, i) => `
+              <div class="modal-slide${i === 0 ? " active" : ""}">
+                <img src="assets/${img}" alt="${project.title} Screenshot ${
+                i + 1
+              }" />
+              </div>`
+            )
+            .join("")}
         </div>
+        <button class="slider-arrow right" aria-label="Next image"> ➱ </button>
+        <div class="modal-indicators">
+          ${project.images
+            .map(
+              (_, i) =>
+                `<span class="modal-indicator${
+                  i === 0 ? " active" : ""
+                }" data-index="${i}"></span>`
+            )
+            .join("")}
+        </div>
+      </div>
     `
+      : `<div class="modal-hero-placeholder">No previews available</div>`;
+
+  modalBody.innerHTML = `
+    ${sliderHTML}
+    <div class="modal-status ${statusClass}">
+      <span class="status-dot"></span>
+      <span class="status-text">${
+        project.status.charAt(0).toUpperCase() + project.status.slice(1)
+      }</span>
+    </div>
+    <p class="modal-description">${project.description}</p>
+    ${
+      project.details && Array.isArray(project.details)
+        ? `<ul class="modal-details modal-bullets">
+         ${project.details.map((point) => `<li>${point}</li>`).join("")}
+       </ul>`
+        : project.details
+        ? `<p class="modal-details">${project.details}</p>`
         : ""
     }
-    
+
+    ${project.tags?.length ? `<div class="modal-tags">${tagsHTML}</div>` : ""}
     ${techStackHTML}
-    
-    ${techStackHTML && buttonsHTML ? '<div class="modal-divider"></div>' : ""}
-    
     ${buttonsHTML}
   `;
 
-  // Add smooth entrance animation
-  requestAnimationFrame(() => {
-    modal.classList.add("active");
+  requestAnimationFrame(() => modal.classList.add("active"));
+
+  const slides = modal.querySelectorAll(".modal-slide");
+  const indicators = modal.querySelectorAll(".modal-indicator");
+  const leftArrow = modal.querySelector(".slider-arrow.left");
+  const rightArrow = modal.querySelector(".slider-arrow.right");
+
+  let activeIndex = 0;
+
+  function setActiveSlide(index) {
+    slides.forEach((s, i) => s.classList.toggle("active", i === index));
+    indicators.forEach((d, i) => d.classList.toggle("active", i === index));
+    activeIndex = index;
+  }
+
+  indicators.forEach((dot) => {
+    dot.addEventListener("click", () => {
+      setActiveSlide(parseInt(dot.dataset.index));
+    });
   });
+
+  leftArrow?.addEventListener("click", () => {
+    setActiveSlide((activeIndex - 1 + slides.length) % slides.length);
+  });
+
+  rightArrow?.addEventListener("click", () => {
+    setActiveSlide((activeIndex + 1) % slides.length);
+  });
+
+  document.addEventListener("keydown", handleModalKeyEvents);
+
+  modal.focus();
 }
+
 document.querySelector(".modal-close").addEventListener("click", () => {
   closeProjectModal();
 });
@@ -543,12 +562,30 @@ document.addEventListener("click", function (e) {
   }
 });
 
-// Close modal with Escape key
-document.addEventListener("keydown", function (e) {
+function handleModalKeyEvents(e) {
+  const modal = document.getElementById("projectModal");
+  if (!modal.classList.contains("active")) return;
+
+  const slides = modal.querySelectorAll(".modal-slide");
+  const indicators = modal.querySelectorAll(".modal-indicator");
+  let activeIndex = [...slides].findIndex((s) =>
+    s.classList.contains("active")
+  );
+
+  function setActiveSlide(index) {
+    slides.forEach((s, i) => s.classList.toggle("active", i === index));
+    indicators.forEach((d, i) => d.classList.toggle("active", i === index));
+  }
   if (e.key === "Escape") {
     closeProjectModal();
   }
-});
+
+  if (e.key === "ArrowRight") {
+    setActiveSlide((activeIndex + 1) % slides.length);
+  } else if (e.key === "ArrowLeft") {
+    setActiveSlide((activeIndex - 1 + slides.length) % slides.length);
+  }
+}
 
 // Theme toggle functionality
 // const themeToggle = document.getElementById("themeToggle");
