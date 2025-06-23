@@ -336,7 +336,7 @@ function renderAboutSection() {
 
   if (about.image && about.image.trim() !== "") {
     const img = document.createElement("img");
-    img.src = about.image;
+    img.src = about.image + "freelance.jpg";
     img.alt = "Avatar-image";
     img.className = "avatar-image"; // style this in CSS
     img.onerror = () => {
@@ -466,7 +466,7 @@ function openProjectModal(projectId) {
             .map(
               (img, i) => `
               <div class="modal-slide${i === 0 ? " active" : ""}">
-                <img src="assets/${img}" alt="${project.title} Screenshot ${
+                <img src="../assets/${img}" alt="${project.title} Screenshot ${
                 i + 1
               }" />
               </div>`

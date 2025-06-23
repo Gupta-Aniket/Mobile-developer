@@ -5,13 +5,13 @@ const sharedData = {
     subtitle:
       "Building exceptional iOS and Android experiences with Flutter, React Native, and modern development practices that users love and businesses rely on.",
     socialLinks: [
-      { name: "GitHub", url: "https://github.com/aniket" },
-      { name: "LinkedIn", url: "https://linkedin.com/in/aniket" },
-      { name: "Twitter", url: "https://twitter.com/aniket" },
+      { name: "GitHub", url: "https://github.com/Gupta-Aniket/" },
+      { name: "LinkedIn", url: "https://www.linkedin.com/in/work-gupta-aniket/" },
+      { name: "Twitter", url: "https://x.com/adbhut_praani/" },
     ],
     contact: {
       email: "work.gupta.aniket@gmail.com",
-      phone: "+91 8319906162",
+      // phone: "+91 8319906162",
       resume:
         "https://drive.google.com/uc?export=download&id=1R5J3xVJJfHgzsf7KzFWopaorKfpB_N2R",
     },
@@ -167,7 +167,8 @@ const sharedData = {
         // "corporate-mask-app/4.jpg",
       ],
       github: "https://github.com/Gupta-Aniket/corporate-mask", // <-- Replace with your actual repo URL
-      live: "https://github.com/Gupta-Aniket/corporate-mask/releases/download/android/Corporate.Mask.apk", // <-- Your APK link in GitHub releases
+      live: "https://github.com/Gupta-Aniket/corporate-mask/releases/download/android/corporate-mask.apk",
+      // <-- Your APK link in GitHub releases
     },
 
     // * corporate-mask-extension
@@ -378,6 +379,35 @@ const sharedData = {
         "Dark-mode ready, fully responsive and mobile-first design",
       ],
       github: "https://github.com/Gupta-Aniket/travel-companion",
+    },
+
+    // * xylophone app
+    {
+      id: "flutter-xylophone",
+      title: "Xylophone (Flutter Mini Piano App)",
+      description:
+        "A simple yet engaging Flutter app that simulates a colorful xylophone allowing users to play musical notes by tapping on vibrant keys.",
+      category: "flutter",
+      status: "working",
+      tags: [
+        "Flutter",
+        "Dart",
+        "AudioPlayer",
+        "UI Design",
+        "Music App",
+        "Beginners Project",
+        "Interactive UI",
+      ],
+      details: [
+        "Color-coded piano keys with rounded corners for a pleasing visual design",
+        "Plays 8 musical notes using the audioplayers package",
+        "Simple one-screen safe-area layout for mobile-first design",
+        "Instant sound playback for interactive learning or casual fun",
+        "Lightweight Flutter project with minimal dependencies",
+        "One of the most loved projects by my little sister!",
+      ],
+      github: "https://github.com/Gupta-Aniket/Xylophone-app",
+      live: "https://github.com/Gupta-Aniket/Xylophone-app/releases/download/android/xylophone.apk",
     },
   ],
 };

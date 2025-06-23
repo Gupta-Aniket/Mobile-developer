@@ -50,7 +50,7 @@ function renderAboutSection() {
   avatarContainer.innerHTML = "";
   if (about.image) {
     const img = document.createElement("img");
-    img.src = about.image;
+    img.src = about.image + "hire.jpg";
     img.alt = "Avatar Image";
     img.className = "avatar-image";
     avatarContainer.appendChild(img);

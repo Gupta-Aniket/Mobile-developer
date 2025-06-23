@@ -26,11 +26,13 @@ const portfolioData = {
     { value: "98%", label: "Client Satisfaction" },
   ],
 
+ 
+
   about: {
     title: "About Me",
     subtitle:
       "Passionate about creating mobile experiences that make a difference in people's daily lives.",
-    image: "https://picsum.photos/300/300",
+    image: "../assets/profile-image/",
     quote:
       "Great mobile apps don't just work – they feel magical and solve real problems elegantly.",
     bio: [
@@ -48,7 +50,9 @@ const portfolioData = {
       { name: "Python", level: "intermediate" },
       { name: "WebRTC", level: "intermediate" },
       { name: "Shell Scripting", level: "intermediate" },
+      { name: "MVC", level: "expert" }, 
       { name: "UI/UX Design", level: "expert" },
+      { name: "MVVM", level: "intermediate" },
     ],
   },
 

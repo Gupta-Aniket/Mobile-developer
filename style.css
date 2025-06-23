@@ -452,7 +452,7 @@ body {
 }
 
 .about-avatar:hover {
-  transform: scale(1.05) rotate(5deg);
+  transform: scale(1.05) ;
 }
 
 .about-text {
@@ -501,7 +501,7 @@ body {
 }
 
 .tech-pill:hover {
-  background-color: var(--primary);
+  /* background-color: var(--primary);   */
   color: white;
   transform: translateY(-2px);
 }
@@ -1724,11 +1724,24 @@ html {
   color: var(--secondary-label);
 }
 
-/* Contact Enhancements */
-.contact-content {
-  max-width: 600px;
-  margin: 0 auto;
+.contact-form {
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* height: 100%; Ensure the container takes full height */
+  /* min-height: 300px; Optional: set a reasonable min height */
 }
+
+.contact-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 12px;
+  /* height: 100vh; Full viewport height if you want full page center */
+}
+
+
 
 .form-error {
   color: var(--error);
@@ -2024,4 +2037,218 @@ html {
 
 .modal-bullets li {
   margin-bottom: 6px;
+}
+/* WIZARD MODAL */
+
+.wizard-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  transition: all 0.3s ease;
+}
+
+.wizard-overlay.active {
+  display: flex;
+}
+
+.wizard-container {
+  width: 90%;
+  max-width: 600px;
+  background: var(--secondary-background);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  padding: 2rem 2.5rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  transition: transform 0.3s ease;
+}
+
+.wizard-progress {
+  height: 8px;
+  background: var(--separator);
+  border-radius: 50px;
+  overflow: hidden;
+}
+
+.wizard-progress-bar {
+  height: 100%;
+  width: 2%;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  transition: width 0.4s ease;
+}
+
+.wizard-question {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--label);
+  margin-bottom: 1rem;
+  line-height: 1.4;
+}
+
+.wizard-input {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  padding-right: 4rem;
+  font-size: 1rem;
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-md);
+  background-color: var(--tertiary-background);
+  color: var(--label);
+  font-family: var(--font-text);
+  transition: border 0.2s ease, background-color 0.2s ease;
+}
+select.wizard-input{
+  appearance: none; /* <-- this removes the native arrow */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  /* Add custom arrow */
+  background-image: url('data:image/svg+xml;utf8,<svg fill="%23666" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1rem;
+}
+
+.wizard-input::placeholder {
+  color: var(--tertiary-label);
+}
+
+.wizard-input:focus {
+  border-color: var(--primary);
+  outline: none;
+  background-color: var(--system-background);
+}
+
+.wizard-buttons {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.wizard-popup-buttons{
+  display: flex;
+  justify-content: space-evenly;
+  flex-direction: row;
+}
+.wizard-close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 1.5rem;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+.skip-btn {
+  padding: 0.6rem 1.2rem;
+  font-size: 0.95rem;
+  font-weight: 400; /* lighter weight */
+  color: #666; /* assume you have a subtle text color var */
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  margin-left: 90%;
+  transition: all 0.2s ease;
+  font-family: var(--font-text);
+  background: transparent; /* subtle look */
+}
+
+#fileStatus {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--secondary-label);
+}
+/* Wizard Popup (small message bubble) */
+.wizard-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--system-background);
+  color: var(--label);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  z-index: 10001;
+  font-size: 1.1rem;
+  text-align: center;
+  max-width: 90%;
+  transition: opacity 0.3s ease;
+  font-family: var(--font-text);
+}
+
+.wizard-popup .popup-content {
+  font-weight: 500;
+  color: var(--label);
+}
+
+/* Wizard Quit Confirmation Modal */
+.wizard-confirm {
+  position: fixed;
+  inset: 0;
+  backdrop-filter: blur(10px) saturate(140%);
+  background-color: rgba(0, 0, 0, 0.4); /* optional override: add a var if you want */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10002;
+}
+
+.wizard-confirm .confirm-content {
+  background: var(--system-background);
+  padding: var(--spacing-xl) calc(var(--spacing-xl) + 0.5rem);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+  max-width: 500px;
+  width: 90%;
+  font-family: var(--font-text);
+}
+
+.wizard-confirm .confirm-content p {
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-bottom: var(--spacing-xl);
+  color: var(--label);
+}
+
+.wizard-confirm .confirm-content button {
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-weight: 500;
+  margin: 0 var(--spacing-sm);
+  transition: all 0.2s ease;
+  font-family: var(--font-text);
+}
+
+.wizard-confirm .confirm-content button#quitYes {
+  background: var(--fill-quaternary);
+  color: var(--label);
+  margin: 0.2rem ;
+}
+
+.wizard-confirm .confirm-content button#quitNo {
+  background: var(--primary);
+  color: var(--label);
+  margin: 0.2rem ;
+}
+
+.wizard-confirm .confirm-content button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+.sub-text{
+  padding : 0.2rem 0.4rem;
+  font-size: 0.8rem;
+  color: var(--secondary-label);
 }
