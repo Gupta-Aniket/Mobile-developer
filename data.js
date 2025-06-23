@@ -20,13 +20,11 @@ const portfolioData = {
   },
 
   heroStats: [
-    { value: "80+", label: "Projects Shipped" },
+    { value: "20+", label: "Projects Shipped" },
     { value: "4", label: "Platforms" },
     { value: "2-4", label: "Weeks to MVP" },
-    { value: "98%", label: "Client Satisfaction" },
+    // { value: "98%", label: "Client Satisfaction" },
   ],
-
- 
 
   about: {
     title: "About Me",
@@ -34,10 +32,11 @@ const portfolioData = {
       "Passionate about creating mobile experiences that make a difference in people's daily lives.",
     image: "../assets/profile-image/",
     quote:
-      "Great mobile apps don't just work – they feel magical and solve real problems elegantly.",
+      "The best mobile experiences seamlessly blend innovation, functionality, and user delight",
     bio: [
-      "I'm Aniket, a passionate mobile app developer with over 4 years of experience crafting exceptional iOS and Android applications. My journey began with a fascination for how technology can simplify complex tasks and create delightful user experiences.",
-      "I specialize in Flutter and React Native development, with a strong focus on performance optimization, clean architecture, and pixel-perfect UI implementations. My approach combines technical excellence with user-centered design thinking.",
+      "I'm Aniket, and I'm all about creating mobile apps that make a difference. My journey into development started with a simple fascination: how can tech truly simplify things and bring a bit of joy to people's daily lives? I've explored this extensively through my many real-world personal projects.",
+      "I specialize in Flutter and React Native, always keeping an eye on performance, clean code, and crafting pixel-perfect UIs. What I really enjoy is blending strong technical execution with user-centered design – it's how I'm able to quickly prototype concepts and deliver engaging, reliable mobile solutions.",
+      "My 30+ GitHub repos are a testament to my hands-on experience, showcasing my diverse skills and my commitment to consistently building and learning.",
     ],
     techStack: [
       { name: "Flutter", level: "expert" },
@@ -50,7 +49,7 @@ const portfolioData = {
       { name: "Python", level: "intermediate" },
       { name: "WebRTC", level: "intermediate" },
       { name: "Shell Scripting", level: "intermediate" },
-      { name: "MVC", level: "expert" }, 
+      { name: "MVC", level: "expert" },
       { name: "UI/UX Design", level: "expert" },
       { name: "MVVM", level: "intermediate" },
     ],
