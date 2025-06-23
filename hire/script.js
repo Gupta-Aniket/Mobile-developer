@@ -180,10 +180,10 @@ function renderContactInfo() {
   document.getElementById("emailText").textContent = contact.email;
 
   if (contact.phone) {
-    phoneLink.href = `tel:${contact.phone.replace(/\s+/g, "")}`;
-  } else {
-    console.warn("No phone number provided.");
-  }
+  phoneLink.href = `tel:${contact.phone.replace(/\s+/g, "")}`;
+} else {
+  console.warn("No phone number provided.");
+}
   document.getElementById("phoneText").textContent = contact.phone;
 
   resumeLink.href = contact.resume;

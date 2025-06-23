@@ -352,6 +352,7 @@ const sharedData = {
         "Music App",
         "Interactive UI",
       ],
+      images: ["xylophone/1.jpg"],
       details: [
         "Color-coded piano keys with rounded corners for visual appeal",
         "Plays 8 distinct musical notes using the `audioplayers` package",
