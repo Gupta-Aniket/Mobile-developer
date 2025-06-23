@@ -62,64 +62,135 @@ const countries = [
   },
 ];
 
+// const questions = [
+//   {
+//     key: "name",
+//     question:
+//       "Hey, thanks for reaching out! Before we dive in, may I know your name?",
+//     type: "text",
+//   },
+//   {
+//     key: "country",
+//     question: (s) =>
+//       `Hi, ${s.name ? s.name.split(" ")[0] : "there"}. Where are you based?`,
+//     type: "country",
+//   },
+//   {
+//     key: "budget",
+//     question: "What budget range are you considering?",
+//     type: "budget",
+//   },
+//   {
+//     key: "urgency",
+//     question: "By the way, how soon are you hoping to launch?",
+//     type: "urgency",
+//   },
+//   {
+//     key: "projectType",
+//     question: "What kind of project is this?",
+//     type: "projectType",
+//   },
+//   {
+//     key: "appName",
+//     question: (s) =>
+//       `Awesome${
+//         s.name ? ", " + s.name : ""
+//       }. What would you like to call your ${
+//         s.projectType === "Web" ? "website" : "app"
+//       }?`,
+//     type: "text",
+//     condition: (s) => s.projectType !== "Consultation",
+//     optional: true,
+//   },
+//   {
+//     key: "description",
+//     question: "Perfect. Tell me a bit more — what will this help people do?",
+//     type: "textarea",
+//     optional: true,
+//   },
+//   { key: "audience", question: "Who would mostly use this?", type: "text" },
+//   {
+//     key: "links",
+//     question:
+//       "If you have any links (Figma, Docs, Github, etc) please share them:",
+//     type: "textarea",
+//     optional: true,
+//   },
+//   {
+//     key: "contact",
+//     question: "Finally, how can I reach you?",
+//     type: "contact",
+//   },
+// ];
 const questions = [
   {
     key: "name",
-    question:
-      "Hey, thanks for reaching out! Before we dive in, may I know your name?",
+    question: "Hey 👋 Nice to meet you! What should I call you?",
     type: "text",
+    hint: "This helps us personalize our conversation. You can just enter your first name.",
   },
   {
     key: "country",
     question: (s) =>
-      `Hi, ${s.name ? s.name.split(" ")[0] : "there"}. Where are you based?`,
+      `Hi ${s.name ? s.name.split(" ")[0] : "friend"}! Where are you based?`,
     type: "country",
-  },
-  {
-    key: "budget",
-    question: "What budget range are you considering?",
-    type: "budget",
-  },
-  {
-    key: "urgency",
-    question: "By the way, how soon are you hoping to launch?",
-    type: "urgency",
+    hint: "We adjust budgets & timelines depending on your location.",
   },
   {
     key: "projectType",
-    question: "What kind of project is this?",
+    question: "What are we building together?",
     type: "projectType",
+    hint: "Don't worry, you can always update this later.",
   },
   {
     key: "appName",
     question: (s) =>
-      `Awesome${
-        s.name ? ", " + s.name : ""
-      }. What would you like to call your ${
+      `Do you have a name in mind for your ${
         s.projectType === "Web" ? "website" : "app"
       }?`,
     type: "text",
+    hint: "If you haven’t decided yet, you can skip this for now.",
     condition: (s) => s.projectType !== "Consultation",
     optional: true,
   },
   {
     key: "description",
-    question: "Perfect. Tell me a bit more — what will this help people do?",
+    question: "Tell me a little more — what’s your vision for this project?",
     type: "textarea",
+    hint: "A simple 1-2 line overview helps us understand your idea better.",
     optional: true,
   },
-  { key: "audience", question: "Who would mostly use this?", type: "text" },
+  {
+    key: "audience",
+    question: "Who are you building this for? Who will use it most?",
+    type: "text",
+    hint: "Example: College students, small businesses, working professionals, etc.",
+  },
   {
     key: "links",
     question:
-      "If you have any links (Figma, Docs, Github, etc) please share them:",
+      "If you have any designs, sketches, or references, feel free to share links here:",
     type: "textarea",
+    hint: "Figma, Google Docs, Notion, Github — anything helps!",
     optional: true,
   },
   {
+    key: "budget",
+    question: "Let’s talk budget — where does your comfort zone roughly sit?",
+    type: "budget",
+    hint: "This helps us recommend solutions that fit your expectations.",
+  },
+  {
+    key: "urgency",
+    question: "And when are you hoping to see it go live?",
+    type: "urgency",
+    hint: "If you're flexible, that's totally fine too.",
+  },
+  {
     key: "contact",
-    question: "Finally, how can I reach you?",
+    question: "Finally, how can I get in touch with you?",
     type: "contact",
+    hint: "We’ll only use your contact info to discuss your project.",
   },
 ];
 
@@ -142,23 +213,15 @@ function renderStep() {
   questionEl.textContent =
     typeof step.question === "function" ? step.question(state) : step.question;
   inputArea.innerHTML = "";
-
+  hint.innerHTML = "";
   if (step.type === "text") {
     inputArea.innerHTML = `<input class="wizard-input" type="text" id="inputField" value="${
       state[step.key] || ""
-    }" />
-      ${
-        step.optional
-          ? '<button id="skipBtn" class="skip-btn">Skip</button>'
-          : ""
-      }`;
+    }" />`;
   } else if (step.type === "textarea") {
     inputArea.innerHTML = `<textarea class="wizard-input" rows="4" allow id="inputField">${
       state[step.key] || ""
-    }</textarea>
-    ${
-      step.optional ? '<button id="skipBtn" class="skip-btn">Skip</button>' : ""
-    }`;
+    }</textarea>`;
   } else if (step.type === "projectType") {
     inputArea.innerHTML = `<select class="wizard-input" id="inputField">
       <option value="">Select Type</option>
@@ -218,22 +281,59 @@ function renderStep() {
   backBtn.style.display = "inline-block";
   backBtn.style.visibility = getVisibleStepIndex() === 0 ? "hidden" : "visible";
 
+  updateNextButton();
+  hint.innerHTML = step.hint;
+
   const inputField = document.getElementById("inputField");
   if (inputField) {
+    inputField.addEventListener("input", updateNextButton);
     inputField.addEventListener("change", (e) => {
       if (e.target.value === "Other") {
         document.getElementById(
           "customInput"
         ).innerHTML = `<input class="wizard-input" type="text" id="customField" placeholder="Please specify..." />`;
+
+        // Also attach listener to customField for real-time button update
+        const customField = document.getElementById("customField");
+        customField.addEventListener("input", updateNextButton);
       } else {
-        document.getElementById("customInput").innerHTML = "";
+        if (document.getElementById("customInput"))
+          document.getElementById("customInput").innerHTML = "";
       }
     });
   }
 
-  const skipBtn = document.getElementById("skipBtn");
-  if (skipBtn) {
-    skipBtn.addEventListener("click", () => moveNextVisibleStep());
+  if (step.type === "contact") {
+    const emailField = document.getElementById("emailField");
+    emailField.addEventListener("input", updateNextButton);
+  }
+}
+
+function updateNextButton() {
+  const step = questions[currentStep];
+
+  if (step.type === "contact") {
+    const emailField = document.getElementById("emailField");
+    nextBtn.innerHTML = emailField.value.trim() ? "Next" : "Skip";
+    return;
+  }
+
+  if (step.optional) {
+    let value = document.getElementById("inputField")?.value.trim();
+
+    // Special case: budget/urgency "Other"
+    if (
+      (step.type === "budget" || step.type === "urgency") &&
+      value === "Other"
+    ) {
+      const customValue = document.getElementById("customField")?.value.trim();
+      value = customValue;
+    }
+
+    nextBtn.innerHTML = value ? "Next" : "Skip";
+  } else {
+    nextBtn.innerHTML =
+      getVisibleStepIndex() === questions.length - 1 ? "Finish" : "Next";
   }
 }
 

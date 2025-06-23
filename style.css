@@ -2095,6 +2095,7 @@ html {
   width: 100%;
   padding: 0.9rem 1rem;
   padding-right: 4rem;
+
   font-size: 1rem;
   border: 1px solid var(--separator);
   border-radius: var(--radius-md);
@@ -2103,11 +2104,16 @@ html {
   font-family: var(--font-text);
   transition: border 0.2s ease, background-color 0.2s ease;
 }
+.wizard-hint{
+  margin-top: -1rem;
+  padding-left: 0.2rem;
+  font-size: 0.8rem;
+  color: var(--secondary-label);
+}
 select.wizard-input{
   appearance: none; /* <-- this removes the native arrow */
   -webkit-appearance: none;
   -moz-appearance: none;
-
   /* Add custom arrow */
   background-image: url('data:image/svg+xml;utf8,<svg fill="%23666" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
   background-repeat: no-repeat;
