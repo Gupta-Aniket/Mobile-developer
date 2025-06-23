@@ -14,7 +14,7 @@ const sharedData = {
     ],
     contact: {
       email: "work.gupta.aniket@gmail.com",
-      // phone: "+91 8319906162",
+      phone: "+91 8319906162",
       resume:
         "https://drive.google.com/uc?export=download&id=1R5J3xVJJfHgzsf7KzFWopaorKfpB_N2R",
     },
