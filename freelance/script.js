@@ -743,14 +743,24 @@ if (contactForm) {
     }
   });
 }
+
 document.addEventListener("DOMContentLoaded", () => {
-  // You can safely remove this if you're not using stats
-  // animateStats();
+  const sections = document.querySelectorAll(".section");
 
-  // Optional: Scroll to top on refresh
-  window.scrollTo(0, 0);
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.15 }
+  );
 
-  // Any other initializations can go here
+  sections.forEach((section) => {
+    observer.observe(section);
+  });
 });
-
 window.closeProjectModal = closeProjectModal;

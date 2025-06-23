@@ -508,7 +508,7 @@ body {
 
 /* Enhanced Projects Grid */
 .projects {
-  background-color: var(--system-background);
+  background-color: var(--secondary-background);
 }
 
 .projects-grid {
@@ -884,7 +884,7 @@ body {
 
 /* Enhanced Contact Section */
 .contact {
-  background-color: var(--secondary-background);
+  background-color: var(--system-background);
 }
 
 .contact-form {
@@ -1530,7 +1530,7 @@ html {
 
 /* Skills Section */
 .skills {
-  background-color: var(--secondary-background);
+  background-color: var(--system-background);
 }
 
 .skills-grid {
@@ -2251,4 +2251,15 @@ select.wizard-input{
   padding : 0.2rem 0.4rem;
   font-size: 0.8rem;
   color: var(--secondary-label);
+}
+
+.section {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.section.visible {
+  opacity: 1;
+  transform: translateY(0);
 }

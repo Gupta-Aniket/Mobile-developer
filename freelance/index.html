@@ -9,6 +9,30 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../style.css" />
+    <link id="favicon" rel="icon" href="../assets/fav-icon/bear-awake.png" />
+    <script>
+      const favicon = document.getElementById("favicon");
+
+      // 1) While page is loading → bear-loading
+      // beforeunload fires when you start navigating away or refreshing
+      window.addEventListener("beforeunload", () => {
+        favicon.href = "../assets/fav-icon/bear-loading.png";
+      });
+
+      // after fully loaded → back to awake
+      window.addEventListener("load", () => {
+        favicon.href = "../assets/fav-icon/bear-awake.png";
+      });
+
+      // 2) Tab visibility (sleeping/awake)
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) {
+          favicon.href = "../assets/fav-icon/bear-sleeping.png";
+        } else {
+          favicon.href = "../assets/fav-icon/bear-awake.png";
+        }
+      });
+    </script>
   </head>
   <body>
     <!-- Navigation -->
