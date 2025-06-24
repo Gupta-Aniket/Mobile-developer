@@ -21,7 +21,7 @@ const sharedData = {
   },
 
   projectData: [
-    //    "working"
+    //    "live"
     //    "ongoing"
     //    "deprecated";
 
@@ -32,7 +32,7 @@ const sharedData = {
       description:
         "A pin-based video calling app built with WebRTC and Firebase, offering secure, anonymous connections without login or signup.",
       category: "react-native",
-      status: "working",
+      status: "live",
       tags: ["React-Native", "Firebase", "WebRTC", "Video-Call", "Anonymous"],
       details: [
         "Secure, anonymous video calls using a shared PIN (no login/signup)",
@@ -58,7 +58,7 @@ const sharedData = {
       description:
         "A Gemini AI chatbot designed for enhanced accessibility and a superior user experience, extending beyond the original app's features.",
       category: "flutter",
-      status: "working",
+      status: "live",
       tags: [
         "Flutter",
         "Hive",
@@ -88,7 +88,7 @@ const sharedData = {
       description:
         "A sleek Flutter-based Body Mass Index calculator with intuitive UI/UX for tracking BMI based on gender, height, and weight.",
       category: "flutter",
-      status: "working",
+      status: "live",
       tags: [
         "Flutter",
         "BMI",
@@ -123,7 +123,7 @@ const sharedData = {
       description:
         "An Android Flutter application providing instant, AI-powered professional rewrites for messages using the Google Gemini API.",
       category: "flutter",
-      status: "working",
+      status: "live",
       tags: [
         "Flutter",
         "Gemini API",
@@ -157,7 +157,7 @@ const sharedData = {
       description:
         "A browser extension for instant, AI-powered corporate message rewriting, bringing the 'Corporate Mask' functionality to the web.",
       category: "extension",
-      status: "working",
+      status: "live",
       tags: [
         "Chrome Extension",
         "JavaScript",
@@ -191,7 +191,7 @@ const sharedData = {
       description:
         "A Python-based interactive command-line tool for generating comprehensive file contexts from directories, ideal for LLM inputs.",
       category: "utility",
-      status: "working",
+      status: "live",
       tags: [
         "Python",
         "File Scanner",
@@ -221,7 +221,7 @@ const sharedData = {
       description:
         "A macOS bash automation script designed to instantly switch between 'Home' and 'Work' coding environments for enhanced productivity.",
       category: "utility",
-      status: "working",
+      status: "live",
       tags: [
         "Bash",
         "macOS",
@@ -250,7 +250,7 @@ const sharedData = {
       description:
         "A modern mobile app for logging dreams and moods with persistent authentication, real-time analytics, and a visually immersive observatory.",
       category: "react-native",
-      status: "working",
+      status: "live",
       tags: [
         "React Native",
         "Expo Router",
@@ -343,7 +343,7 @@ const sharedData = {
       description:
         "A simple, engaging Flutter app simulating a colorful xylophone, allowing users to play musical notes by tapping vibrant keys.",
       category: "flutter",
-      status: "working",
+      status: "live",
       tags: [
         "Flutter",
         "Dart",
@@ -363,6 +363,37 @@ const sharedData = {
       ],
       github: "https://github.com/Gupta-Aniket/Xylophone-app",
       live: "https://github.com/Gupta-Aniket/Xylophone-app/releases/download/android/xylophone.apk",
+    },
+
+    // * jobtrail
+    {
+      id: "job-trail-chrome-extension",
+      title: "JobTrail (Job Search Automation Chrome Extension)",
+      description:
+        "A Chrome extension that scans webpages for job-related opportunities, injects actionable links, and enhances search inputs with customizable quick-search buttons for faster job discovery.",
+      category: "extension",
+      status: "live",
+      tags: [
+        "Chrome Extension",
+        "Content Script",
+        "MutationObserver",
+        "Job Search Ease",
+        "JavaScript",
+        "Fuse.js",
+        "Dynamic DOM Injection",
+      ],
+      images: ["jobtrail/1.png"],
+      details: [
+        "Injects a floating overlay panel with job search tools into any webpage",
+        "Uses Fuse.js for fuzzy keyword matching to detect job-related links",
+        "Scans all clickable elements for job-related text content",
+        "Dynamically injects search term buttons into detected search inputs",
+        "Works seamlessly with dynamic websites using MutationObserver",
+        "Fully isolated UI via Shadow DOM to prevent style conflicts",
+        "Chrome storage integration to allow users to customize search terms",
+      ],
+      github: "https://github.com/Gupta-Aniket/job-trail",
+      live: "https://github.com/Gupta-Aniket/job-trail/releases/download/Extension/job-trail.zip",
     },
   ],
 };

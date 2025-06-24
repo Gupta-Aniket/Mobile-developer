@@ -604,7 +604,7 @@ body {
   /* animation: pulse 2s infinite; */
 }
 
-.project-status.working {
+.project-status.live {
   background-color: var(--success);
   /* animation: glow 2s infinite; */
 }
@@ -1270,7 +1270,7 @@ html {
   
 }
 
-.modal-status.working {
+.modal-status.live {
   background-color: var(--success);
   /* animation: glow 2s infinite; */
   color: #34c759;
@@ -1825,9 +1825,7 @@ html {
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
 }
 
-.project-status.working {
-  /* animation: pulse 2s infinite, glow 3s infinite; */
-}
+
 
 @keyframes glow {
   0%,
@@ -2109,6 +2107,12 @@ html {
   padding-left: 0.2rem;
   font-size: 0.8rem;
   color: var(--secondary-label);
+}
+
+.cta-button:hover{
+  font-size: 17px;
+  background-color: var(--secondary);
+  transform: scale(1.02);
 }
 select.wizard-input{
   appearance: none; /* <-- this removes the native arrow */

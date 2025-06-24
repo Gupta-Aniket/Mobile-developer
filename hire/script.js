@@ -208,8 +208,8 @@ function openProjectModal(projectId) {
   modalTitle.innerText = project.title;
 
   const statusClass =
-    project.status === "working"
-      ? "working"
+    project.status === "live"
+      ? "live"
       : project.status === "ongoing"
       ? "ongoing"
       : "deprecated";
