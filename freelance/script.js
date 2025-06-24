@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadSkills();
   loadTestimonials();
   loadStats();
+  checkHashSituation(); // <- sharing links
 
   const resumeAnchor = document.getElementById("resumeLink");
   if (resumeAnchor) {
@@ -91,6 +92,29 @@ document.addEventListener("DOMContentLoaded", () => {
       filterProjects(selectedCategory);
     });
   });
+  function checkHashSituation() {
+    const fullHash = window.location.hash; // e.g., #projects#flutter-xylophone
+    if (!fullHash) return;
+
+    const parts = fullHash.split("#").filter(Boolean);
+    // parts: ['projects', 'flutter-xylophone']
+
+    parts.forEach((part) => {
+      if (part === "projects") {
+        // Scroll to Projects section
+        const section = document.getElementById("projects");
+        if (section) {
+          section.scrollIntoView({ behavior: "smooth" });
+        }
+      } else {
+        // Check if this part matches a project ID
+        const project = projects.find((p) => p.id === part);
+        if (project) {
+          openProjectModal(project.id);
+        }
+      }
+    });
+  }
 
   // 🧠 Filtering logic
   function filterProjects(category) {
@@ -407,7 +431,7 @@ function renderHeroSection() {
 function openProjectModal(projectId) {
   const project = projects.find((p) => p.id === projectId);
   if (!project) return;
-
+  history.replaceState(null, null, `#projects#${projectId}`);
   const modal = document.getElementById("projectModal");
   const modalTitle = document.getElementById("modalTitle");
   const modalBody = document.getElementById("modalBody");
@@ -552,6 +576,7 @@ document.querySelector(".modal-close").addEventListener("click", () => {
 function closeProjectModal() {
   const modal = document.getElementById("projectModal");
   modal.classList.remove("active");
+  history.replaceState(null, null, `#projects`);
 }
 
 // Close modal when clicking outside

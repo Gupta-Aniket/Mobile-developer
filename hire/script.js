@@ -10,7 +10,32 @@ window.addEventListener("DOMContentLoaded", () => {
   renderContactInfo();
   renderProjects();
   attachModalHandlers();
+  checkHashSituation(); //* <- sharing links
 });
+
+function checkHashSituation() {
+  const fullHash = window.location.hash; // e.g., #projects#flutter-xylophone
+  if (!fullHash) return;
+
+  const parts = fullHash.split("#").filter(Boolean);
+  // parts: ['projects', 'flutter-xylophone']
+
+  parts.forEach((part) => {
+    if (part === "projects") {
+      // Scroll to Projects section
+      const section = document.getElementById("projects");
+      if (section) {
+        section.scrollIntoView({ behavior: "smooth" });
+      }
+    } else {
+      // Check if this part matches a project ID
+      const project = projects.find((p) => p.id === part);
+      if (project) {
+        openProjectModal(project.id);
+      }
+    }
+  });
+}
 
 function renderHeroSection() {
   const { title, subtitle, contact } = portfolioData.personalInfo;
@@ -201,6 +226,7 @@ function renderContactInfo() {
 function openProjectModal(projectId) {
   const project = projects.find((p) => p.id === projectId);
   if (!project) return;
+  history.replaceState(null, null, `#projects#${projectId}`);
 
   const modal = document.getElementById("projectModal");
   const modalTitle = document.getElementById("modalTitle");
@@ -343,10 +369,14 @@ function openProjectModal(projectId) {
 function attachModalHandlers() {
   document.querySelector(".modal-close").addEventListener("click", () => {
     document.getElementById("projectModal").classList.remove("active");
+    history.replaceState(null, null, `#projects`);
   });
   document.addEventListener("click", (e) => {
     const modal = document.getElementById("projectModal");
-    if (e.target === modal) modal.classList.remove("active");
+    if (e.target === modal) {
+      history.replaceState(null, null, `#projects`);
+      modal.classList.remove("active");
+    }
   });
 }
 
