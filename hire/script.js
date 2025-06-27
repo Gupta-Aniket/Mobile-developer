@@ -106,7 +106,7 @@ function renderSkillsSection() {
 
       const skillPercent = document.createElement("span");
       skillPercent.className = "skill-percentage";
-      skillPercent.textContent = `${skill.percentage}%`;
+      // skillPercent.textContent = `${skill.percentage}%`; // !<- stopped percentage !! too much cognitive load
 
       skillInfo.appendChild(skillName);
       skillInfo.appendChild(skillPercent);
@@ -131,11 +131,16 @@ function renderSkillsSection() {
 function renderProjects() {
   const filterContainer = document.getElementById("filterButtonsContainer");
   const grid = document.getElementById("projectsGrid");
-  const categories = Array.from(
-    new Set(projects.map((p) => p.category.toLowerCase()))
-  );
-  categories.unshift("all");
 
+  // 🔁 Extract unique categories from all project.category arrays
+  const categorySet = new Set();
+  projects.forEach((p) => {
+    const categories = Array.isArray(p.category) ? p.category : [p.category];
+    categories.forEach((cat) => categorySet.add(cat.toLowerCase()));
+  });
+  const categories = ["all", ...Array.from(categorySet)];
+
+  // 🧱 Render filter buttons
   categories.forEach((category) => {
     const btn = document.createElement("button");
     btn.className = "filter-btn";
@@ -147,10 +152,19 @@ function renderProjects() {
     filterContainer.appendChild(btn);
   });
 
+  // 📦 Render project cards
   projects.forEach((project) => {
     const card = document.createElement("div");
     card.className = "project-card";
-    card.dataset.category = project.category;
+
+    // 🏷 Set data-categories (for filtering later)
+    const categoryArray = Array.isArray(project.category)
+      ? project.category
+      : [project.category];
+    card.dataset.categories = categoryArray
+      .map((c) => c.toLowerCase())
+      .join(",");
+
     card.dataset.project = project.id;
 
     card.addEventListener("click", () => openProjectModal(project.id));
@@ -183,15 +197,18 @@ function renderProjects() {
   filterProjects("all");
 }
 
-function filterProjects(category) {
+function filterProjects(selectedCategory) {
   document.querySelectorAll(".filter-btn").forEach((btn) => {
-    btn.classList.toggle("active", btn.dataset.filter === category);
+    btn.classList.toggle("active", btn.dataset.filter === selectedCategory);
   });
+
   document.querySelectorAll(".project-card").forEach((card) => {
-    card.style.display =
-      category === "all" || card.dataset.category === category
-        ? "block"
-        : "none";
+    const cardCategories = card.dataset.categories?.split(",") || [];
+    const show =
+      selectedCategory === "all" ||
+      cardCategories.includes(selectedCategory.toLowerCase());
+
+    card.style.display = show ? "block" : "none";
   });
 }
 
@@ -367,15 +384,29 @@ function openProjectModal(projectId) {
 }
 
 function attachModalHandlers() {
-  document.querySelector(".modal-close").addEventListener("click", () => {
-    document.getElementById("projectModal").classList.remove("active");
+  const modal = document.getElementById("projectModal");
+  const closeModal = () => {
+    modal.classList.remove("active");
     history.replaceState(null, null, `#projects`);
-  });
+  };
+
+  // 1️⃣ Close on modal close button
+  document.querySelector(".modal-close").addEventListener("click", closeModal);
+
   document.addEventListener("click", (e) => {
-    const modal = document.getElementById("projectModal");
-    if (e.target === modal) {
-      history.replaceState(null, null, `#projects`);
-      modal.classList.remove("active");
+    if (e.target === modal) closeModal();
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Backspace" && modal.classList.contains("active")) {
+      e.preventDefault();
+      closeModal();
+    }
+  });
+
+  window.addEventListener("popstate", () => {
+    if (modal.classList.contains("active")) {
+      closeModal();
     }
   });
 }

@@ -57,7 +57,7 @@ const sharedData = {
       title: "Gemini Chatbot with Advanced UX",
       description:
         "A Gemini AI chatbot designed for enhanced accessibility and a superior user experience, extending beyond the original app's features.",
-      category: "flutter",
+      category: ["flutter", "Gen-Ai"],
       status: "live",
       tags: [
         "Flutter",
@@ -122,7 +122,7 @@ const sharedData = {
       title: "Corporate Mask (Flutter App)",
       description:
         "An Android Flutter application providing instant, AI-powered professional rewrites for messages using the Google Gemini API.",
-      category: "flutter",
+      category: ["flutter", "Gen-Ai"],
       status: "live",
       tags: [
         "Flutter",
@@ -156,7 +156,7 @@ const sharedData = {
       title: "Corporate Mask (Chrome Extension)",
       description:
         "A browser extension for instant, AI-powered corporate message rewriting, bringing the 'Corporate Mask' functionality to the web.",
-      category: "extension",
+      category: ["extension", "Gen-Ai"],
       status: "live",
       tags: [
         "Chrome Extension",
@@ -190,7 +190,7 @@ const sharedData = {
       title: "File Context Generator (Python CLI)",
       description:
         "A Python-based interactive command-line tool for generating comprehensive file contexts from directories, ideal for LLM inputs.",
-      category: "utility",
+      category: ["python","utility"],
       status: "live",
       tags: [
         "Python",
@@ -220,7 +220,7 @@ const sharedData = {
       title: "Workspace Launcher (macOS Bash Automation)",
       description:
         "A macOS bash automation script designed to instantly switch between 'Home' and 'Work' coding environments for enhanced productivity.",
-      category: "utility",
+      category: ["automation","utility"],
       status: "live",
       tags: [
         "Bash",
@@ -286,7 +286,7 @@ const sharedData = {
       title: "YouTube Downloader (Python CLI Utility)",
       description:
         "A command-line utility in Python, using Pytube, to download YouTube videos and playlists in the highest available resolution.",
-      category: "utility",
+      category: ["python","utility"],
       status: "deprecated",
       tags: ["Python", "Pytube", "YouTube", "CLI", "Downloader", "Scripting"],
       details: [
@@ -307,7 +307,7 @@ const sharedData = {
       title: "Travel Companion (React Native Ticket Organizer)",
       description:
         "An ongoing mobile utility app for organizing travel tickets, generating dynamic forms, managing trips, and exploring travel analytics.",
-      category: "react-native",
+      category: ["react-native", "Gen-Ai"],
       status: "ongoing",
       tags: [
         "React Native",
