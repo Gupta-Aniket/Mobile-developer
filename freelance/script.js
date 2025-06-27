@@ -313,20 +313,147 @@ function renderProjects() {
 
   filterProjects("all");
 }
+function openProjectModal(projectId) {
+  const project = projects.find((p) => p.id === projectId);
+  if (!project) return;
+  history.replaceState(null, null, `#projects#${projectId}`);
 
-function filterProjects(selectedCategory) {
-  document.querySelectorAll(".filter-btn").forEach((btn) => {
-    btn.classList.toggle("active", btn.dataset.filter === selectedCategory);
+  const modal = document.getElementById("projectModal");
+  const modalTitle = document.getElementById("modalTitle");
+  const modalBody = document.getElementById("modalBody");
+  modalTitle.innerText = project.title;
+
+  const statusClass =
+    project.status === "live"
+      ? "live"
+      : project.status === "ongoing"
+      ? "ongoing"
+      : "deprecated";
+
+  const tagsHTML = project.tags
+    .map((tag) => `<span class="modal-tag">${tag}</span>`)
+    .join("");
+
+  const techStackHTML = project.techStack
+    ? `
+      <div class="modal-section-title">Technologies</div>
+      <div class="modal-tech-grid">
+          ${project.techStack
+            .map((tech) => `<div class="modal-tech-item">${tech}</div>`)
+            .join("")}
+      </div>
+    `
+    : "";
+
+  const buttonsHTML = `
+    <div class="modal-actions">
+      ${
+        project.github
+          ? `<a href="${project.github}" target="_blank" class="modal-button secondary">
+              <span>View on GitHub</span>
+              <span class="modal-button-icon">↗</span>
+            </a>`
+          : ""
+      }
+      ${
+        project.live
+          ? `<a href="${project.live}" target="_blank" class="modal-button">
+              <span>Try it Out</span>
+              <span class="modal-button-icon">🚀</span>
+            </a>`
+          : ""
+      }
+    </div>
+  `;
+
+  const sliderHTML =
+    project.images && project.images.length
+      ? `
+      <div class="modal-slider-wrapper">
+        <button class="slider-arrow left" aria-label="Previous image"> ➱ </button>
+        <div class="modal-slider">
+          ${project.images
+            .map(
+              (img, i) => `
+              <div class="modal-slide${i === 0 ? " active" : ""}">
+                <img src="../assets/${img}" alt="${project.title} Screenshot ${
+                i + 1
+              }" />
+              </div>`
+            )
+            .join("")}
+        </div>
+        <button class="slider-arrow right" aria-label="Next image"> ➱ </button>
+        <div class="modal-indicators">
+          ${project.images
+            .map(
+              (_, i) =>
+                `<span class="modal-indicator${
+                  i === 0 ? " active" : ""
+                }" data-index="${i}"></span>`
+            )
+            .join("")}
+        </div>
+      </div>
+    `
+      : `<div class="modal-hero-placeholder">No previews available</div>`;
+
+  modalBody.innerHTML = `
+    ${sliderHTML}
+    <div class="modal-status ${statusClass}">
+      <span class="status-dot"></span>
+      <span class="status-text">${
+        project.status.charAt(0).toUpperCase() + project.status.slice(1)
+      }</span>
+    </div>
+    <p class="modal-description">${project.description}</p>
+    ${
+      project.details && Array.isArray(project.details)
+        ? `<ul class="modal-details modal-bullets">
+         ${project.details.map((point) => `<li>${point}</li>`).join("")}
+       </ul>`
+        : project.details
+        ? `<p class="modal-details">${project.details}</p>`
+        : ""
+    }
+
+    ${project.tags?.length ? `<div class="modal-tags">${tagsHTML}</div>` : ""}
+    ${techStackHTML}
+    ${buttonsHTML}
+  `;
+
+  requestAnimationFrame(() => modal.classList.add("active"));
+
+  const slides = modal.querySelectorAll(".modal-slide");
+  const indicators = modal.querySelectorAll(".modal-indicator");
+  const leftArrow = modal.querySelector(".slider-arrow.left");
+  const rightArrow = modal.querySelector(".slider-arrow.right");
+
+  let activeIndex = 0;
+
+  function setActiveSlide(index) {
+    slides.forEach((s, i) => s.classList.toggle("active", i === index));
+    indicators.forEach((d, i) => d.classList.toggle("active", i === index));
+    activeIndex = index;
+  }
+
+  indicators.forEach((dot) => {
+    dot.addEventListener("click", () => {
+      setActiveSlide(parseInt(dot.dataset.index));
+    });
   });
 
-  document.querySelectorAll(".project-card").forEach((card) => {
-    const cardCategories = card.dataset.categories?.split(",") || [];
-    const show =
-      selectedCategory === "all" ||
-      cardCategories.includes(selectedCategory.toLowerCase());
-
-    card.style.display = show ? "block" : "none";
+  leftArrow?.addEventListener("click", () => {
+    setActiveSlide((activeIndex - 1 + slides.length) % slides.length);
   });
+
+  rightArrow?.addEventListener("click", () => {
+    setActiveSlide((activeIndex + 1) % slides.length);
+  });
+
+  document.addEventListener("keydown", handleModalKeyEvents);
+
+  modal.focus();
 }
 
 function attachModalHandlers() {
@@ -336,7 +463,8 @@ function attachModalHandlers() {
     history.replaceState(null, null, `#projects`);
   };
 
-  document.querySelector(".modal-close")?.addEventListener("click", closeModal);
+  // 1️⃣ Close on modal close button
+  document.querySelector(".modal-close").addEventListener("click", closeModal);
 
   document.addEventListener("click", (e) => {
     if (e.target === modal) closeModal();
@@ -350,7 +478,24 @@ function attachModalHandlers() {
   });
 
   window.addEventListener("popstate", () => {
-    if (modal.classList.contains("active")) closeModal();
+    if (modal.classList.contains("active")) {
+      closeModal();
+    }
+  });
+}
+
+function filterProjects(selectedCategory) {
+  document.querySelectorAll(".filter-btn").forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.filter === selectedCategory);
+  });
+
+  document.querySelectorAll(".project-card").forEach((card) => {
+    const cardCategories = card.dataset.categories?.split(",") || [];
+    const show =
+      selectedCategory === "all" ||
+      cardCategories.includes(selectedCategory.toLowerCase());
+
+    card.style.display = show ? "block" : "none";
   });
 }
 
