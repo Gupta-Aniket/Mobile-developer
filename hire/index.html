@@ -146,9 +146,45 @@
       <div class="modal-content">
         <div class="modal-header">
           <h2 id="modalTitle" class="modal-title">Project Title</h2>
-          <button class="modal-close" aria-label="Close modal">✕</button>
+          <div class="modal-share-row">
+            <div class="share-project-btn" title="Share this">
+              <img src="../assets/share.svg" height="30rem" alt="Share icon" />
+            </div>
+            
+
+            <button class="modal-close" aria-label="Close modal">✕</button>
+          </div>
         </div>
         <div class="modal-body" id="modalBody"></div>
+        <div class="modal share-modal" id="shareModal" style="display: none">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3>Share This Project</h3>
+              <button class="modal-close">✕</button>
+            </div>
+
+            <div class="share-options">
+              <button class="share-option" data-platform="linkedin">
+                📇 LinkedIn
+              </button>
+              <button class="share-option" data-platform="twitter">
+                🐦 Twitter
+              </button>
+              <button class="share-option" data-platform="whatsapp">
+                💬 WhatsApp
+              </button>
+              <button class="share-option" data-platform="copy">
+                📋 Copy Link
+              </button>
+              <button class="share-option" data-platform="markdown">
+                📄 Copy Markdown
+              </button>
+              <button class="share-option" data-platform="devto">
+                📝 Dev.to
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 

@@ -2273,3 +2273,130 @@ select.wizard-input{
   opacity: 1;
   transform: translateY(0);
 }
+.modal-share-row {
+  display: flex;
+  flex-direction: row;
+}
+/* Small Modal */
+.modal-content.small-modal {
+  max-width: 400px;
+  padding: 1.5rem;
+}
+
+/* Main Share Modal */
+.share-modal .modal-content {
+  padding: 2rem;
+  background: #181818;
+  color: #f5f5f5;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+  position: relative;
+  width: 90%;
+  max-width: 480px;
+  margin: auto;
+}
+
+/* Modal Header */
+.share-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.share-modal-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+/* Close Button */
+.modal-close {
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+.modal-close:hover {
+  color: #fff;
+}
+
+/* Share Buttons */
+.share-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.share-option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 500;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(to right, #222, #1a1a1a);
+  border: 1px solid #333;
+  cursor: pointer;
+  border-radius: 12px;
+  color: #fff;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+.share-option:hover {
+  background: #333;
+  transform: scale(1.02);
+}
+/* .share-icon {
+  width: 24px;
+  height: 24px;
+  filter: invert(1); 
+}
+
+body.light .share-icon {
+  filter: invert(0);
+}
+
+
+body.dark .share-icon {
+  filter: invert(1);
+} */
+
+.share-button-css {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+/* Arrow (↗) */
+.share-button-css::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-top: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+  transform: rotate(45deg);
+  top: 2px;
+  right: 0;
+}
+
+.share-project-btn {
+  border-radius: 50%;
+  padding-right: 1rem ;
+  color: var(--secondary-background);
+}
+.share-project-btn :hover {
+  border-radius: 50%;
+  background-color: var(--fill-quaternary);
+  color: var(--label);
+
+}
+.share-project-btn img {
+cursor: pointer;
+  filter: invert(0.5);
+}
+.share-project-btn img:hover {
+  filter: invert(1);
+}

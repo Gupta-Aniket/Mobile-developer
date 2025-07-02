@@ -190,7 +190,7 @@ const sharedData = {
       title: "File Context Generator (Python CLI)",
       description:
         "A Python-based interactive command-line tool for generating comprehensive file contexts from directories, ideal for LLM inputs.",
-      category: ["python","utility"],
+      category: ["python", "utility"],
       status: "live",
       tags: [
         "Python",
@@ -220,7 +220,7 @@ const sharedData = {
       title: "Workspace Launcher (macOS Bash Automation)",
       description:
         "A macOS bash automation script designed to instantly switch between 'Home' and 'Work' coding environments for enhanced productivity.",
-      category: ["automation","utility"],
+      category: ["automation", "utility"],
       status: "live",
       tags: [
         "Bash",
@@ -286,7 +286,7 @@ const sharedData = {
       title: "YouTube Downloader (Python CLI Utility)",
       description:
         "A command-line utility in Python, using Pytube, to download YouTube videos and playlists in the highest available resolution.",
-      category: ["python","utility"],
+      category: ["python", "utility"],
       status: "deprecated",
       tags: ["Python", "Pytube", "YouTube", "CLI", "Downloader", "Scripting"],
       details: [
@@ -395,6 +395,39 @@ const sharedData = {
       github: "https://github.com/Gupta-Aniket/job-trail",
       live: "https://github.com/Gupta-Aniket/job-trail/releases/download/Extension/job-trail.zip",
     },
+    // {
+    //   id: "project-sharer",
+    //   title: "Project Sharer (Gemini-powered Shareable Content Generator)",
+    //   description:
+    //     "A sleek Flutter app that helps developers instantly generate platform-specific shareable content for their projects using the Gemini API. Includes token tracking, offline-first form flow, image uploads, and a beautiful UI.",
+    //   category: ["flutter", "gen-ai"],
+    //   status: "live",
+    //   tags: [
+    //     "Flutter",
+    //     "Dart",
+    //     "Gemini API",
+    //     "GetX",
+    //     "AI Content Generation",
+    //     "Shareable Posts",
+    //     "Platform-Specific Output",
+    //     "Base64 Images",
+    //   ],
+    //   images: ["project-sharer/1.png", "project-sharer/2.png"],
+    //   details: [
+    //     "User provides basic project data like title, description, GitHub, live link, and optional social URLs",
+    //     "User answers questions via a smooth, paginated form interface",
+    //     "Token usage is recorded and shown to the user from the first setup screen",
+    //     "Token count is persisted using SharedPreferences and resets monthly",
+    //     "Multi-step GetX navigation (Input → Clarifying Qs → Generated Results)",
+    //     "Content is streamed for each selected platform in markdown-like format",
+    //     "Results are shown in horizontally scrollable cards per platform",
+    //     "Includes reset API key functionality to wipe config and restart setup",
+    //     "Built with modular MVC architecture: clean controller/view separation",
+    //     "Supports 7+ platforms: LinkedIn, X, GitHub, Reddit, Hacker News, Discord, Hashnode",
+    //   ],
+    //   github: "https://github.com/Gupta-Aniket/promoten/",
+    //   live: "https://github.com/Gupta-Aniket/promoten/releases/download/android/promoten.apk",
+    // },
   ],
 };
 export default sharedData;

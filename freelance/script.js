@@ -9,8 +9,8 @@ window.addEventListener("DOMContentLoaded", () => {
   loadContactSection();
   renderAboutSection();
   loadSkills();
-
   renderProjects();
+  attachProjectShareButtons();
   loadStats();
   attachModalHandlers();
   checkHashSituation();
@@ -496,6 +496,75 @@ function filterProjects(selectedCategory) {
       cardCategories.includes(selectedCategory.toLowerCase());
 
     card.style.display = show ? "block" : "none";
+  });
+}
+
+function attachProjectShareButtons() {
+  document.querySelectorAll(".share-project-btn").forEach((btn, idx) => {
+    btn.addEventListener("click", () => {
+      const project = portfolioData.projects[idx];
+      const slug =
+        project.slug || project.title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+      const projectURL = `${window.location.origin}/#${slug}`;
+
+      const shareModal = document.getElementById("shareModal");
+      shareModal.style.display = "block";
+
+      shareModal.querySelectorAll(".share-option").forEach((option) => {
+        option.onclick = () => {
+          const platform = option.dataset.platform;
+          const shareText = `${project.title} - ${
+            project.description || "Check this out"
+          }`;
+
+          switch (platform) {
+            case "linkedin":
+              window.open(
+                `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+                  projectURL
+                )}`
+              );
+              break;
+            case "twitter":
+              window.open(
+                `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+                  shareText
+                )}&url=${encodeURIComponent(projectURL)}`
+              );
+              break;
+            case "whatsapp":
+              window.open(
+                `https://wa.me/?text=${encodeURIComponent(
+                  shareText + "\n" + projectURL
+                )}`
+              );
+              break;
+            case "copy":
+              navigator.clipboard
+                .writeText(projectURL)
+                .then(() => alert("Copied to clipboard"));
+              break;
+            case "markdown":
+              navigator.clipboard
+                .writeText(`[${project.title}](${projectURL})`)
+                .then(() => alert("Markdown copied"));
+              break;
+            case "devto":
+              const devContent = `---\ntitle: ${project.title}\ndescription: ${project.description}\n---\n\nCheck it out 👉 ${projectURL}`;
+              navigator.clipboard
+                .writeText(devContent)
+                .then(() => alert("Dev.to blog draft copied!"));
+              break;
+          }
+
+          shareModal.style.display = "none";
+        };
+      });
+
+      shareModal.querySelector(".modal-close").onclick = () => {
+        shareModal.style.display = "none";
+      };
+    });
   });
 }
 
