@@ -451,7 +451,7 @@ function openProjectModal(projectId) {
     setActiveSlide((activeIndex + 1) % slides.length);
   });
 
-  document.addEventListener("keydown", handleModalKeyEvents);
+  document.addEventListener("keydown", attachModalHandlers);
 
   modal.focus();
 }
@@ -505,7 +505,8 @@ function attachProjectShareButtons() {
       const project = portfolioData.projects[idx];
       const slug =
         project.slug || project.title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-      const projectURL = `${window.location.origin}/#${slug}`;
+      // const projectURL = `${window.location.origin}/#${slug}`;
+      const projectURL = window.location.href;
 
       const shareModal = document.getElementById("shareModal");
       shareModal.style.display = "block";
