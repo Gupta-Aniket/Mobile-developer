@@ -34,9 +34,17 @@ const portfolioData = {
     quote:
       "The best mobile experiences seamlessly blend innovation, functionality, and user delight",
     bio: [
-      "I'm Aniket, and I'm all about creating mobile apps that make a difference. My journey into development started with a simple fascination: how can tech truly simplify things and bring a bit of joy to people's daily lives? I've explored this extensively through my many real-world personal projects.",
-      "I specialize in Flutter and React Native, always keeping an eye on performance, clean code, and crafting pixel-perfect UIs. What I really enjoy is blending strong technical execution with user-centered design – it's how I'm able to quickly prototype concepts and deliver engaging, reliable mobile solutions.",
-      "My 30+ GitHub repos are a testament to my hands-on experience, showcasing my diverse skills and my commitment to consistently building and learning.",
+      "Hi, I’m Aniket. I’m a mobile developer who loves building tools that solve real problems for real people. I don’t sing, I don’t dance. I write code and ship it. That’s how I create value.",
+
+      "One of the projects I’m proud of is a video calling system that works without any login. It uses WebRTC and Google's realtime database to connect two people through a unique PIN. No accounts, no hassle. I built it because I didn’t like sharing personal info just to have a quick call.",
+
+      "I’ve also created a full-stack group chat app with real-time messaging using WebSockets and a custom Node.js backend. It even works in the terminal. I like building things that feel reliable anywhere, not just in flashy UIs.",
+
+      "There’s JobTrail too. It’s a Chrome extension I built to help track job listings while browsing. It quietly sticks around on every relevant page, reminding you to apply. It’s persistent... Just like me. Gets the job done... Just like me.",
+
+      "Over the past couple of years, I’ve shipped around 10 tools that people actually use and maintained more than 30 public repositories. Some are experiments, some are finished products, all of them reflect my habit of building, testing, and improving things.",
+
+      "I care about performance and usability. I follow design principles that make apps feel thoughtful and intuitive. A lot of that comes from how much I respect Apple’s Human Interface Guidelines and their focus on simplicity.",
     ],
     techStack: [
       { name: "Flutter", level: "expert" },

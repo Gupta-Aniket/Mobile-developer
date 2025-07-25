@@ -303,36 +303,78 @@ function openProjectModal(projectId) {
     </div>
   `;
 
+  // --- YouTube Parser ---
+  const extractYouTubeId = (url) => {
+    const match =
+      url.match(/(?:youtube\.com.*[?&]v=|youtu\.be\/)([^&\n?#]+)/) || [];
+    return match[1];
+  };
+
+  const mediaSlides = [
+    ...(project.videoLinks || []).map((url, i) => {
+      const videoId = extractYouTubeId(url);
+      return `
+    <div class="modal-slide${i === 0 ? " active" : ""}" data-type="youtube">
+      <iframe
+      height="100%"
+        width="100%"
+        src="https://www.youtube.com/embed/${videoId}"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope;"
+        loading="lazy"
+        allowfullscreen
+        title="YouTube video ${i + 1}"
+      ></iframe>
+    </div>
+  `;
+    }),
+
+    ...(project.images || []).map((img, i) => {
+      const indexOffset = project.videoLinks?.length || 0;
+      const isActive = i === 0 && indexOffset === 0;
+      return `
+        <div class="modal-slide${isActive ? " active" : ""}" data-type="image">
+          <img src="../assets/${img}" alt="${project.title} Screenshot ${
+        i + 1
+      }" loading="lazy" />
+        </div>`;
+    }),
+  ];
+
+  const indicatorsHTML = Array.from({ length: mediaSlides.length })
+    .map(
+      (_, i) =>
+        `<span class="modal-indicator${
+          i === 0 ? " active" : ""
+        }" data-index="${i}"></span>`
+    )
+    .join("");
+
+  const mediaCount =
+    (project.images?.length || 0) + (project.videoLinks?.length || 0);
+
   const sliderHTML =
-    project.images && project.images.length
+    mediaSlides.length > 0
       ? `
-      <div class="modal-slider-wrapper">
-        <button class="slider-arrow left" aria-label="Previous image"> ➱ </button>
-        <div class="modal-slider">
-          ${project.images
-            .map(
-              (img, i) => `
-              <div class="modal-slide${i === 0 ? " active" : ""}">
-                <img src="../assets/${img}" alt="${project.title} Screenshot ${
-                i + 1
-              }" />
-              </div>`
-            )
-            .join("")}
-        </div>
-        <button class="slider-arrow right" aria-label="Next image"> ➱ </button>
-        <div class="modal-indicators">
-          ${project.images
-            .map(
-              (_, i) =>
-                `<span class="modal-indicator${
-                  i === 0 ? " active" : ""
-                }" data-index="${i}"></span>`
-            )
-            .join("")}
-        </div>
+    <div class="modal-slider-wrapper">
+      ${
+        mediaCount > 1
+          ? `<button class="slider-arrow left" aria-label="Previous media">➱</button>`
+          : ""
+      }
+      <div class="modal-slider">
+        ${mediaSlides.join("")}
       </div>
-    `
+      ${
+        mediaCount > 1
+          ? `<button class="slider-arrow right" aria-label="Next media">➱</button>`
+          : ""
+      }
+      <div class="modal-indicators">
+        ${indicatorsHTML}
+      </div>
+    </div>
+  `
       : `<div class="modal-hero-placeholder">No previews available</div>`;
 
   modalBody.innerHTML = `
@@ -368,10 +410,26 @@ function openProjectModal(projectId) {
 
   let activeIndex = 0;
 
+  function loadYouTubeIframe(slide) {
+    if (slide.dataset.type === "youtube" && !slide.querySelector("iframe")) {
+      const videoId = slide.dataset.videoId;
+      const iframe = document.createElement("iframe");
+      iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+      iframe.loading = "lazy";
+      iframe.allow =
+        "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+      iframe.allowFullscreen = true;
+      iframe.className = "modal-video-iframe";
+      slide.innerHTML = "";
+      slide.appendChild(iframe);
+    }
+  }
+
   function setActiveSlide(index) {
     slides.forEach((s, i) => s.classList.toggle("active", i === index));
     indicators.forEach((d, i) => d.classList.toggle("active", i === index));
     activeIndex = index;
+    loadYouTubeIframe(slides[activeIndex]);
   }
 
   indicators.forEach((dot) => {
@@ -389,8 +447,8 @@ function openProjectModal(projectId) {
   });
 
   document.addEventListener("keydown", handleModalKeyEvents);
-
   modal.focus();
+  loadYouTubeIframe(slides[activeIndex]); // preload first slide
 }
 
 function attachModalHandlers() {

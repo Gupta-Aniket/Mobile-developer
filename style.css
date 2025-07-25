@@ -2400,3 +2400,39 @@ cursor: pointer;
 .share-project-btn img:hover {
   filter: invert(1);
 }
+.modal-video {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  outline: none;
+}
+.modal-video-placeholder {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  border-radius: 8px;
+}
+
+.play-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 48px;
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  width: 72px;
+  height: 72px;
+  cursor: pointer;
+}
+
+.modal-video-iframe {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: none;
+  border-radius: 8px;
+}

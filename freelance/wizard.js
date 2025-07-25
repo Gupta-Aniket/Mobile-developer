@@ -433,10 +433,13 @@ function submitData() {
   console.log(`10. Email - ${state.email}`);
   console.log(`11. Phone - ${state.phone}`);
 
-  showPopup(
-    "✅ Your idea has been recorded. We'll reach out to you shortly.",
-    true
-  );
+  progressBar.style.width = `100%`;
+  setTimeout(() => {
+    showPopup(
+      "✅ Your idea has been recorded. We'll reach out to you shortly.",
+      true
+    );
+  }, 300);
 }
 
 function showPopup(message, closeAfter) {

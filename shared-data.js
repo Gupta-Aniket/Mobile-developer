@@ -51,6 +51,251 @@ const sharedData = {
       live: "https://github.com/Gupta-Aniket/Kabootar/releases/download/android/app-release.apk",
     },
 
+    // * corporate-mask-app
+    {
+      id: "corporate-mask-app",
+      title: "Corporate Mask (Flutter App)",
+      description:
+        "An Android Flutter application providing instant, AI-powered professional rewrites for messages using the Google Gemini API.",
+      category: ["flutter", "Gen-Ai"],
+      status: "live",
+      tags: [
+        "Flutter",
+        "Gemini API",
+        "UI/UX",
+        "Dart",
+        "Cupertino",
+        "SharedPreferences",
+      ],
+      details: [
+        "Integrates Google Gemini API for real-time professional rewrites",
+        "Secure local API key storage using `shared_preferences`",
+        "iOS-inspired dark mode UI built with Cupertino widgets",
+        "Includes robust error handling for API interactions",
+        "Copy-to-clipboard functionality for rewritten text",
+        "Simple, single-screen architecture using `setState` for state management",
+        "Dedicated API key setup screen with input validation",
+      ],
+      images: [
+        "corporate-mask-app/1.jpg",
+        "corporate-mask-app/2.jpg",
+        "corporate-mask-app/3.jpg",
+      ],
+      github: "https://github.com/Gupta-Aniket/corporate-mask",
+      live: "https://github.com/Gupta-Aniket/corporate-mask/releases/download/android/corporate-mask.apk",
+    },
+     // * jobtrail
+    {
+      id: "job-trail-chrome-extension",
+      title: "JobTrail (Job Search Automation Chrome Extension)",
+      description:
+        "A Chrome extension that scans webpages for job-related opportunities, injects actionable links, and enhances search inputs with customizable quick-search buttons for faster job discovery.",
+      category: "extension",
+      status: "live",
+      tags: [
+        "Chrome Extension",
+        "Content Script",
+        "MutationObserver",
+        "Job Search Ease",
+        "JavaScript",
+        "Fuse.js",
+        "Dynamic DOM Injection",
+      ],
+      images: ["jobtrail/1.png"],
+
+      details: [
+        "Injects a floating overlay panel with job search tools into any webpage",
+        "Uses Fuse.js for fuzzy keyword matching to detect job-related links",
+        "Scans all clickable elements for job-related text content",
+        "Dynamically injects search term buttons into detected search inputs",
+        "Works seamlessly with dynamic websites using MutationObserver",
+        "Fully isolated UI via Shadow DOM to prevent style conflicts",
+        "Chrome storage integration to allow users to customize search terms",
+      ],
+      github: "https://github.com/Gupta-Aniket/job-trail",
+      live: "https://github.com/Gupta-Aniket/job-trail/releases/download/Extension/job-trail.zip",
+    },
+
+    // * kundali-crypt
+    {
+      id: "kundali-lock",
+      title: "Kundali Lock (Vault App with Astro-Based Pattern Unlock)",
+      description:
+        "A secure Flutter app that combines Vedic astrology with AES-encrypted vault storage. Users unlock their vault using a unique planetary pattern based on their birth chart. Features include honeypot mode, dynamic UI themes, and birth chart generation.",
+      category: ["flutter", "encryption"],
+      status: "live", // e.g. "live" or "in-development"
+      tags: [
+        "Flutter",
+        "Dart",
+        "Astrology",
+        "Kundali",
+        "Vault",
+        "AES Encryption",
+        "Pattern Unlock",
+        "Vedic System",
+        "Provider",
+        "SharedPreferences",
+      ],
+      images: [
+        "kundali-crypt/1.jpeg",
+        "kundali-crypt/2.5.jpeg",
+        "kundali-crypt/2.jpeg",
+        "kundali-crypt/3.jpeg",
+        "kundali-crypt/4.5.jpeg",
+        "kundali-crypt/5.jpeg",
+        "kundali-crypt/6.jpeg",
+      ],
+      videoLinks: [], // e.g. ["https://youtu.be/..."]
+      details: [
+        "Users input birth data (date, time, location) to generate a Vedic kundali using sidereal astrology.",
+        "Birth chart includes planetary positions, ascendant, and nakshatra.",
+        "Vault is locked using a pattern of planets (Moon → Mars → Saturn → Ketu) [fixed for now]",
+        "AES key is derived from deterministic segments of planetary data + fixed pepper string.",
+        "Includes honeypot vault mode that triggers if the wrong pattern is entered.",
+        "Secure items can be stored in the vault as notes, passwords, files, or images.",
+        "Pattern and data are persisted locally using SharedPreferences.",
+        "Built with modular architecture (controllers/models/services/views) and state managed via Provider.",
+        "Includes animated UI for pattern drawing, vault item listing, and kundali display.",
+        "Hidden gestures (long press, triple tap) trigger access transitions between modes.",
+      ],
+      github: "https://github.com/Gupta-Aniket/kundali-crypt",
+      live: "https://github.com/Gupta-Aniket/kundali-crypt/releases/download/Android/app-release.apk",
+    },
+
+    // *slate
+    {
+      id: "slate-todo-app",
+      title: "Slate (Minimalist Offline ToDo App)",
+      description:
+        "Slate is a focused, offline-first ToDo list app built with Flutter — fast, clean, and distraction-free. No login, no clutter — just simple task management with swipe-to-delete, dark mode, and instant state persistence.",
+      category: "flutter",
+      status: "live",
+      tags: [
+        "Flutter",
+        "Provider",
+        "Offline First",
+        "Task Manager",
+        "Minimal UI",
+        "Dark Theme",
+        "State Management",
+      ],
+      images: ["slate/1.png", "slate/2.png", "slate/3.png"], // replace with real paths
+      videoLinks: [],
+      details: [
+        "Built with Flutter and Provider for state management",
+        "Offline-first architecture with no backend dependency",
+        "Swipe to delete tasks with smooth animations",
+        "Dark mode support with clean minimalist design",
+        "No sign-in or setup required — open and use instantly",
+        "Designed for simplicity and focus in daily task management",
+      ],
+      github: "https://github.com/Gupta-Aniket/ToDo-List", // replace later
+      live: "https://github.com/Gupta-Aniket/ToDo-List/releases/download/Android/slate.apk", // replace if approved
+    },
+
+    // * promoten
+    {
+      id: "project-sharer",
+      title: "Project Sharer (Gemini-powered Shareable Content Generator)",
+      description:
+        "A sleek Flutter app that helps developers instantly generate platform-specific shareable content for their projects using the Gemini API. Includes token tracking, offline-first form flow, image uploads, and a beautiful UI.",
+      category: ["flutter", "gen-ai"],
+      status: "live",
+      tags: [
+        "Flutter",
+        "Dart",
+        "Gemini API",
+        "GetX",
+        "Shared Preferences",
+        "AI Content Generation",
+        "Shareable Posts",
+        "Platform-Specific Output",
+      ],
+
+      videoLinks: ["https://youtu.be/eAcLKQD8AXU"],
+
+      details: [
+        "Generated content stays there until you quit or enter a new project, to make sure that app resets dont cut off the sharing",
+        "User provides basic project data like title, description, GitHub, live link, and optional social URLs",
+        "User answers questions via a smooth, paginated form interface",
+        "Token usage is recorded and shown to the user from the first setup screen",
+        "Token count is persisted using SharedPreferences and resets monthly",
+        "Multi-step GetX navigation (Input → Clarifying Qs → Generated Results)",
+        "Content is streamed for each selected platform in markdown-like format",
+        "Results are shown in horizontally scrollable cards per platform",
+        "Includes reset API key functionality to wipe config and restart setup",
+        "Built with modular MVC architecture: clean controller/view separation",
+        "Supports 7+ platforms: LinkedIn, X, GitHub, Reddit, Hacker News, Discord, Hashnode",
+      ],
+      github: "https://github.com/Gupta-Aniket/promoten/",
+      live: "https://github.com/Gupta-Aniket/promoten/releases/download/android2/promoten.apk",
+    },
+
+    // *websocket chat app
+    {
+      id: "group-chat-socket-app",
+      title: "WebSocket Chat app",
+      description:
+        "A realtime group chat system powered by a custom Node.js backend using WebSockets (socket.io), with both terminal and React Native interfaces. Lightweight, minimal, and demonstrates the power of unified connection handling across platforms.",
+      category: ["React-Native"],
+      status: "live",
+      tags: [
+        "React Native",
+        "Node.js",
+        "Socket.io",
+        "WebSocket",
+        "Group Chat",
+        "Terminal App",
+        "Realtime Communication",
+        "Custom Backend",
+      ],
+      // images: ["group-chat/1.jpg", "group-chat/2.jpg"],
+      videoLinks: ["https://youtu.be/gEgVYEn6UiE"],
+      details: [
+        "Built with React Native frontend and a custom Node.js backend",
+        "Uses socket.io to establish real-time communication between all clients",
+        "Users connect to a shared group chat room without authentication",
+        "Also supports terminal-based chatting using Node.js CLI interface",
+        "Stores the latest 20 messages in memory for context on join",
+        "Perfect demo for fullstack WebSocket architecture across platforms",
+      ],
+      github: "https://github.com/your-username/group-chat-socket", // replace later
+      live: "", // leave empty or add future deployment link
+    },
+
+    // * corporate-mask-extension
+    {
+      id: "corporate-mask-extension",
+      title: "Corporate Mask (Chrome Extension)",
+      description:
+        "A browser extension for instant, AI-powered corporate message rewriting, bringing the 'Corporate Mask' functionality to the web.",
+      category: ["extension", "Gen-Ai"],
+      status: "live",
+      tags: [
+        "Chrome Extension",
+        "JavaScript",
+        "HTML",
+        "CSS",
+        "Gemini API",
+        "Content Scripts",
+      ],
+      details: [
+        "Adds a floating button overlay to editable web fields",
+        "Context-sensitive message rewriting via the Gemini API",
+        "Utilizes `chrome.storage.local` for secure API key persistence",
+        "Separation of concerns with `background.js` and `content.js`",
+        "Modal options page for convenient API key management",
+        "Minimalist dark UI injected directly into web pages",
+        "Supports text fields on any web-based platform",
+      ],
+      images: [
+        "corporate-mask-extension/1.png",
+        "corporate-mask-extension/2.png",
+        "corporate-mask-extension/3.png",
+      ],
+      github: "https://github.com/Gupta-Aniket/corporate-mask",
+      live: "https://github.com/Gupta-Aniket/corporate-mask/releases/download/android/extension.zip",
+    },
     // * gemini chatbot
     {
       id: "cancer",
@@ -114,74 +359,6 @@ const sharedData = {
       ],
       github: "https://github.com/Gupta-Aniket/bmi-app",
       live: "https://github.com/Gupta-Aniket/bmi-app/releases/download/v2/BMI.v0.2.apk",
-    },
-
-    // * corporate-mask-app
-    {
-      id: "corporate-mask-app",
-      title: "Corporate Mask (Flutter App)",
-      description:
-        "An Android Flutter application providing instant, AI-powered professional rewrites for messages using the Google Gemini API.",
-      category: ["flutter", "Gen-Ai"],
-      status: "live",
-      tags: [
-        "Flutter",
-        "Gemini API",
-        "UI/UX",
-        "Dart",
-        "Cupertino",
-        "SharedPreferences",
-      ],
-      details: [
-        "Integrates Google Gemini API for real-time professional rewrites",
-        "Secure local API key storage using `shared_preferences`",
-        "iOS-inspired dark mode UI built with Cupertino widgets",
-        "Includes robust error handling for API interactions",
-        "Copy-to-clipboard functionality for rewritten text",
-        "Simple, single-screen architecture using `setState` for state management",
-        "Dedicated API key setup screen with input validation",
-      ],
-      images: [
-        "corporate-mask-app/1.jpg",
-        "corporate-mask-app/2.jpg",
-        "corporate-mask-app/3.jpg",
-      ],
-      github: "https://github.com/Gupta-Aniket/corporate-mask",
-      live: "https://github.com/Gupta-Aniket/corporate-mask/releases/download/android/corporate-mask.apk",
-    },
-
-    // * corporate-mask-extension
-    {
-      id: "corporate-mask-extension",
-      title: "Corporate Mask (Chrome Extension)",
-      description:
-        "A browser extension for instant, AI-powered corporate message rewriting, bringing the 'Corporate Mask' functionality to the web.",
-      category: ["extension", "Gen-Ai"],
-      status: "live",
-      tags: [
-        "Chrome Extension",
-        "JavaScript",
-        "HTML",
-        "CSS",
-        "Gemini API",
-        "Content Scripts",
-      ],
-      details: [
-        "Adds a floating button overlay to editable web fields",
-        "Context-sensitive message rewriting via the Gemini API",
-        "Utilizes `chrome.storage.local` for secure API key persistence",
-        "Separation of concerns with `background.js` and `content.js`",
-        "Modal options page for convenient API key management",
-        "Minimalist dark UI injected directly into web pages",
-        "Supports text fields on any web-based platform",
-      ],
-      images: [
-        "corporate-mask-extension/1.png",
-        "corporate-mask-extension/2.png",
-        "corporate-mask-extension/3.png",
-      ],
-      github: "https://github.com/Gupta-Aniket/corporate-mask",
-      live: "https://github.com/Gupta-Aniket/corporate-mask/releases/download/android/extension.zip",
     },
 
     // * file-context
@@ -365,69 +542,7 @@ const sharedData = {
       live: "https://github.com/Gupta-Aniket/Xylophone-app/releases/download/android/xylophone.apk",
     },
 
-    // * jobtrail
-    {
-      id: "job-trail-chrome-extension",
-      title: "JobTrail (Job Search Automation Chrome Extension)",
-      description:
-        "A Chrome extension that scans webpages for job-related opportunities, injects actionable links, and enhances search inputs with customizable quick-search buttons for faster job discovery.",
-      category: "extension",
-      status: "live",
-      tags: [
-        "Chrome Extension",
-        "Content Script",
-        "MutationObserver",
-        "Job Search Ease",
-        "JavaScript",
-        "Fuse.js",
-        "Dynamic DOM Injection",
-      ],
-      images: ["jobtrail/1.png"],
-      details: [
-        "Injects a floating overlay panel with job search tools into any webpage",
-        "Uses Fuse.js for fuzzy keyword matching to detect job-related links",
-        "Scans all clickable elements for job-related text content",
-        "Dynamically injects search term buttons into detected search inputs",
-        "Works seamlessly with dynamic websites using MutationObserver",
-        "Fully isolated UI via Shadow DOM to prevent style conflicts",
-        "Chrome storage integration to allow users to customize search terms",
-      ],
-      github: "https://github.com/Gupta-Aniket/job-trail",
-      live: "https://github.com/Gupta-Aniket/job-trail/releases/download/Extension/job-trail.zip",
-    },
-    // {
-    //   id: "project-sharer",
-    //   title: "Project Sharer (Gemini-powered Shareable Content Generator)",
-    //   description:
-    //     "A sleek Flutter app that helps developers instantly generate platform-specific shareable content for their projects using the Gemini API. Includes token tracking, offline-first form flow, image uploads, and a beautiful UI.",
-    //   category: ["flutter", "gen-ai"],
-    //   status: "live",
-    //   tags: [
-    //     "Flutter",
-    //     "Dart",
-    //     "Gemini API",
-    //     "GetX",
-    //     "AI Content Generation",
-    //     "Shareable Posts",
-    //     "Platform-Specific Output",
-    //     "Base64 Images",
-    //   ],
-    //   images: ["project-sharer/1.png", "project-sharer/2.png"],
-    //   details: [
-    //     "User provides basic project data like title, description, GitHub, live link, and optional social URLs",
-    //     "User answers questions via a smooth, paginated form interface",
-    //     "Token usage is recorded and shown to the user from the first setup screen",
-    //     "Token count is persisted using SharedPreferences and resets monthly",
-    //     "Multi-step GetX navigation (Input → Clarifying Qs → Generated Results)",
-    //     "Content is streamed for each selected platform in markdown-like format",
-    //     "Results are shown in horizontally scrollable cards per platform",
-    //     "Includes reset API key functionality to wipe config and restart setup",
-    //     "Built with modular MVC architecture: clean controller/view separation",
-    //     "Supports 7+ platforms: LinkedIn, X, GitHub, Reddit, Hacker News, Discord, Hashnode",
-    //   ],
-    //   github: "https://github.com/Gupta-Aniket/promoten/",
-    //   live: "https://github.com/Gupta-Aniket/promoten/releases/download/android/promoten.apk",
-    // },
+   
   ],
 };
 export default sharedData;
