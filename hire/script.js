@@ -554,6 +554,17 @@ function attachProjectShareButtons() {
 document.addEventListener("DOMContentLoaded", () => {
   const sections = document.querySelectorAll(".section");
 
+  // const observer = new IntersectionObserver(
+  //   (entries) => {
+  //     entries.forEach((entry) => {
+  //       if (entry.isIntersecting) {
+  //         entry.target.classList.add("visible");
+  //         observer.unobserve(entry.target);
+  //       }
+  //     });
+  //   },
+  //   { threshold: 0.15 }
+  // );
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
@@ -563,7 +574,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
     },
-    { threshold: 0.15 }
+    {
+      threshold: 0.01, // 🔽 Lowered
+      rootMargin: "0px 0px -20% 0px", // 🔁 Helps with mobile viewport oddities
+    }
   );
 
   sections.forEach((section) => {
