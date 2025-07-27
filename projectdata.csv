@@ -1,0 +1,17 @@
+Project,ID,Featured,Description,Category,Status,Tags,Details,Images,Showcase Dark,Showcase Light,Video Links,GitHub,Live Link,Case Study
+WebRTC Pin Based Video-call,kabootar,false,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,FALSE,FALSE,TRUE,TRUE,FALSE
+Corporate Mask (Flutter App),corporate-mask-app,false,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,FALSE,FALSE,TRUE,TRUE,FALSE
+JobTrail (Chrome Extension),job-trail-chrome-extension,false,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,FALSE,FALSE,TRUE,TRUE,FALSE
+Kundali Lock (Vault App),kundali-lock,false,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,FALSE,FALSE,TRUE,TRUE,FALSE
+Slate (Offline ToDo App),slate-todo-app,false,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,FALSE,FALSE,TRUE,TRUE,FALSE
+Project Sharer,project-sharer,false,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,FALSE,FALSE,TRUE,TRUE,TRUE,FALSE
+WebSocket Chat App,group-chat-socket-app,false,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,FALSE,FALSE,TRUE,TRUE,FALSE,FALSE
+Corporate Mask (Extension),corporate-mask-extension,false,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,FALSE,FALSE,TRUE,TRUE,FALSE
+Gemini Chatbot,cancer,false,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,FALSE,TRUE,TRUE,TRUE,FALSE
+BMI Calculator,bmi-calculator,false,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,FALSE,FALSE,TRUE,TRUE,FALSE
+File Context Generator,file-context-generator,false,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,TRUE,FALSE,FALSE
+Workspace Launcher,workspace-launcher,false,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,TRUE,FALSE,FALSE
+DreamSpace,dream-space,false,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,FALSE
+YouTube Downloader,youtube-downloader-cli,false,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,TRUE,FALSE,FALSE
+Travel Companion,travel-companion,false,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,FALSE
+Xylophone,flutter-xylophone,false,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,FALSE,FALSE,TRUE,TRUE,FALSE

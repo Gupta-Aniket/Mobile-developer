@@ -25,13 +25,14 @@ const sharedData = {
     //    "ongoing"
     //    "deprecated";
 
+    //* 1
     // *kabootar
     {
       id: "kabootar",
       title: "WebRTC Pin Based Video-call",
       description:
         "A pin-based video calling app built with WebRTC and Firebase, offering secure, anonymous connections without login or signup.",
-      category: "react-native",
+      category: ["react-native", "featured"],
       status: "live",
       tags: ["React-Native", "Firebase", "WebRTC", "Video-Call", "Anonymous"],
       details: [
@@ -47,17 +48,22 @@ const sharedData = {
         "kabootar/3.jpeg",
         "kabootar/4.jpeg",
       ],
+      showcaseDark: "assets/kabootar/webrtc_dark.png",
+      showcaseLight: "assets/kabootar/webrtc_light.png",
+      videoLinks: [],
       github: "https://github.com/Gupta-Aniket/Kabootar",
       live: "https://github.com/Gupta-Aniket/Kabootar/releases/download/android/app-release.apk",
+      caseStudy: "",
     },
 
+    //* 2
     // * corporate-mask-app
     {
       id: "corporate-mask-app",
       title: "Corporate Mask (Flutter App)",
       description:
         "An Android Flutter application providing instant, AI-powered professional rewrites for messages using the Google Gemini API.",
-      category: ["flutter", "Gen-Ai"],
+      category: ["flutter", "Gen-Ai", "featured"],
       status: "live",
       tags: [
         "Flutter",
@@ -76,21 +82,27 @@ const sharedData = {
         "Simple, single-screen architecture using `setState` for state management",
         "Dedicated API key setup screen with input validation",
       ],
+      videoLinks: [],
       images: [
         "corporate-mask-app/1.jpg",
         "corporate-mask-app/2.jpg",
         "corporate-mask-app/3.jpg",
       ],
+      showcaseDark: "assets/corporate-mask-app/corporate_mask_dark.png",
+      showcaseLight: "assets/corporate-mask-app/corporate_mask_light.png",
       github: "https://github.com/Gupta-Aniket/corporate-mask",
       live: "https://github.com/Gupta-Aniket/corporate-mask/releases/download/android/corporate-mask.apk",
+      caseStudy: "",
     },
-     // * jobtrail
+
+    //* 3
+    // * jobtrail
     {
       id: "job-trail-chrome-extension",
       title: "JobTrail (Job Search Automation Chrome Extension)",
       description:
         "A Chrome extension that scans webpages for job-related opportunities, injects actionable links, and enhances search inputs with customizable quick-search buttons for faster job discovery.",
-      category: "extension",
+      category: ["extension", "featured"],
       status: "live",
       tags: [
         "Chrome Extension",
@@ -102,6 +114,9 @@ const sharedData = {
         "Dynamic DOM Injection",
       ],
       images: ["jobtrail/1.png"],
+      showcaseDark: "assets/jobtrail/job_trail_dark.png",
+      showcaseLight: "assets/jobtrail/job_trail_light.png",
+      videoLinks: [],
 
       details: [
         "Injects a floating overlay panel with job search tools into any webpage",
@@ -114,8 +129,10 @@ const sharedData = {
       ],
       github: "https://github.com/Gupta-Aniket/job-trail",
       live: "https://github.com/Gupta-Aniket/job-trail/releases/download/Extension/job-trail.zip",
+      caseStudy: "",
     },
 
+    //* 4
     // * kundali-crypt
     {
       id: "kundali-lock",
@@ -146,6 +163,9 @@ const sharedData = {
         "kundali-crypt/6.jpeg",
       ],
       videoLinks: [], // e.g. ["https://youtu.be/..."]
+      showcaseDark: "assets/kundali-crypt/kundali_dark.png",
+      showcaseLight: "assets/kundali-crypt/kundali_light.png",
+      images: [],
       details: [
         "Users input birth data (date, time, location) to generate a Vedic kundali using sidereal astrology.",
         "Birth chart includes planetary positions, ascendant, and nakshatra.",
@@ -160,8 +180,10 @@ const sharedData = {
       ],
       github: "https://github.com/Gupta-Aniket/kundali-crypt",
       live: "https://github.com/Gupta-Aniket/kundali-crypt/releases/download/Android/app-release.apk",
+      caseStudy: "",
     },
 
+    //* 5
     // *slate
     {
       id: "slate-todo-app",
@@ -181,6 +203,8 @@ const sharedData = {
       ],
       images: ["slate/1.png", "slate/2.png", "slate/3.png"], // replace with real paths
       videoLinks: [],
+      showcaseDark: "assets/slate/todo_dark.png",
+      showcaseLight: "assets/slate/todo_light.png",
       details: [
         "Built with Flutter and Provider for state management",
         "Offline-first architecture with no backend dependency",
@@ -191,8 +215,10 @@ const sharedData = {
       ],
       github: "https://github.com/Gupta-Aniket/ToDo-List", // replace later
       live: "https://github.com/Gupta-Aniket/ToDo-List/releases/download/Android/slate.apk", // replace if approved
+      caseStudy: "",
     },
 
+    //* 6
     // * promoten
     {
       id: "project-sharer",
@@ -213,6 +239,9 @@ const sharedData = {
       ],
 
       videoLinks: ["https://youtu.be/eAcLKQD8AXU"],
+      images: [],
+      showcaseDark: "assets/promoten/promoten_dark.png",
+      showcaseLight: "assets/promoten/promoten_light.png",
 
       details: [
         "Generated content stays there until you quit or enter a new project, to make sure that app resets dont cut off the sharing",
@@ -229,15 +258,17 @@ const sharedData = {
       ],
       github: "https://github.com/Gupta-Aniket/promoten/",
       live: "https://github.com/Gupta-Aniket/promoten/releases/download/android2/promoten.apk",
+      caseStudy: "",
     },
 
+    //* 7
     // *websocket chat app
     {
       id: "group-chat-socket-app",
       title: "WebSocket Chat app",
       description:
         "A realtime group chat system powered by a custom Node.js backend using WebSockets (socket.io), with both terminal and React Native interfaces. Lightweight, minimal, and demonstrates the power of unified connection handling across platforms.",
-      category: ["React-Native"],
+      category: ["React-Native", "featured"],
       status: "live",
       tags: [
         "React Native",
@@ -251,6 +282,8 @@ const sharedData = {
       ],
       // images: ["group-chat/1.jpg", "group-chat/2.jpg"],
       videoLinks: ["https://youtu.be/gEgVYEn6UiE"],
+      showcaseDark: "assets/socket/socket_dark.png",
+      showcaseLight: "assets/socket/socket_light.png",
       details: [
         "Built with React Native frontend and a custom Node.js backend",
         "Uses socket.io to establish real-time communication between all clients",
@@ -261,8 +294,10 @@ const sharedData = {
       ],
       github: "https://github.com/your-username/group-chat-socket", // replace later
       live: "", // leave empty or add future deployment link
+      caseStudy: "",
     },
 
+    //* 8
     // * corporate-mask-extension
     {
       id: "corporate-mask-extension",
@@ -293,9 +328,14 @@ const sharedData = {
         "corporate-mask-extension/2.png",
         "corporate-mask-extension/3.png",
       ],
+      showcaseDark: "assets/corporate-mask-app/corporate_mask_dark.png",
+      showcaseLight: "assets/corporate-mask-app/corporate_mask_light.png",
       github: "https://github.com/Gupta-Aniket/corporate-mask",
       live: "https://github.com/Gupta-Aniket/corporate-mask/releases/download/android/extension.zip",
+      caseStudy: "",
     },
+
+    //* 9
     // * gemini chatbot
     {
       id: "cancer",
@@ -321,11 +361,16 @@ const sharedData = {
         "Text-to-Speech (TTS) and Speech-to-Text (STT) for better accessibility",
         "Unique 'water-spent meter' for playful server cooling insights",
       ],
+      videoLinks: ["https://youtu.be/OaToUetNgJg"],
       images: ["gemini/1.png", "gemini/2.png", "gemini/3.png", "gemini/4.png"],
+      showcaseDark: "assets/gemini/Gemini_dark.png",
+      showcaseLight: "assets/gemini/Gemini_light.png",
       github: "https://github.com/Gupta-Aniket/Cancer",
       live: "https://github.com/Gupta-Aniket/Cancer/releases/download/android/cancer.gemini.apk",
+      caseStudy: "",
     },
 
+    //* 10
     // *bmi
     {
       id: "bmi-calculator",
@@ -357,10 +402,14 @@ const sharedData = {
         "bmi-calculator/3.jpg",
         "bmi-calculator/4.jpg",
       ],
+      showcaseDark: "assets/bmi-calculator/BMI_dark.png",
+      showcaseLight: "assets/bmi-calculator/BMI_light.png",
       github: "https://github.com/Gupta-Aniket/bmi-app",
       live: "https://github.com/Gupta-Aniket/bmi-app/releases/download/v2/BMI.v0.2.apk",
+      caseStudy: "",
     },
 
+    //* 11
     // * file-context
     {
       id: "file-context-generator",
@@ -377,6 +426,9 @@ const sharedData = {
         "AI Prompting",
         "CLI Tool",
       ],
+      images: [],
+      showcaseDark: "assets/file-context/file_context_dark.png",
+      showcaseLight: "assets/file-context/file_context_light.png",
       details: [
         "Recursively scans entire directory structures",
         "Supports granular selection of files, folders, or full trees",
@@ -388,9 +440,12 @@ const sharedData = {
       ],
       // images: ["file-context-generator/1.jpg", "file-context-generator/2.jpg"], // Keeping original for image count
       github: "https://github.com/Gupta-Aniket/file-context",
+      live: "",
+      caseStudy: "",
       // live: "", // No live URL since it's a CLI tool
     },
 
+    //* 12
     // * switch-mode
     {
       id: "workspace-launcher",
@@ -408,6 +463,9 @@ const sharedData = {
         "VS Code",
         "Simulator",
       ],
+      images: [],
+      showcaseDark: "assets/switchmode/switch_mode_dark.png",
+      showcaseLight: "assets/switchmode/swtich_mode_light.png",
       details: [
         "Interactive CLI for seamless 'Work' or 'Home' mode selection",
         "Scans project directories for easy project opening",
@@ -418,15 +476,18 @@ const sharedData = {
         "Includes error handling for missing folders or invalid inputs",
       ],
       github: "https://github.com/Gupta-Aniket/switch_mode",
+      live: "",
+      caseStudy: "",
     },
 
-    //* dream space
+    //* 13
+    //* dream space | featured
     {
       id: "dream-space",
       title: "DreamSpace — Mood & Dream Tracker",
       description:
         "A modern mobile app for logging dreams and moods with persistent authentication, real-time analytics, and a visually immersive observatory.",
-      category: "react-native",
+      category: ["react-native", "featured"],
       status: "live",
       tags: [
         "React Native",
@@ -444,6 +505,8 @@ const sharedData = {
         "dream-space/3.png",
         "dream-space/4.png",
       ],
+      showcaseDark: "assets/dream-space/dream_space_dark.png",
+      showcaseLight: "assets/dream-space/dream_space_light.png",
 
       details: [
         "Persistent user authentication via Firebase Auth and AsyncStorage",
@@ -455,8 +518,11 @@ const sharedData = {
         "Automated session restoration on app relaunch for seamless experience",
       ],
       github: "https://github.com/Gupta-Aniket/dream-space",
+      live: "",
+      caseStudy: "",
     },
 
+    //* 14
     // * youtube-downloader-cli
     {
       id: "youtube-downloader-cli",
@@ -466,6 +532,9 @@ const sharedData = {
       category: ["python", "utility"],
       status: "deprecated",
       tags: ["Python", "Pytube", "YouTube", "CLI", "Downloader", "Scripting"],
+      images: [],
+      showcaseDark: "assets/yt-playlist/YT_Playlist_dark.png",
+      showcaseLight: "assets/yt-playlist/YT_Playlist_light.png",
       details: [
         "CLI for downloading single videos or entire playlists",
         "Automatically fetches the highest resolution stream available",
@@ -476,8 +545,11 @@ const sharedData = {
         "Currently deprecated due to frequent YouTube API changes breaking `Pytube`",
       ],
       github: "https://github.com/Gupta-Aniket/Youtube-playlist-downloader",
+      live: "",
+      caseStudy: "",
     },
 
+    //* 15
     // * travel-companion
     {
       id: "travel-companion",
@@ -500,6 +572,8 @@ const sharedData = {
         "travel-companion/3.jpg",
         "travel-companion/4.jpg",
       ],
+      showcaseDark: "assets/travel-companion/travel_companion_dark.png",
+      showcaseLight: "assets/travel-companion/travel_companion_light.png",
       details: [
         "Simulated OTP-based user authentication (extendable)",
         "Organizes tickets for various transportation modes (flights, trains, buses)",
@@ -511,8 +585,11 @@ const sharedData = {
         "Includes Lottie animations for an improved onboarding experience",
       ],
       github: "https://github.com/Gupta-Aniket/travel-companion",
+      live: "",
+      caseStudy: "",
     },
 
+    //* 16
     // * xylophone app
     {
       id: "flutter-xylophone",
@@ -530,6 +607,8 @@ const sharedData = {
         "Interactive UI",
       ],
       images: ["xylophone/1.jpg"],
+      showcaseDark: "assets/xylophone/xylophone_dark.png",
+      showcaseLight: "assets/xylophone/xylophone_light.png",
       details: [
         "Color-coded piano keys with rounded corners for visual appeal",
         "Plays 8 distinct musical notes using the `audioplayers` package",
@@ -540,9 +619,85 @@ const sharedData = {
       ],
       github: "https://github.com/Gupta-Aniket/Xylophone-app",
       live: "https://github.com/Gupta-Aniket/Xylophone-app/releases/download/android/xylophone.apk",
+      caseStudy: "",
     },
 
-   
+    //* 17
+    //* branched llm
+    // https://youtu.be/BVjvtD12pXw
+    {
+      id: "branched-llm-mvp",
+      title: "Branched LLM",
+      description:
+        "An experimental LLM architecture that forks its reasoning into multiple parallel branches, merges outputs, and optimizes context usage to reduce server load and garbage training data.",
+
+      category: ["gen-AI", "flutter", "featured"],
+
+      status: "live",
+      tags: [
+        "Flutter",
+        "LLM",
+        "Parallel Reasoning",
+        "LangChain",
+        "Context Optimization",
+        "AI Middleware",
+        "Reasoning Engine",
+        "Distributed Inference",
+        "Server Efficiency",
+        "Multi-Agent Systems",
+      ],
+
+      images: [], // replace with real paths
+      videoLinks: ["https://youtu.be/BVjvtD12pXw"], // replace with actual link if you create one
+      showcaseDark: "assets/branched-llm/branched_llm_dark.png",
+      showcaseLight: "assets/branched-llm/branched_llm_light.png",
+
+      details: [
+        "MVP that allows an users to fork the chat into independent branches.",
+        "These branches can be used to deep dive into specific topics or explore alternative perspectives.",
+        "Designed to reduce context garbage and server load by dynamically pruning useless tokens.",
+        "Can act as a middleware layer for any LLM API, making inference more efficient.",
+        "Potential to streamline fine-tuning data pipelines by providing higher-quality reasoning traces.",
+      ],
+
+      github: "https://github.com/Gupta-Aniket/branched-llms", // add when repo is ready
+      live: "", // add if you host a demo
+      caseStudy: "", // link to Notion/Blog later
+    },
+
+    // sample :
+    /*
+    {
+      id: "unique-id",
+      title: "the project title",
+      description:
+        "the project description",
+      category: ["category1", "category2"],
+
+      status: "live | ongoing | deprecated",
+      tags: [
+        "Flutter",
+        "Provider",
+        "Offline First",
+        "Task Manager",
+        "Minimal UI",
+        "Dark Theme",
+        "State Management", ETC ETC
+      ],
+      images: ["image1.png", "image2.png", "image3.png"], // replace with real paths
+      videoLinks: [],
+      showcaseDark: "",
+      showcaseLight: "",
+      details: [
+        "the project details",.
+        "the project details",.
+        "the project details",.
+      ],
+      github: "", // replace later
+      live: "", // replace if approved
+      caseStudy: "",
+    },
+    */
   ],
 };
 export default sharedData;

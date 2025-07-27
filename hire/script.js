@@ -141,8 +141,7 @@ function renderSkillsSection() {
 function renderProjects() {
   const filterContainer = document.getElementById("filterButtonsContainer");
   const grid = document.getElementById("projectsGrid");
-
-  // 🔁 Extract unique categories from all project.category arrays
+  // 🔁 Extract unique categories
   const categorySet = new Set();
   projects.forEach((p) => {
     const categories = Array.isArray(p.category) ? p.category : [p.category];
@@ -151,6 +150,7 @@ function renderProjects() {
   const categories = ["all", ...Array.from(categorySet)];
 
   // 🧱 Render filter buttons
+  filterContainer.innerHTML = "";
   categories.forEach((category) => {
     const btn = document.createElement("button");
     btn.className = "filter-btn";
@@ -163,56 +163,68 @@ function renderProjects() {
   });
 
   // 📦 Render project cards
+  grid.innerHTML = "";
   projects.forEach((project) => {
     const card = document.createElement("div");
-    card.className = "project-card";
+    card.className = "card"; // Apple-style card
 
-    // 🏷 Set data-categories (for filtering later)
     const categoryArray = Array.isArray(project.category)
       ? project.category
       : [project.category];
     card.dataset.categories = categoryArray
       .map((c) => c.toLowerCase())
       .join(",");
-
     card.dataset.project = project.id;
 
     card.addEventListener("click", () => openProjectModal(project.id));
 
+    // 🖼 Image or placeholder
+    // const hasImage = project.images && project.images.length > 0;
+    const imageHTML = window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? `<img src="../${project.showcaseDark}" 
+               alt="${project.title}image" 
+               class="project-image" loading="lazy"/>`
+      : `<img src="../${project.showcaseLight}" 
+               alt="${project.title}image" 
+               class="project-image" loading="lazy"/>`;
+
     card.innerHTML = `
-      <div class="project-card-content">
-        <div class="project-status ${project.status}"></div>
-        <h3 class="project-title">${project.title}</h3>
-        <p class="project-description">${project.description}</p>
-        <div class="project-tags">
+    <div>
+      <div class="image-container">
+        ${imageHTML}
+        <div class="status-indicator ${project.status}"></div>
+      </div>
+      <div class="content">
+        <h3 class="title">${project.title}</h3>
+        <p class="description">${project.description}</p>
+        <div class="tags">
           ${project.tags
-            .map((tag) => `<span class="project-tag">${tag}</span>`)
+            .map(
+              (tag, i) =>
+                `<span class="tag ${i === 0 ? "primary" : ""}">${tag}</span>`
+            )
             .join("")}
         </div>
-        <div class="project-actions">
-          <button class="project-link">View Details</button>
-        </div>
+        
+      </div>
+      <div class="arrow"></div>
       </div>
     `;
 
     grid.appendChild(card);
-
-    const button = card.querySelector(".project-link");
-    button.addEventListener("click", (e) => {
-      e.stopPropagation();
-      openProjectModal(project.id);
-    });
   });
 
-  filterProjects("all");
+  // Default to show featured.. 
+  filterProjects("featured");
 }
 
 function filterProjects(selectedCategory) {
+  document.getElementById("section-title").innerText = `${capitalize(selectedCategory)} Projects`;
   document.querySelectorAll(".filter-btn").forEach((btn) => {
     btn.classList.toggle("active", btn.dataset.filter === selectedCategory);
   });
 
-  document.querySelectorAll(".project-card").forEach((card) => {
+  document.querySelectorAll(".card").forEach((card) => {
     const cardCategories = card.dataset.categories?.split(",") || [];
     const show =
       selectedCategory === "all" ||
@@ -283,25 +295,36 @@ function openProjectModal(projectId) {
     : "";
 
   const buttonsHTML = `
-    <div class="modal-actions">
-      ${
-        project.github
-          ? `<a href="${project.github}" target="_blank" class="modal-button secondary">
-              <span>View on GitHub</span>
-              <span class="modal-button-icon">↗</span>
-            </a>`
-          : ""
-      }
-      ${
-        project.live
-          ? `<a href="${project.live}" target="_blank" class="modal-button">
-              <span>Try it Out</span>
-              <span class="modal-button-icon">🚀</span>
-            </a>`
-          : ""
-      }
-    </div>
-  `;
+  <div class="modal-actions">
+    ${
+      project.caseStudy
+        ? `
+      <a href="${project.caseStudy}" target="_blank" class="modal-button highlight">
+        <span>Show Case Study</span>
+        <span class="modal-button-icon">📄</span>
+      </a>`
+        : ""
+    }
+    ${
+      project.github
+        ? `
+      <a href="${project.github}" target="_blank" class="modal-button secondary">
+        <span>View on GitHub</span>
+        <span class="modal-button-icon">↗</span>
+      </a>`
+        : ""
+    }
+    ${
+      project.live
+        ? `
+      <a href="${project.live}" target="_blank" class="modal-button">
+        <span>Try it Out</span>
+        <span class="modal-button-icon">🚀</span>
+      </a>`
+        : ""
+    }
+  </div>
+`;
 
   // --- YouTube Parser ---
   const extractYouTubeId = (url) => {
