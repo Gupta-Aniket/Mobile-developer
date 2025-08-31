@@ -15,7 +15,7 @@ const projects = portfolioData.projects;
 window.addEventListener("DOMContentLoaded", () => {
   renderHeroSection();
   renderAboutSection();
-  renderSkillsSection();
+  // renderSkillsSection();
   renderContactInfo();
   renderProjects();
   attachModalHandlers();
@@ -71,72 +71,72 @@ function renderAboutSection() {
     bioContainer.appendChild(p);
   });
 
-  const stackContainer = document.getElementById("tech-stack");
-  stackContainer.innerHTML = "";
-  about.techStack.forEach((tech) => {
-    const div = document.createElement("div");
-    div.className = "tech-pill";
-    div.dataset.level = tech.level;
-    div.textContent = tech.name;
-    stackContainer.appendChild(div);
-  });
+  // const stackContainer = document.getElementById("tech-stack");
+  // stackContainer.innerHTML = "";
+  // about.techStack.forEach((tech) => {
+  //   const div = document.createElement("div");
+  //   div.className = "tech-pill";
+  //   div.dataset.level = tech.level;
+  //   div.textContent = tech.name;
+  //   stackContainer.appendChild(div);
+  // });
 
   const avatarContainer = document.getElementById("about-avatar");
   avatarContainer.innerHTML = "";
   if (about.image) {
     const img = document.createElement("img");
-    img.src = about.image + "hire.jpg";
+    img.src = about.image + "freelance.jpg";
     img.alt = "Avatar Image";
     img.className = "avatar-image";
     avatarContainer.appendChild(img);
   }
 }
 
-function renderSkillsSection() {
-  const skillsGrid = document.getElementById("skillsGrid");
-  portfolioData.skills.forEach((category) => {
-    const categoryDiv = document.createElement("div");
-    categoryDiv.className = "skill-category";
+// function renderSkillsSection() {
+//   const skillsGrid = document.getElementById("skillsGrid");
+//   portfolioData.skills.forEach((category) => {
+//     const categoryDiv = document.createElement("div");
+//     categoryDiv.className = "skill-category";
 
-    const categoryTitle = document.createElement("h3");
-    categoryTitle.className = "skill-category-title";
-    categoryTitle.textContent = category.category;
-    categoryDiv.appendChild(categoryTitle);
+//     const categoryTitle = document.createElement("h3");
+//     categoryTitle.className = "skill-category-title";
+//     categoryTitle.textContent = category.category;
+//     categoryDiv.appendChild(categoryTitle);
 
-    category.items.forEach((skill) => {
-      const skillItem = document.createElement("div");
-      skillItem.className = "skill-item";
+//     category.items.forEach((skill) => {
+//       const skillItem = document.createElement("div");
+//       skillItem.className = "skill-item";
 
-      const skillInfo = document.createElement("div");
-      skillInfo.className = "skill-info";
+//       const skillInfo = document.createElement("div");
+//       skillInfo.className = "skill-info";
 
-      const skillName = document.createElement("span");
-      skillName.className = "skill-name";
-      skillName.textContent = skill.name;
+//       const skillName = document.createElement("span");
+//       skillName.className = "skill-name";
+//       skillName.textContent = skill.name;
 
-      const skillPercent = document.createElement("span");
-      skillPercent.className = "skill-percentage";
-      // skillPercent.textContent = `${skill.percentage}%`; // !<- stopped percentage !! too much cognitive load
+//       const skillPercent = document.createElement("span");
+//       skillPercent.className = "skill-percentage";
+//       // skillPercent.textContent = `${skill.percentage}%`; // !<- stopped percentage !! too much cognitive load
 
-      skillInfo.appendChild(skillName);
-      skillInfo.appendChild(skillPercent);
+//       skillInfo.appendChild(skillName);
+//       skillInfo.appendChild(skillPercent);
 
-      const skillBar = document.createElement("div");
-      skillBar.className = "skill-bar";
+//       const skillBar = document.createElement("div");
+//       skillBar.className = "skill-bar";
 
-      const skillProgress = document.createElement("div");
-      skillProgress.className = "skill-progress";
-      skillProgress.style.width = `${skill.percentage}%`;
+//       const skillProgress = document.createElement("div");
+//       skillProgress.className = "skill-progress";
+//       skillProgress.style.width = `${skill.percentage}%`;
 
-      skillBar.appendChild(skillProgress);
-      skillItem.appendChild(skillInfo);
-      skillItem.appendChild(skillBar);
-      categoryDiv.appendChild(skillItem);
-    });
+//       skillBar.appendChild(skillProgress);
+//       skillItem.appendChild(skillInfo);
+//       skillItem.appendChild(skillBar);
+//       categoryDiv.appendChild(skillItem);
+//     });
 
-    skillsGrid.appendChild(categoryDiv);
-  });
-}
+//     skillsGrid.appendChild(categoryDiv);
+//   });
+// }
 
 function renderProjects() {
   const filterContainer = document.getElementById("filterButtonsContainer");

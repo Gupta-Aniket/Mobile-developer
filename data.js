@@ -34,18 +34,13 @@ const portfolioData = {
     quote:
       "The best mobile experiences seamlessly blend innovation, functionality, and user delight",
     bio: [
-      "Hi, I’m Aniket. I’m a mobile developer who loves building tools that solve real problems for real people. I don’t sing, I don’t dance. I write code and ship it. That’s how I create value.",
+      "Hi, I’m Aniket — a mobile developer who loves building tools that solve real problems. I don’t sing, I don’t dance. I write code and ship it.",
 
-      "One of the projects I’m proud of is a video calling system that works without any login. It uses WebRTC and Google's realtime database to connect two people through a unique PIN. No accounts, no hassle. I built it because I didn’t like sharing personal info just to have a quick call.",
+      "I’ve built things like a no-login video calling system (WebRTC + Firebase), a full-stack group chat app (WebSockets + Node.js), and JobTrail, a Chrome extension that tracks job listings as you browse.",
 
-      "I’ve also created a full-stack group chat app with real-time messaging using WebSockets and a custom Node.js backend. It even works in the terminal. I like building things that feel reliable anywhere, not just in flashy UIs.",
-
-      "There’s JobTrail too. It’s a Chrome extension I built to help track job listings while browsing. It quietly sticks around on every relevant page, reminding you to apply. It’s persistent... Just like me. Gets the job done... Just like me.",
-
-      "Over the past couple of years, I’ve shipped around 10 tools that people actually use and maintained more than 30 public repositories. Some are experiments, some are finished products, all of them reflect my habit of building, testing, and improving things.",
-
-      "I care about performance and usability. I follow design principles that make apps feel thoughtful and intuitive. A lot of that comes from how much I respect Apple’s Human Interface Guidelines and their focus on simplicity.",
+      "Over the past couple of years, I’ve shipped 10+ tools and maintained 30+ public repos. I care about performance, usability, and design principles that make apps feel intuitive and reliable.",
     ],
+
     techStack: [
       { name: "Flutter", level: "expert" },
       { name: "React Native", level: "expert" },
@@ -90,33 +85,6 @@ const portfolioData = {
     },
   ],
   projects: sharedData.projectData,
-
-  testimonialsSection: {
-    subtitle: "Feedback from amazing people I've had the pleasure to work with",
-    testimonials: [
-      {
-        quote:
-          "Aniket delivered an exceptional Flutter app that exceeded our expectations. His attention to detail and user experience is remarkable.",
-        authorName: "Sarah Johnson",
-        authorRole: "Product Manager, TechCorp",
-        avatarImage: "",
-      },
-      {
-        quote:
-          "not with Aniket was a game-changer. He transformed our complex requirements into a beautiful, intuitive mobile app.",
-        authorName: "Michael Chen",
-        authorRole: "CEO, StartupX",
-        avatarImage: "",
-      },
-      {
-        quote:
-          "Professional, reliable, and incredibly skilled. Aniket's React Native expertise helped us launch on time and under budget.",
-        authorName: "Emily Rodriguez",
-        authorRole: "CTO, InnovateLab",
-        avatarImage: "",
-      },
-    ],
-  },
 
   finalStats: [
     { icon: "\ud83d\udcf1", target: 15, label: "Apps Shipped" },

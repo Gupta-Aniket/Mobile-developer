@@ -424,7 +424,7 @@ body {
 
 /* Enhanced About Section */
 .about {
-  background-color: var(--secondary-background);
+  background-color: var(--system-background);
 }
 
 .about-content {

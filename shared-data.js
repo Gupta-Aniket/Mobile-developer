@@ -53,7 +53,7 @@ const sharedData = {
       videoLinks: [],
       github: "https://github.com/Gupta-Aniket/Kabootar",
       live: "https://github.com/Gupta-Aniket/Kabootar/releases/download/android/app-release.apk",
-      caseStudy: "",
+      caseStudy: "https://shiny-feeling-76d.notion.site/How-I-made-a-login-less-peer-to-peer-video-call-using-WebRTC-23fcea5cb6388063bbb3c25dd3bab985",
     },
 
     //* 2
@@ -129,7 +129,7 @@ const sharedData = {
       ],
       github: "https://github.com/Gupta-Aniket/job-trail",
       live: "https://github.com/Gupta-Aniket/job-trail/releases/download/Extension/job-trail.zip",
-      caseStudy: "",
+      caseStudy: "https://shiny-feeling-76d.notion.site/Job-Trail-Chrome-Extension-for-Smarter-Job-Hunting-23fcea5cb63880bebf9dd5cc47ef58b9?source=copy_link",
     },
 
     //* 4
