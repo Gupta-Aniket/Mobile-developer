@@ -9,6 +9,8 @@ import sharedData from "../shared-data.js";
  * @param {Function} [options.onSuccess] - Callback after successful send
  * @param {Function} [options.onError] - Callback on failure
  */
+
+// ! still has errors.. need fixing
 function sendEmailWithSummary(summary, user_email, options = {}) {
   const {
     serviceID = "service_jqritth",
