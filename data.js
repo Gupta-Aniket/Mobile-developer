@@ -92,6 +92,9 @@ const portfolioData = {
     { icon: "\ud83d\ude80", target: 50, label: "Features Delivered" },
     { icon: "\ud83c\udf1f", target: 14, label: "Years Experience" },
   ],
+
 };
+
+
 
 export default portfolioData;

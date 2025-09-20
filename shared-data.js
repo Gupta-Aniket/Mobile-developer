@@ -20,6 +20,13 @@ const sharedData = {
     },
   },
 
+  files: {
+    onboarding_pdf:
+      "https://drive.google.com/uc?export=download&id=1R5J3xVJJfHgzsf7KzFWopaorKfpB_N2R",
+    working_conditions_pdf:
+      "https://drive.google.com/uc?export=download&id=1R5J3xVJJfHgzsf7KzFWopaorKfpB_N2R",
+  },
+
   projectData: [
     //    "live"
     //    "ongoing"
@@ -53,7 +60,8 @@ const sharedData = {
       videoLinks: [],
       github: "https://github.com/Gupta-Aniket/Kabootar",
       live: "https://github.com/Gupta-Aniket/Kabootar/releases/download/android/app-release.apk",
-      caseStudy: "https://shiny-feeling-76d.notion.site/How-I-made-a-login-less-peer-to-peer-video-call-using-WebRTC-23fcea5cb6388063bbb3c25dd3bab985",
+      caseStudy:
+        "https://shiny-feeling-76d.notion.site/How-I-made-a-login-less-peer-to-peer-video-call-using-WebRTC-23fcea5cb6388063bbb3c25dd3bab985",
     },
 
     //* 2
@@ -79,8 +87,6 @@ const sharedData = {
         "iOS-inspired dark mode UI built with Cupertino widgets",
         "Includes robust error handling for API interactions",
         "Copy-to-clipboard functionality for rewritten text",
-        "Simple, single-screen architecture using `setState` for state management",
-        "Dedicated API key setup screen with input validation",
       ],
       videoLinks: [],
       images: [
@@ -129,7 +135,8 @@ const sharedData = {
       ],
       github: "https://github.com/Gupta-Aniket/job-trail",
       live: "https://github.com/Gupta-Aniket/job-trail/releases/download/Extension/job-trail.zip",
-      caseStudy: "https://shiny-feeling-76d.notion.site/Job-Trail-Chrome-Extension-for-Smarter-Job-Hunting-23fcea5cb63880bebf9dd5cc47ef58b9?source=copy_link",
+      caseStudy:
+        "https://shiny-feeling-76d.notion.site/Job-Trail-Chrome-Extension-for-Smarter-Job-Hunting-23fcea5cb63880bebf9dd5cc47ef58b9?source=copy_link",
     },
 
     //* 4

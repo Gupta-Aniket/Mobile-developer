@@ -7,6 +7,7 @@ const projects = portfolioData.projects;
 window.addEventListener("DOMContentLoaded", () => {
   renderHeroSection();
   loadContactSection();
+  renderContactInfo();
   renderAboutSection();
   loadSkills();
   renderProjects();
@@ -45,6 +46,32 @@ function loadStats() {
   });
 
   animateStats(); // Call animation after loading
+}
+function renderContactInfo() {
+  const { contact, socialLinks } = portfolioData.personalInfo;
+  const emailLink = document.getElementById("emailLink");
+  const phoneLink = document.getElementById("phoneLink");
+  const resumeLink = document.getElementById("resumeLink");
+
+  emailLink.href = `mailto:${contact.email}`;
+  document.getElementById("emailText").textContent = contact.email;
+
+  phoneLink.href = `tel:${contact.phone.replace(/\s+/g, "")}`;
+
+  document.getElementById("phoneText").textContent = contact.phone;
+
+  resumeLink.href = contact.resume;
+  resumeLink.target = "_blank";
+
+  const socialContainer = document.getElementById("socialLinksContainer");
+  socialLinks.forEach((link) => {
+    const a = document.createElement("a");
+    a.href = link.url;
+    a.target = "_blank";
+    a.className = "social-link";
+    a.textContent = link.name;
+    socialContainer.appendChild(a);
+  });
 }
 
 function loadSkills() {
@@ -134,17 +161,6 @@ function renderAboutSection() {
     p.textContent = para;
     bioContainer.appendChild(p);
   });
-
-  // Tech Stack
-  const stackContainer = document.getElementById("tech-stack");
-  stackContainer.innerHTML = "";
-  about.techStack.forEach((tech) => {
-    const div = document.createElement("div");
-    div.className = "tech-pill";
-    div.dataset.level = tech.level;
-    div.textContent = tech.name;
-    stackContainer.appendChild(div);
-  });
 }
 function loadContactSection() {
   const { contact, socialLinks } = portfolioData.personalInfo;
@@ -171,20 +187,6 @@ function loadContactSection() {
     resumeLink.setAttribute("href", contact.resume);
     resumeLink.setAttribute("download", "");
     resumeLink.onclick = null; // remove old JS handler
-  }
-
-  // Social Links
-  const socialLinksContainer = document.querySelector(".social-links");
-  if (socialLinksContainer && socialLinks.length > 0) {
-    socialLinksContainer.innerHTML = "";
-    socialLinks.forEach((link) => {
-      const a = document.createElement("a");
-      a.href = link.url;
-      a.target = "_blank";
-      a.className = "social-link";
-      a.textContent = link.name;
-      socialLinksContainer.appendChild(a);
-    });
   }
 
   // Dynamic select options: Project Type
@@ -243,17 +245,11 @@ function renderHeroSection() {
 function renderProjects() {
   const filterContainer = document.getElementById("filterButtonsContainer");
   const grid = document.getElementById("projectsGrid");
-
-  if (!grid || !filterContainer) {
-    console.error("❌ Missing projectsGrid or filterButtonsContainer");
-    return;
-  }
-
-  // 🔁 Extract unique categories from all project.category arrays
+  // 🔁 Extract unique categories
   const categorySet = new Set();
   projects.forEach((p) => {
     const categories = Array.isArray(p.category) ? p.category : [p.category];
-    categories.forEach((cat) => cat && categorySet.add(cat.toLowerCase()));
+    categories.forEach((cat) => categorySet.add(cat.toLowerCase()));
   });
   const categories = ["all", ...Array.from(categorySet)];
 
@@ -274,7 +270,7 @@ function renderProjects() {
   grid.innerHTML = "";
   projects.forEach((project) => {
     const card = document.createElement("div");
-    card.className = "project-card";
+    card.className = "card"; // Apple-style card
 
     const categoryArray = Array.isArray(project.category)
       ? project.category
@@ -286,33 +282,64 @@ function renderProjects() {
 
     card.addEventListener("click", () => openProjectModal(project.id));
 
+    // 🖼 Image or placeholder
+    // const hasImage = project.images && project.images.length > 0;
+    const imageHTML = window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? `<img src="../${project.showcaseDark}" 
+               alt="${project.title}image" 
+               class="project-image" loading="lazy"/>`
+      : `<img src="../${project.showcaseLight}" 
+               alt="${project.title}image" 
+               class="project-image" loading="lazy"/>`;
+
     card.innerHTML = `
-      <div class="project-card-content">
-        <div class="project-status ${project.status}"></div>
-        <h3 class="project-title">${project.title}</h3>
-        <p class="project-description">${project.description}</p>
-        <div class="project-tags">
-          ${(project.tags || [])
-            .map((tag) => `<span class="project-tag">${tag}</span>`)
+    <div>
+      <div class="image-container">
+        ${imageHTML}
+        <div class="status-indicator ${project.status}"></div>
+      </div>
+      <div class="content">
+        <h3 class="title">${project.title}</h3>
+        <p class="description">${project.description}</p>
+        <div class="tags">
+          ${project.tags
+            .map(
+              (tag, i) =>
+                `<span class="tag ${i === 0 ? "primary" : ""}">${tag}</span>`
+            )
             .join("")}
         </div>
-        <div class="project-actions">
-          <button class="project-link">View Details</button>
-        </div>
+        
+      </div>
+      <div class="arrow"></div>
       </div>
     `;
-
-    const button = card.querySelector(".project-link");
-    button.addEventListener("click", (e) => {
-      e.stopPropagation();
-      openProjectModal(project.id);
-    });
 
     grid.appendChild(card);
   });
 
-  filterProjects("all");
+  // Default to show featured..
+  filterProjects("professional");
 }
+
+function filterProjects(selectedCategory) {
+  document.getElementById("section-title").innerText = `${capitalize(
+    selectedCategory
+  )} Projects`;
+  document.querySelectorAll(".filter-btn").forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.filter === selectedCategory);
+  });
+
+  document.querySelectorAll(".card").forEach((card) => {
+    const cardCategories = card.dataset.categories?.split(",") || [];
+    const show =
+      selectedCategory === "all" ||
+      cardCategories.includes(selectedCategory.toLowerCase());
+
+    card.style.display = show ? "block" : "none";
+  });
+}
+
 function openProjectModal(projectId) {
   const project = projects.find((p) => p.id === projectId);
   if (!project) return;
@@ -481,21 +508,6 @@ function attachModalHandlers() {
     if (modal.classList.contains("active")) {
       closeModal();
     }
-  });
-}
-
-function filterProjects(selectedCategory) {
-  document.querySelectorAll(".filter-btn").forEach((btn) => {
-    btn.classList.toggle("active", btn.dataset.filter === selectedCategory);
-  });
-
-  document.querySelectorAll(".project-card").forEach((card) => {
-    const cardCategories = card.dataset.categories?.split(",") || [];
-    const show =
-      selectedCategory === "all" ||
-      cardCategories.includes(selectedCategory.toLowerCase());
-
-    card.style.display = show ? "block" : "none";
   });
 }
 

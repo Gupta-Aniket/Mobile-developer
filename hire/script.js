@@ -15,7 +15,6 @@ const projects = portfolioData.projects;
 window.addEventListener("DOMContentLoaded", () => {
   renderHeroSection();
   renderAboutSection();
-  // renderSkillsSection();
   renderContactInfo();
   renderProjects();
   attachModalHandlers();

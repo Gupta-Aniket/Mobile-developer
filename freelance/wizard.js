@@ -1,4 +1,47 @@
-// wizard.js - FINAL V1.5 PRO CLEAN FIX
+import sharedData from "../shared-data.js";
+/**
+ * Sends an email via EmailJS with a custom HTML summary.
+ *
+ * @param {string} summaryHTML - The HTML content of the summary
+ * @param {Object} options
+ * @param {string} [options.serviceID="service_jqritth"] - EmailJS service ID
+ * @param {string} [options.templateID="template_9wuq71a"] - EmailJS template ID
+ * @param {Function} [options.onSuccess] - Callback after successful send
+ * @param {Function} [options.onError] - Callback on failure
+ */
+function sendEmailWithSummary(summary, user_email, options = {}) {
+  const {
+    serviceID = "service_jqritth",
+    templateID = "template_9wuq71a",
+    onSuccess,
+    onError,
+  } = options;
+
+  if (!window.emailjs) {
+    console.error("❌ EmailJS not initialized");
+    if (onError) onError(new Error("EmailJS not initialized"));
+    return;
+  }
+
+  // Build the payload — your template can have {{summary}} and {{user_email}}
+  const payload = {
+    summary,
+    user_email, // This will be used in your EmailJS template as {{user_email}}
+  };
+
+  emailjs
+    .send(serviceID, templateID, payload)
+    .then((res) => {
+      console.log("✅ Email sent", res.status, res.text);
+      if (onSuccess) onSuccess(res);
+    })
+    .catch((err) => {
+      console.error("❌ Failed to send email:", err);
+      if (onError) onError(err);
+    });
+}
+
+
 
 let state = {
   name: "",
@@ -409,37 +452,193 @@ function movePrevVisibleStep() {
   );
   renderStep();
 }
-
 function submitData() {
-  console.log("Collected Data Summary:");
-  console.log(`1. Name - ${state.name}`);
-  console.log(`2. Project Type - ${state.projectType}`);
-  if (state.projectType !== "Consultation")
-    console.log(`3. App Name - ${state.appName}`);
-  console.log(`4. Description - ${state.description}`);
-  console.log(`5. Audience - ${state.audience}`);
-  console.log(`6. Country - ${state.country} (${state.currency})`);
-  console.log(
-    `7. Budget - ${
-      state.budget === "Other" ? state.customBudget : state.budget
-    }`
-  );
-  console.log(
-    `8. Urgency - ${
-      state.urgency === "Other" ? state.customUrgency : state.urgency
-    }`
-  );
-  console.log(`9. Links - ${state.links}`);
-  console.log(`10. Email - ${state.email}`);
-  console.log(`11. Phone - ${state.phone}`);
+  const data = {
+    user_name: state.name?.trim() || "",
+    user_email: state.email?.trim() || "",
+    project_type: state.projectType?.trim() || "",
+    app_name: state.appName?.trim() || "",
+    description: state.description?.trim() || "",
+    audience: state.audience?.trim() || "",
+    country: state.country?.trim() || "",
+    budget:
+      state.budget === "Other"
+        ? state.customBudget?.trim() || ""
+        : state.budget?.trim() || "",
+    urgency:
+      state.urgency === "Other"
+        ? state.customUrgency?.trim() || ""
+        : state.urgency?.trim() || "",
+    links: state.links?.trim() || "",
+    user_phone: state.phone?.trim() || "",
+    submission_time: new Date().toLocaleString(),
+    // Add your PDF links here or get them dynamically if needed
+    onboarding_pdf:
+      state.onboardingPDF || "https://example.com/client-onboarding.pdf",
+    working_conditions_pdf:
+      state.workingConditionsPDF ||
+      "https://example.com/working-conditions.pdf",
+  };
 
-  progressBar.style.width = `100%`;
-  setTimeout(() => {
-    showPopup(
-      "✅ Your idea has been recorded. We'll reach out to you shortly.",
-      true
-    );
-  }, 300);
+  // Define sections
+  const sections = [
+    {
+      title: "Personal Information",
+      fields: ["user_name", "user_email", "user_phone", "country"],
+    },
+    {
+      title: "Project Details",
+      fields: ["project_type", "app_name", "description", "audience", "links"],
+    },
+    {
+      title: "Administrative",
+      fields: ["budget", "urgency", "submission_time"],
+    },
+  ];
+
+  // Generate the HTML
+  const summaryHTML = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Submission Summary</title>
+  <style>
+    :root {
+      --primary-color: #007aff;
+      --bg-color: #f5f5f7;
+      --section-alt-bg: #f2f2f7;
+      --text-color: #1c1c1e;
+      --label-color: #6e6e73;
+      --border-color: #d1d1d6;
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    body { margin:0; background:#ffffff; font-family: var(--font-family); }
+    .summary-wrapper { max-width:680px; margin:30px auto; background: var(--bg-color); border-radius:16px; color: var(--text-color); overflow:hidden; box-shadow:0 8px 25px rgba(0,0,0,0.08);}
+    .header { padding:20px 30px; text-align:center;}
+    .header h2 { margin:0 0 5px; font-size:24px; font-weight:600;}
+    .header p { margin:0; font-size:14px; color:#636366;}
+    .section { padding:20px 30px; border-top:1px solid var(--border-color);}
+    .section.alt-bg { background: var(--section-alt-bg);}
+    .section-title-wrapper { display:flex; align-items:center; gap:10px; margin-bottom:12px;}
+    .section-accent { width:4px; height:20px; background:var(--primary-color); border-radius:2px;}
+    .section-title { font-size:16px; font-weight:600; color: var(--text-color);}
+    .section-fields { display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:12px 20px;}
+    .field { display:flex; flex-direction:column; }
+    .field.wide { grid-column:1/-1;}
+    .label { font-size:13px; font-weight:600; color: var(--label-color); margin-bottom:4px;}
+    .value { font-size:15px; font-weight:500; color: var(--text-color); word-wrap:break-word;}
+    .value.key-field { font-weight:600;}
+    .value a { color: var(--primary-color); text-decoration:none;}
+    .value a:hover { text-decoration:underline;}
+    .footer-message { padding:20px 30px; font-size:15px; color:#3a3a3c; line-height:1.6; text-align:center; max-width:640px; margin:0 auto;}
+    .resource-cards { display:flex; flex-direction:column; gap:16px; padding:0 30px 30px; max-width:640px; margin:0 auto;}
+    .resource-card { display:flex; align-items:center; justify-content:space-between; padding:18px 20px; border-radius:14px; background:#ffffff; border:1px solid #e5e5ea; text-decoration:none; color:inherit; transition: background 0.3s ease, color 0.3s ease; box-shadow:0 4px 14px rgba(0,0,0,0.05);}
+    .resource-card:hover { background: var(--primary-color); color:#ffffff;}
+    .resource-card:hover .card-content h4, .resource-card:hover .card-content p, .resource-card:hover .card-arrow { color:#ffffff;}
+    .card-content h4 { margin:0; font-size:16px; font-weight:600; color:#1c1c1e; transition:color 0.3s ease;}
+    .card-content p { margin:4px 0 0; font-size:14px; color:#6e6e73; transition:color 0.3s ease;}
+    .card-arrow { font-size:20px; color: #007aff; transition:color 0.3s ease;}
+  </style>
+</head>
+<body>
+
+<div class="summary-wrapper">
+  <div class="header">
+    <h2>Submission Summary</h2>
+    <p>Here’s what we received from you:</p>
+  </div>
+
+  ${sections
+    .map((section, idx) => {
+      const alt = idx % 2 === 1 ? "alt-bg" : "";
+      return `
+    <div class="section ${alt}">
+      <div class="section-title-wrapper">
+        <span class="section-accent"></span>
+        <h3 class="section-title">${section.title}</h3>
+      </div>
+      <div class="section-fields">
+        ${section.fields
+          .map((key) => {
+            if (!data[key]) return "";
+            const isWide =
+              key === "description" || key === "links" ? "wide" : "";
+            const value =
+              key === "links" && data[key]
+                ? `<a href="${data[key]}" target="_blank">${data[key]}</a>`
+                : data[key];
+            const keyField =
+              key === "user_name" ||
+              key === "app_name" ||
+              key === "project_type"
+                ? "key-field"
+                : "";
+            return `<div class="field ${isWide}">
+                      <span class="label">${key
+                        .replace(/_/g, " ")
+                        .replace(/\b\w/g, (c) => c.toUpperCase())}</span>
+                      <span class="value ${keyField}">${value}</span>
+                    </div>`;
+          })
+          .join("")}
+      </div>
+    </div>`;
+    })
+    .join("")}
+
+  <div class="footer-message">
+    <p>Thank you — we’ve received your submission.</p>
+    <p>To help you prepare for what comes next, we’ve included two resources below. These documents outline our process and working principles.</p>
+    <p>We recommend reviewing them before our first call.</p>
+  </div>
+
+  <div class="resource-cards">
+    <a href="${
+      sharedData.files.onboarding_pdf
+    }" target="_blank" class="resource-card">
+      <div class="card-content">
+        <h4>Onboarding Guide</h4>
+        <p>Overview of our process, tools, and what to expect.</p>
+      </div>
+      <div class="card-arrow">→</div>
+    </a>
+
+    <a href="${
+      sharedData.files.working_conditions_pdf
+    }" target="_blank" class="resource-card">
+      <div class="card-content">
+        <h4>Working Agreement</h4>
+        <p>Terms, responsibilities, and scope of collaboration.</p>
+      </div>
+      <div class="card-arrow">→</div>
+    </a>
+  </div>
+
+</div>
+
+</body>
+</html>
+`;
+
+  // Send email with this HTML
+  sendEmailWithSummary(summaryHTML, data.user_email, {
+    onSuccess: () =>
+      showPopup(
+        "✅ Your submission has been recorded. Please check the resources.",
+        true
+      ),
+    onError: () => alert("❌ Something went wrong. Please try again."),
+  });
+
+  console.group("📩 Collected Data Summary");
+  Object.entries(data).forEach(([key, value]) => {
+    if (value) console.log(`${key}:`, value);
+  });
+  console.groupEnd();
+
+  progressBar.style.width = "100%";
 }
 
 function showPopup(message, closeAfter) {
