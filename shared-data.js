@@ -27,6 +27,78 @@ const sharedData = {
       "https://drive.google.com/uc?export=download&id=1R5J3xVJJfHgzsf7KzFWopaorKfpB_N2R",
   },
 
+  experienceData: [
+    {
+      icon: "https://play-lh.googleusercontent.com/3RtHo2WTwBvsAu_iT5pCkBU6y4_gPYVQ9IeZA3sKomPipQPqAJXxopyS24tMxZNEEi8=w480-h960-rw",
+      project: "ATiZ Team",
+      company: "Confidential - company name available upon request",
+      description: [
+        "Designed several app screens",
+        "Implemented online/offline toggle on home screen",
+        "App live on Play Store",
+      ],
+      tech: "Flutter | Dart",
+      platforms: ["Android"],
+      links: {
+        appstore: null,
+        playstore:
+          "https://play.google.com/store/apps/details?id=com.atizteam.codenicely.in&hl=en",
+      },
+    },
+    {
+      icon: "https://play-lh.googleusercontent.com/5sidDmZjniBUORxeNB0NFBDOSFhwSe2_aztJ3zRrjYh_SUDEpkuwLBXaKJcCKu25mVg=w480-h960-rw",
+      project: "Sauda 360",
+      company: "Confidential - company name available upon request",
+      description: [
+        "Released multiple versions on App Store & Play Store",
+        "Implemented chat with image upload",
+        "Built time picker and other business logic features",
+      ],
+      tech: "Flutter | Dart",
+      platforms: ["Android", "iOS"],
+      links: {
+        appstore: "https://apps.apple.com/in/app/sauda360/id6747579557",
+        playstore:
+          "https://play.google.com/store/apps/details?id=com.sauda360.codenicely.sauda360&hl=en",
+      },
+    },
+    {
+      icon: "https://play-lh.googleusercontent.com/pjsMMOaI1j5vC9YTXtQwNoGZ6FFrcZfWCD3vmo2dVtstONCLsQuXLBuw-8_YaqHVqMAi=w480-h960-rw",
+      project: "Covesto",
+      company: "Confidential - company name available upon request",
+      description: [
+        "Built core modules from the ground up",
+        "Two modules remaining for completion",
+        "Integrated Razorpay payment gateway for secure in-app transactions.",
+        "Image compression and optimization for faster loading times.",
+        // "App live on Play Store and App Store (original version not authored)",
+      ],
+      tech: "Flutter | Dart",
+      platforms: ["Android"],
+      links: {
+        // appstore: "https://apps.apple.com/app/idxxxxxxxx",
+        playstore:
+          "https://play.google.com/store/apps/details?id=com.shell.covesto&hl=en",
+      },
+    },
+    {
+      icon: "https://play-lh.googleusercontent.com/BF7Pz_j7z655RfIgGwuyuZQX8TDQtLcNiB6wOgJZP0NiF9k7e2dXHpRPloNAt1OZee2V=w480-h960-rw",
+      project: "Seeme",
+      company: "Confidential - company name available upon request",
+      description: [
+        "Implemented call and chat features from using webRTC and sockets",
+        "Worked on image filters",
+        "One India One App initiative",
+      ],
+      tech: "React Native | TypeScript",
+      platforms: ["Android"],
+      links: {
+        playstore:
+          "https://play.google.com/store/apps/details?id=com.seeme.social&hl=en",
+        appstore: null,
+      },
+    },
+  ],
   projectData: [
     //    "live"
     //    "ongoing"

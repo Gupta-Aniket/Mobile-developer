@@ -319,7 +319,7 @@ function renderProjects() {
   });
 
   // Default to show featured..
-  filterProjects("professional");
+  filterProjects("featured");
 }
 
 function filterProjects(selectedCategory) {

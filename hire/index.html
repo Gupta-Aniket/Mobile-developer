@@ -38,15 +38,37 @@
   <body>
     <!-- Navigation -->
     <nav class="nav">
-      <div class="nav-content">
-        <div class="nav-title">Aniket</div>
-        <div class="nav-links">
-          <a href="#about" class="nav-link">About</a>
-          <a href="#projects" class="nav-link">Projects</a>
-          <a href="#contact" class="nav-link">Contact</a>
-        </div>
-      </div>
-    </nav>
+  <div class="nav-content">
+    <div class="nav-title">Aniket</div>
+
+    <!-- Desktop nav links -->
+    <div class="nav-links">
+      <a href="#about" class="nav-link">About</a>
+      <a href="#experience" class="nav-link">Experience</a>
+      <a href="#skills" class="nav-link">Skills</a>
+      <a href="#projects" class="nav-link">Projects</a>
+      <a href="#contact" class="nav-link">Contact</a>
+    </div>
+
+    <!-- Hamburger only visible on mobile -->
+    <div class="nav-hamburger" id="nav-hamburger">
+  <span></span>
+  <span></span>
+  <span></span>
+</div>
+    <!-- Mobile dropdown -->
+<div class="nav-dropdown" id="nav-dropdown">
+  <a href="#about">About</a>
+  <a href="#experience">Experience</a>
+  <a href="#skills">Skills</a>
+  <a href="#projects">Projects</a>
+  <a href="#contact">Contact</a>
+</div>
+
+
+  </div>
+</nav>
+
 
     <!-- Hero Section -->
     <section class="hero">
@@ -68,7 +90,10 @@
           <p class="section-subtitle" id="about-subtitle"></p>
         </div>
         <div class="about-content">
-          <div class="about-avatar" id="about-avatar"></div>
+          <div>
+            <div class="about-avatar" id="about-avatar"></div>
+            <div class="about-location" id="about-location">📍 India (Remote)</div>
+          </div>
           <div>
             <div class="about-quote" id="about-quote"></div>
             <div id="about-bio"></div>
@@ -81,8 +106,20 @@
       </div>
     </section>
 
+    <section class="section experience" id="experience">
+      <div class="section-header">
+        <h2 class="section-title">Experience</h2>
+        <p class="section-subtitle">
+          My professional experience across different technologies and platforms
+          
+        </p>
+      </div>
+      <div id="experienceTimeline" class="timeline"></div>
+      <p class = "disclaimer">* All projects shown are owned by their respective companies. I contributed as a developer, either partially or fully.</p>
+    </section>
+
     <!-- Skills Section -->
-    <!-- <section class="section skills">
+    <section class="section skills" id="skills"></section>
       <div class="container">
         <div class="section-header">
           <h2 class="section-title">Skills & Proficiency</h2>
@@ -90,15 +127,37 @@
             My expertise across different technologies and platforms
           </p>
         </div>
-        <div class="skills-grid" id="skillsGrid"></div>
-      </div>
-    </section> -->
+        <div class="skills-grid" id="skillsGrid">
+          <div class="tech-card deployment-card">
+            <div class="section-header">
+              <h2 class="section-subtitle">Deployment & Cloud</h2>
+              <p>
+                I can handle publishing and cloud setup
+              </p>
+            </div>
+            <div id="deploymentMain" class="deployment-main"></div>
+            <div id="deploymentSupport" class="deployment-support"></div>
+          </div>
 
-    <!-- Projects Section -->
+          <!-- Skills Card -->
+          <div class="tech-card skills-card">
+            <div class="section-header">
+              <h2 class="section-subtitle">Framwork & Languages</h2>
+              <p>
+                My main stack and supporting technologies
+              </p>
+            </div>
+            <div id="skillsMain" class="skills-main"></div>
+            <div id="skillsSupport" class="skills-support"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="section projects" id="projects">
       <div class="container">
         <div class="section-header">
-          <h2 class="section-title" id = "section-title">Featured Projects</h2>
+          <h2 class="section-title" id="section-title">Featured Projects</h2>
           <p class="section-subtitle">
             A showcase of my recent work across different platforms and
             industries
@@ -141,6 +200,9 @@
       </div>
     </section>
 
+
+
+
     <!-- Project Modal -->
     <div id="projectModal" class="modal-overlay">
       <div class="modal-content">
@@ -150,7 +212,6 @@
             <div class="share-project-btn" title="Share this">
               <img src="../assets/share.svg" height="30rem" alt="Share icon" />
             </div>
-            
 
             <button class="modal-close" aria-label="Close modal">✕</button>
           </div>

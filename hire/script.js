@@ -18,8 +18,29 @@ window.addEventListener("DOMContentLoaded", () => {
   renderContactInfo();
   renderProjects();
   attachModalHandlers();
+  // renderSkillsSection();
+  renderExperience();
+  renderSkillsList();
+  renderDeploymentSection();
   attachProjectShareButtons();
   checkHashSituation();
+
+  const hamburger = document.getElementById("nav-hamburger");
+  const dropdown = document.getElementById("nav-dropdown");
+
+  hamburger.addEventListener("click", (e) => {
+    e.stopPropagation();
+    hamburger.classList.toggle("active");
+    dropdown.classList.toggle("show");
+  });
+
+  // Close when clicking outside
+  document.addEventListener("click", (e) => {
+    if (!dropdown.contains(e.target) && !hamburger.contains(e.target)) {
+      dropdown.classList.remove("show");
+      hamburger.classList.remove("active");
+    }
+  });
 });
 
 function checkHashSituation() {
@@ -91,51 +112,155 @@ function renderAboutSection() {
   }
 }
 
-// function renderSkillsSection() {
-//   const skillsGrid = document.getElementById("skillsGrid");
-//   portfolioData.skills.forEach((category) => {
-//     const categoryDiv = document.createElement("div");
-//     categoryDiv.className = "skill-category";
+function getIconColor() {
+  const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  return isDark ? "ffffff" : "333333"; // white on dark, dark grey on light
+}
 
-//     const categoryTitle = document.createElement("h3");
-//     categoryTitle.className = "skill-category-title";
-//     categoryTitle.textContent = category.category;
-//     categoryDiv.appendChild(categoryTitle);
+// Returns CDN URL for a slug
+function cdn(slug) {
+  return `https://cdn.simpleicons.org/${slug}/${getIconColor()}`;
+}
 
-//     category.items.forEach((skill) => {
-//       const skillItem = document.createElement("div");
-//       skillItem.className = "skill-item";
+// Render Deployment Section
+function renderDeploymentSection() {
+  const main = document.getElementById("deploymentMain");
+  const support = document.getElementById("deploymentSupport");
+  main.innerHTML = "";
+  support.innerHTML = "";
 
-//       const skillInfo = document.createElement("div");
-//       skillInfo.className = "skill-info";
+  portfolioData.deployment.forEach((item, index) => {
+    const isFeatured = index < 2; // App Store & Play Store
+    const iconSize = isFeatured ? "icon-big" : "icon-small";
+    const container = isFeatured ? main : support;
 
-//       const skillName = document.createElement("span");
-//       skillName.className = "skill-name";
-//       skillName.textContent = skill.name;
+    const div = document.createElement("div");
+    div.className = `tech-item`;
+    div.innerHTML = `
+      <img src="${cdn(item.slug)}" alt="${item.name}" class="${iconSize}" />
+      <span class="tech-name">${item.detail}</span>
+    `;
+    container.appendChild(div);
+  });
+}
+function renderSkillsList() {
+  const main = document.getElementById("skillsMain");
+  const support = document.getElementById("skillsSupport");
+  main.innerHTML = "";
+  support.innerHTML = "";
 
-//       const skillPercent = document.createElement("span");
-//       skillPercent.className = "skill-percentage";
-//       // skillPercent.textContent = `${skill.percentage}%`; // !<- stopped percentage !! too much cognitive load
+  portfolioData.skills.forEach((skill, index) => {
+    const isFeatured = ["flutter", "react"].includes(skill.slug);
+    const iconSize = isFeatured ? "icon-big" : "icon-small";
+    const container = isFeatured ? main : support;
 
-//       skillInfo.appendChild(skillName);
-//       skillInfo.appendChild(skillPercent);
+    const div = document.createElement("div");
+    div.className = `tech-item`;
+    div.innerHTML = `
+      <img src="${cdn(skill.slug)}" alt="${
+      skill.name
+    }" class="${iconSize}" title="${skill.name}" />
+      <span class="tech-name">${skill.name}</span>
+    `;
+    container.appendChild(div);
+  });
+}
 
-//       const skillBar = document.createElement("div");
-//       skillBar.className = "skill-bar";
+// Re-render icons on theme change
+window
+  .matchMedia("(prefers-color-scheme: dark)")
+  .addEventListener("change", () => {
+    renderDeploymentSection();
+    renderSkillsList();
+  });
 
-//       const skillProgress = document.createElement("div");
-//       skillProgress.className = "skill-progress";
-//       skillProgress.style.width = `${skill.percentage}%`;
+function renderExperience() {
+  const timeline = document.getElementById("experienceTimeline");
 
-//       skillBar.appendChild(skillProgress);
-//       skillItem.appendChild(skillInfo);
-//       skillItem.appendChild(skillBar);
-//       categoryDiv.appendChild(skillItem);
-//     });
+  // Icon mapping for each project
+  const projectIcons = {
+    "ATiZ Security": "🔒",
+    "Sauda 360": "📊",
+    "Covesto": "💼",
+    "Seeme": "👁️",
+  };
 
-//     skillsGrid.appendChild(categoryDiv);
-//   });
-// }
+  portfolioData.experience.forEach((exp, index) => {
+    const item = document.createElement("div");
+    item.className = "timeline-item";
+
+    const bullets = exp.description.map((desc) => `<li>${desc}</li>`).join("");
+    const icon = exp.icon|| "🏢";
+
+    // Odd items: spacer - icon - content
+    // Even items: content - icon - spacer
+    const isOdd = index % 2 === 0;
+
+    item.innerHTML = `
+      ${isOdd ? '<div class="timeline-spacer"></div>' : ""}
+      ${!isOdd ? '<div class="timeline-content">' : ""}
+        ${
+          !isOdd
+            ? `<h3 class="timeline-project">${exp.project} *</h3>
+        <div class="timeline-company">${exp.company}</div>
+        <span class="timeline-tech">${exp.tech}</span>
+        <div class="timeline-desc"><ul>${bullets}</ul></div>`
+            : ""
+        }
+        ${
+          !isOdd && (exp.links.playstore || exp.links.appstore)
+            ? `
+          <div class="timeline-links">
+            ${
+              exp.links.playstore
+                ? `<a href="${exp.links.playstore}" target="_blank">Play Store</a>`
+                : ""
+            }
+            ${
+              exp.links.appstore
+                ? `<a href="${exp.links.appstore}" target="_blank">App Store</a>`
+                : ""
+            }
+          </div>
+        `
+            : ""
+        }
+      ${!isOdd ? "</div>" : ""}
+      <img src="${icon}" alt="${exp.project}" class="timeline-icon">
+      ${isOdd ? '<div class="timeline-content">' : ""}
+        ${
+          isOdd
+            ? `<h3 class="timeline-project">${exp.project}*</h3>
+        <div class="timeline-company">${exp.company}</div>
+        <span class="timeline-tech">${exp.tech}</span>
+        <div class="timeline-desc"><ul>${bullets}</ul></div>`
+            : ""
+        }
+        ${
+          isOdd && (exp.links.playstore || exp.links.appstore)
+            ? `
+          <div class="timeline-links">
+            ${
+              exp.links.playstore
+                ? `<a href="${exp.links.playstore}" target="_blank">Play Store</a>`
+                : ""
+            }
+            ${
+              exp.links.appstore
+                ? `<a href="${exp.links.appstore}" target="_blank">App Store</a>`
+                : ""
+            }
+          </div>
+        `
+            : ""
+        }
+      ${isOdd ? "</div>" : ""}
+      ${!isOdd ? '<div class="timeline-spacer"></div>' : ""}
+    `;
+
+    timeline.appendChild(item);
+  });
+}
 
 function renderProjects() {
   const filterContainer = document.getElementById("filterButtonsContainer");
@@ -213,12 +338,14 @@ function renderProjects() {
     grid.appendChild(card);
   });
 
-  // Default to show featured.. 
+  // Default to show featured..
   filterProjects("featured");
 }
 
 function filterProjects(selectedCategory) {
-  document.getElementById("section-title").innerText = `${capitalize(selectedCategory)} Projects`;
+  document.getElementById("section-title").innerText = `${capitalize(
+    selectedCategory
+  )} Projects`;
   document.querySelectorAll(".filter-btn").forEach((btn) => {
     btn.classList.toggle("active", btn.dataset.filter === selectedCategory);
   });

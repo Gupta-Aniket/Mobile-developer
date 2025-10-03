@@ -1,5 +1,8 @@
 import sharedData from "./shared-data.js";
 
+const cdn = (slug, color = "fff") =>
+  `https://cdn.simpleicons.org/${slug}/${color}`;
+
 const portfolioData = {
   personalInfo: sharedData.personalInfo,
 
@@ -40,61 +43,61 @@ const portfolioData = {
 
       "Over the past couple of years, I’ve shipped 10+ tools and maintained 30+ public repos. I care about performance, usability, and design principles that make apps feel intuitive and reliable.",
     ],
-
-    techStack: [
-      { name: "Flutter", level: "expert" },
-      { name: "React Native", level: "expert" },
-      { name: "Dart", level: "expert" },
-      { name: "JavaScript", level: "advanced" },
-      { name: "Firebase", level: "advanced" },
-      { name: "REST APIs", level: "advanced" },
-      { name: "Supabase", level: "intermediate" },
-      { name: "Python", level: "intermediate" },
-      { name: "WebRTC", level: "intermediate" },
-      { name: "Shell Scripting", level: "intermediate" },
-      { name: "MVC", level: "expert" },
-      { name: "UI/UX Design", level: "expert" },
-      { name: "MVVM", level: "intermediate" },
-    ],
   },
 
-  skills: [
+  deployment: [
+    { name: "App Store", detail: "iOS publishing", slug: "appstore" },
+    { name: "Play Store", detail: "Android publishing", slug: "googleplay" },
+    { name: "Firebase", detail: "Backend & Cloud services", slug: "firebase" },
     {
-      category: "Frontend & UI/UX",
-      items: [
-        { name: "Flutter", percentage: 95 },
-        { name: "React Native", percentage: 90 },
-        { name: "UI/UX Design", percentage: 95 },
-      ],
+      name: "Supabase",
+      detail: "Realtime database & authentication",
+      slug: "supabase",
     },
     {
-      category: "Backend & Cloud Services",
-      items: [
-        { name: "Firebase", percentage: 90 },
-        { name: "Supabase", percentage: 75 },
-        { name: "REST APIs", percentage: 90 },
-      ],
+      name: "CI/CD",
+      detail: "Fastlane / GitHub Actions for mobile apps",
+      slug: "bento",
     },
-    {
-      category: "Automation, DevOps & Tooling",
-      items: [
-        { name: "Python", percentage: 80 },
-        { name: "Shell/Bash", percentage: 75 },
-        { name: "WebRTC", percentage: 70 },
-      ],
-    },
+    { name: "Docker", detail: "Can create docker images for handling CI/CD", slug: "docker" },
   ],
+  skills: [
+    // Core frameworks
+    { name: "Flutter", level: "expert", slug: "flutter" },
+    { name: "React Native", level: "expert", slug: "react" },
+
+    // Languages
+    { name: "Dart", level: "expert", slug: "dart" },
+    { name: "JavaScript", level: "advanced", slug: "javascript" },
+    { name: "TypeScript", level: "advanced", slug: "typescript" },
+    { name: "Python", level: "intermediate", slug: "python" },
+
+    // Backend / APIs
+    { name: "REST APIs", level: "advanced", slug: "boxysvg" },
+    { name: "WebRTC", level: "intermediate", slug: "webrtc" },
+    { name: "Git", level: "intermediate", slug: "git" },
+    { name: "Shell Scripting", level: "intermediate", slug: "shell" },
+
+    // UI / Architecture
+    { name: "UI/UX Design", level: "expert", slug: "figma" },
+    { name: "MVVM / Clean Architecture", level: "intermediate", slug: "googlecontaineroptimizedos" },
+
+    // Supporting / other tools
+    { name: "Redux / Provider", level: "intermediate", slug: "redux" },
+    { name: "GraphQL", level: "intermediate", slug: "graphql" },
+    { name: "Postman / Insomnia", level: "advanced", slug: "postman" },
+  ],
+
   projects: sharedData.projectData,
 
-  finalStats: [
+  experience: sharedData.experienceData,
+
+  filStats: [
     { icon: "\ud83d\udcf1", target: 15, label: "Apps Shipped" },
     { icon: "\u2b50", target: 98, label: "Client Satisfaction" },
     { icon: "\ud83d\ude80", target: 50, label: "Features Delivered" },
     { icon: "\ud83c\udf1f", target: 14, label: "Years Experience" },
   ],
-
 };
-
-
 
 export default portfolioData;
