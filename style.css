@@ -2157,8 +2157,9 @@ html {
 .timeline-content {
   background: #1c1c1e;
   border-radius: 24px;
-  padding: 2rem;
-  margin: 1rem;
+  padding: 1.5rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
   border: 1px solid #2c2c2e;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
@@ -2323,7 +2324,7 @@ html {
   }
   
   .timeline-content {
-    padding: 1.5rem;
+    padding: 1rem;
   }
 }
 /* Project Filters */
