@@ -20,6 +20,7 @@ window.addEventListener("DOMContentLoaded", () => {
   attachModalHandlers();
   // renderSkillsSection();
   renderExperience();
+  activateScrollAnimations();
   renderSkillsList();
   renderDeploymentSection();
   attachProjectShareButtons();
@@ -42,6 +43,20 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+function showToast(message) {
+  const toast = document.getElementById("toast");
+
+  toast.textContent = message;
+  toast.classList.remove("hidden");
+  toast.classList.add("show");
+
+  // Remove after 2 seconds
+  setTimeout(() => {
+    toast.classList.remove("show");
+    setTimeout(() => toast.classList.add("hidden"), 300);
+  }, 2000);
+}
 
 function checkHashSituation() {
   const fullHash = window.location.hash; // e.g., #projects#flutter-xylophone
@@ -174,23 +189,35 @@ window
     renderSkillsList();
   });
 
+function activateScrollAnimations() {
+  const items = document.querySelectorAll(".timeline-item");
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("show");
+        }
+      });
+    },
+    {
+      threshold: 0.15, // triggers early, shows smoother
+      rootMargin: "0px 0px -50px 0px",
+    }
+  );
+
+  items.forEach((item) => observer.observe(item));
+}
+
 function renderExperience() {
   const timeline = document.getElementById("experienceTimeline");
-
-  // Icon mapping for each project
-  const projectIcons = {
-    "ATiZ Security": "🔒",
-    "Sauda 360": "📊",
-    "Covesto": "💼",
-    "Seeme": "👁️",
-  };
 
   portfolioData.experience.forEach((exp, index) => {
     const item = document.createElement("div");
     item.className = "timeline-item";
 
     const bullets = exp.description.map((desc) => `<li>${desc}</li>`).join("");
-    const icon = exp.icon|| "🏢";
+    const icon = exp.icon || "🏢";
 
     // Odd items: spacer - icon - content
     // Even items: content - icon - spacer
@@ -213,14 +240,27 @@ function renderExperience() {
           <div class="timeline-links">
             ${
               exp.links.playstore
-                ? `<a href="${exp.links.playstore}" target="_blank">Play Store</a>`
+                ? `<a href="${
+                    exp.links.playstore
+                  }" target="_blank" class="timeline-btn">
+         <img src="${cdn(
+           "googleplay"
+         )}" class="timeline-link-icon" alt="Play Store">
+         <span>Play Store</span>
+       </a>`
                 : ""
             }
-            ${
-              exp.links.appstore
-                ? `<a href="${exp.links.appstore}" target="_blank">App Store</a>`
-                : ""
-            }
+${
+  exp.links.appstore
+    ? `<a href="${exp.links.appstore}" target="_blank" class="timeline-btn">
+         <img src="${cdn(
+           "appstore"
+         )}" class="timeline-link-icon" alt="App Store">
+         <span>App Store</span>
+       </a>`
+    : ""
+}
+
           </div>
         `
             : ""
@@ -242,14 +282,26 @@ function renderExperience() {
           <div class="timeline-links">
             ${
               exp.links.playstore
-                ? `<a href="${exp.links.playstore}" target="_blank">Play Store</a>`
+                ? `<a href="${
+                    exp.links.playstore
+                  }" target="_blank" class="timeline-btn">
+         <img src="${cdn(
+           "googleplay"
+         )}" class="timeline-link-icon" alt="Play Store">
+         <span>Play Store</span>
+       </a>`
                 : ""
             }
-            ${
-              exp.links.appstore
-                ? `<a href="${exp.links.appstore}" target="_blank">App Store</a>`
-                : ""
-            }
+${
+  exp.links.appstore
+    ? `<a href="${exp.links.appstore}" target="_blank" class="timeline-btn">
+         <img src="${cdn(
+           "appstore"
+         )}" class="timeline-link-icon" alt="App Store">
+         <span>App Store</span>
+       </a>`
+    : ""
+}
           </div>
         `
             : ""
@@ -674,18 +726,18 @@ function attachProjectShareButtons() {
             case "copy":
               navigator.clipboard
                 .writeText(projectURL)
-                .then(() => alert("Copied to clipboard"));
+                .then(() => showToast("Copied to clipboard"));
               break;
             case "markdown":
               navigator.clipboard
                 .writeText(`[${project.title}](${projectURL})`)
-                .then(() => alert("Markdown copied"));
+                .then(() => showToast("Markdown copied"));
               break;
             case "devto":
               const devContent = `---\ntitle: ${project.title}\ndescription: ${project.description}\n---\n\nCheck it out 👉 ${projectURL}`;
               navigator.clipboard
                 .writeText(devContent)
-                .then(() => alert("Dev.to blog draft copied!"));
+                .then(() => showToast ("Dev.to blog draft copied!"));
               break;
           }
 
