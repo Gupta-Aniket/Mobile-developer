@@ -29,20 +29,40 @@ const sharedData = {
 
   experienceData: [
     {
-      icon: "https://play-lh.googleusercontent.com/3RtHo2WTwBvsAu_iT5pCkBU6y4_gPYVQ9IeZA3sKomPipQPqAJXxopyS24tMxZNEEi8=w480-h960-rw",
-      project: "ATiZ Team",
-      company: "Confidential - company name available upon request",
+      icon: "https://images.saasworthy.com/tr:w-160,h-0,c-at_max,e-sharpen-1/gimbooks_5728_logo_1603873959_nmaat.jpg",
+      project: "GimBooks India (GST Invoice Manager)",
+      company: "GimBooks",
       description: [
-        "Designed several app screens",
-        "Implemented online/offline toggle on home screen",
-        "App live on Play Store",
+        "Shipped new features across billing and GST invoice flows",
+        "Built and updated UI screens using SwiftUI",
+        "Integrated APIs for invoices, customers, GST tools, and ledger sync",
+        "Fixed crashes and improved performance based on user reports",
+        "Managed App Store releases, TestFlight builds, and version rollout",
       ],
-      tech: "Flutter | Dart",
-      platforms: ["Android"],
+      tech: "iOS | Swift | SwiftUI",
+      platforms: ["iOS"],
       links: {
-        appstore: null,
-        playstore:
-          "https://play.google.com/store/apps/details?id=com.atizteam.codenicely.in&hl=en",
+        appstore:
+          "https://apps.apple.com/in/app/gst-invoice-manager-gimbooks/id1673454277",
+        playstore: null,
+      },
+    },
+    {
+      icon: "https://play-lh.googleusercontent.com/-yW3qjDm909W0sQf9IEUg0v1RvX5lehGDhlrzr855GKk-lM0G843Ap9PVvEdqotuynUv=w480-h960-rw",
+      project: "GimBooks Pay",
+      company: "GimBooks",
+      description: [
+        "Developed payment modules and related business logic using SwiftUI",
+        "Integrated secure payment APIs and verification flows",
+        "Built onboarding, transaction history, and payout screens",
+        "Solved production issues based on QA and user feedback",
+        "Improved app stability and optimized API interactions",
+      ],
+      tech: "iOS | Swift | SwiftUI",
+      platforms: ["iOS"],
+      links: {
+        appstore: "https://apps.apple.com/in/app/gimbooks-pay/id6738347497",
+        playstore: null,
       },
     },
     {
@@ -727,7 +747,7 @@ const sharedData = {
       ],
 
       images: [], // replace with real paths
-      videoLinks: ["https://youtu.be/BVjvtD12pXw"], // replace with actual link if you create one
+      videoLinks: ["https://youtu.be/BVjvtD12pXw"], 
       showcaseDark: "assets/branched-llm/branched_llm_dark.png",
       showcaseLight: "assets/branched-llm/branched_llm_light.png",
 
