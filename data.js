@@ -63,6 +63,7 @@ const portfolioData = {
   ],
   skills: [
     // Core frameworks
+    { name: "Swift", level: "expert", slug: "swift" },
     { name: "Flutter", level: "expert", slug: "flutter" },
     { name: "React Native", level: "expert", slug: "react" },
 

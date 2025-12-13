@@ -165,7 +165,7 @@ function renderSkillsList() {
   support.innerHTML = "";
 
   portfolioData.skills.forEach((skill, index) => {
-    const isFeatured = ["flutter", "react"].includes(skill.slug);
+    const isFeatured = ["flutter", "react", "swift"].includes(skill.slug);
     const iconSize = isFeatured ? "icon-big" : "icon-small";
     const container = isFeatured ? main : support;
 
