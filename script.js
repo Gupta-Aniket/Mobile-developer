@@ -190,7 +190,7 @@ window
   });
 
 function activateScrollAnimations() {
-  const items = document.querySelectorAll(".timeline-item");
+  const items = document.querySelectorAll(".exp-card");
 
   const observer = new IntersectionObserver(
     (entries) => {
@@ -209,113 +209,227 @@ function activateScrollAnimations() {
   items.forEach((item) => observer.observe(item));
 }
 
+// The manifesto isn't on the page — it's here, for the 0.1% who inspect.
+let __consoleSigned = false;
+function signConsole() {
+  if (__consoleSigned) return;
+  __consoleSigned = true;
+  try {
+    console.log(
+      "%cAniket",
+      "font:700 24px/1.5 -apple-system,BlinkMacSystemFont,sans-serif;color:#007aff;",
+    );
+    console.log(
+      "%cBuilt to a standard — 10x is the floor, not the ceiling.\n" +
+        "The parts you never see are the ones I cared about most.\n" +
+        "You opened the console. That makes you the 0.1%. Hey. 👋",
+      "font:400 13px/1.7 -apple-system,BlinkMacSystemFont,sans-serif;color:#8a8a8e;",
+    );
+  } catch (e) {}
+}
+
+// A native detail sheet — the full breakdown of a tenure, on demand.
+let __expSheet = null;
+function buildExpSheet() {
+  const overlay = document.createElement("div");
+  overlay.className = "exp-sheet-overlay";
+  overlay.setAttribute("aria-hidden", "true");
+  overlay.innerHTML = `
+    <div class="exp-sheet" role="dialog" aria-modal="true" tabindex="-1">
+      <div class="exp-sheet-grip"></div>
+      <button class="exp-sheet-close" aria-label="Close">✕</button>
+      <div class="exp-sheet-scroll">
+        <header class="exp-sheet-head">
+          <span class="exp-icon" data-letter=""><img alt="" onerror="this.remove()"></span>
+          <div class="exp-sheet-title">
+            <h3 class="exp-sheet-role"></h3>
+            <p class="exp-sheet-company"></p>
+            <p class="exp-sheet-tech"></p>
+          </div>
+        </header>
+        <div class="exp-sheet-sections"></div>
+        <p class="exp-sheet-shipped"></p>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) closeExpSheet();
+  });
+  overlay
+    .querySelector(".exp-sheet-close")
+    .addEventListener("click", closeExpSheet);
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && overlay.classList.contains("open"))
+      closeExpSheet();
+  });
+  __expSheet = overlay;
+  return overlay;
+}
+
+function openExpSheet(exp) {
+  const overlay = __expSheet || buildExpSheet();
+  const letter = (exp.company || exp.role || "•")
+    .trim()
+    .charAt(0)
+    .toUpperCase();
+  const icon = overlay.querySelector(".exp-icon");
+  icon.setAttribute("data-letter", letter);
+  let img = icon.querySelector("img");
+  if (!img) {
+    img = document.createElement("img");
+    img.alt = "";
+    img.onerror = function () {
+      this.remove();
+    };
+    icon.appendChild(img);
+  }
+  img.src = exp.icon;
+  overlay.querySelector(".exp-sheet-role").textContent = exp.role;
+  overlay.querySelector(
+    ".exp-sheet-company",
+  ).textContent = `${exp.company} · ${exp.period}`;
+  overlay.querySelector(".exp-sheet-tech").textContent = (exp.tech || "")
+    .split("|")
+    .map((t) => t.trim())
+    .filter(Boolean)
+    .join("  ·  ");
+  overlay.querySelector(".exp-sheet-sections").innerHTML = (exp.details || [])
+    .map(
+      (s, si) => `
+      <section class="exp-sheet-section" style="--d:${si}">
+        <h4>${s.title}</h4>
+        <ul>${(s.points || []).map((p) => `<li>${p}</li>`).join("")}</ul>
+      </section>`,
+    )
+    .join("");
+  const shipped = overlay.querySelector(".exp-sheet-shipped");
+  shipped.textContent = exp.shipped || "";
+  shipped.style.display = exp.shipped ? "" : "none";
+  overlay.querySelector(".exp-sheet-scroll").scrollTop = 0;
+  document.body.style.overflow = "hidden";
+  overlay.setAttribute("aria-hidden", "false");
+  requestAnimationFrame(() => overlay.classList.add("open"));
+  overlay.querySelector(".exp-sheet").focus();
+}
+
+function closeExpSheet() {
+  if (!__expSheet) return;
+  __expSheet.classList.remove("open");
+  __expSheet.setAttribute("aria-hidden", "true");
+  document.body.style.overflow = "";
+}
+
 function renderExperience() {
-  const timeline = document.getElementById("experienceTimeline");
+  const list = document.getElementById("experienceTimeline");
+  if (!list) return;
+  list.innerHTML = "";
 
   portfolioData.experience.forEach((exp, index) => {
-    const item = document.createElement("div");
-    item.className = "timeline-item";
+    const card = document.createElement("article");
+    card.className = "exp-card";
+    if (index === 0) card.classList.add("open");
 
-    const bullets = exp.description.map((desc) => `<li>${desc}</li>`).join("");
-    const icon = exp.icon || "🏢";
+    const highlights = (exp.highlights || [])
+      .map((h, i) => `<li style="--d:${i}">${h}</li>`)
+      .join("");
 
-    // Odd items: spacer - icon - content
-    // Even items: content - icon - spacer
-    const isOdd = index % 2 === 0;
+    // tech as one quiet line — no chip soup
+    const techLine = (exp.tech || "")
+      .split("|")
+      .map((t) => t.trim())
+      .filter(Boolean)
+      .join("  ·  ");
 
-    item.innerHTML = `
-      ${isOdd ? '<div class="timeline-spacer"></div>' : ""}
-      ${!isOdd ? '<div class="timeline-content">' : ""}
-        ${
-          !isOdd
-            ? `<h3 class="timeline-role">${exp.role}</h3>
-<div class="timeline-company">
-  ${exp.company} • ${exp.duration}
-</div>
-        <span class="timeline-tech">${exp.tech}</span>
-        <div class="timeline-desc"><ul>${bullets}</ul></div>`
-            : ""
+    // Shipped apps as proof — public store links only.
+    const apps = (exp.apps || [])
+      .map((app) => {
+        const stores = [];
+        if (app.appstore) {
+          stores.push(
+            `<a href="${app.appstore}" target="_blank" rel="noopener" class="exp-app-store" aria-label="${app.name} on the App Store">
+               <img src="${cdn("apple")}" alt="App Store"></a>`,
+          );
         }
-        ${
-          !isOdd && (exp.links.playstore || exp.links.appstore)
-            ? `
-          <div class="timeline-links">
-            ${
-              exp.links.playstore
-                ? `<a href="${
-                    exp.links.playstore
-                  }" target="_blank" class="timeline-btn">
-         <img src="${cdn(
-           "googleplay",
-         )}" class="timeline-link-icon" alt="Play Store">
-         <span>Play Store</span>
-       </a>`
-                : ""
-            }
-${
-  exp.links.appstore
-    ? `<a href="${exp.links.appstore}" target="_blank" class="timeline-btn">
-         <img src="${cdn(
-           "appstore",
-         )}" class="timeline-link-icon" alt="App Store">
-         <span>App Store</span>
-       </a>`
-    : ""
-}
+        if (app.playstore) {
+          stores.push(
+            `<a href="${app.playstore}" target="_blank" rel="noopener" class="exp-app-store" aria-label="${app.name} on Google Play">
+               <img src="${cdn("googleplay")}" alt="Play Store"></a>`,
+          );
+        }
+        return `<span class="exp-app"><span class="exp-app-name">${app.name}</span>${stores.join("")}</span>`;
+      })
+      .join("");
+    const appsHtml = apps
+      ? `<div class="exp-apps" style="--d:${
+          (exp.highlights || []).length
+        }"><span class="exp-apps-label">Shipped</span>${apps}</div>`
+      : "";
 
-          </div>
-        `
-            : ""
-        }
-      ${!isOdd ? "</div>" : ""}
-      <img src="${icon}" alt="${exp.project}" class="timeline-icon">
-      ${isOdd ? '<div class="timeline-content">' : ""}
-        ${
-          isOdd
-            ? `<h3 class="timeline-role">${exp.role}</h3>
-<div class="timeline-company">
-  ${exp.company} • ${exp.duration}
-</div>
-        <span class="timeline-tech">${exp.tech}</span>
-        <div class="timeline-desc"><ul>${bullets}</ul></div>`
-            : ""
-        }
-        ${
-          isOdd && (exp.links.playstore || exp.links.appstore)
-            ? `
-          <div class="timeline-links">
-            ${
-              exp.links.playstore
-                ? `<a href="${
-                    exp.links.playstore
-                  }" target="_blank" class="timeline-btn">
-         <img src="${cdn(
-           "googleplay",
-         )}" class="timeline-link-icon" alt="Play Store">
-         <span>Play Store</span>
-       </a>`
-                : ""
-            }
-${
-  exp.links.appstore
-    ? `<a href="${exp.links.appstore}" target="_blank" class="timeline-btn">
-         <img src="${cdn(
-           "appstore",
-         )}" class="timeline-link-icon" alt="App Store">
-         <span>App Store</span>
-       </a>`
-    : ""
-}
-          </div>
-        `
-            : ""
-        }
-      ${isOdd ? "</div>" : ""}
-      ${!isOdd ? '<div class="timeline-spacer"></div>' : ""}
+    const letter = (exp.company || exp.role || "•")
+      .trim()
+      .charAt(0)
+      .toUpperCase();
+
+    card.innerHTML = `
+      <button class="exp-head" type="button" aria-expanded="${
+        index === 0 ? "true" : "false"
+      }">
+        <span class="exp-icon" data-letter="${letter}">
+          <img src="${exp.icon}" alt="${exp.company}" loading="lazy"
+               onerror="this.remove()">
+        </span>
+        <span class="exp-meta">
+          <span class="exp-role">${exp.role}</span>
+          <span class="exp-company">${exp.company} · ${exp.period}</span>
+          ${techLine ? `<span class="exp-tech">${techLine}</span>` : ""}
+        </span>
+        <svg class="exp-chevron" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+          <path d="M9 6l6 6-6 6" fill="none" stroke="currentColor"
+                stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="exp-body">
+        <div class="exp-body-inner">
+          <ul class="exp-highlights">${highlights}</ul>
+          ${appsHtml}
+          ${
+            exp.details
+              ? `<button class="exp-more" type="button">Full breakdown <span aria-hidden="true">→</span></button>`
+              : ""
+          }
+        </div>
+      </div>
     `;
 
-    timeline.appendChild(item);
+    const head = card.querySelector(".exp-head");
+    head.addEventListener("click", () => {
+      const open = card.classList.toggle("open");
+      head.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+
+    const moreBtn = card.querySelector(".exp-more");
+    if (moreBtn) moreBtn.addEventListener("click", () => openExpSheet(exp));
+
+    list.appendChild(card);
   });
+
+  // Arrow-key navigation between roles — a native-feeling detail.
+  list.addEventListener("keydown", (e) => {
+    const heads = Array.from(list.querySelectorAll(".exp-head"));
+    const i = heads.indexOf(document.activeElement);
+    if (i === -1) return;
+    let next = null;
+    if (e.key === "ArrowDown") next = heads[Math.min(i + 1, heads.length - 1)];
+    else if (e.key === "ArrowUp") next = heads[Math.max(i - 1, 0)];
+    else if (e.key === "Home") next = heads[0];
+    else if (e.key === "End") next = heads[heads.length - 1];
+    if (next) {
+      e.preventDefault();
+      next.focus();
+    }
+  });
+
+  signConsole();
 }
 
 function renderProjects() {

@@ -27,96 +27,226 @@ const sharedData = {
       "https://drive.google.com/uc?export=download&id=1R5J3xVJJfHgzsf7KzFWopaorKfpB_N2R",
   },
 
+  // Role-based, depth-first. Each role leads with the foundation-level work
+  // I own; shipped apps are attached as proof (public store links only).
   experienceData: [
     {
+      role: "iOS Developer",
+      company: "GimBooks",
+      period: "Aug 2025 — Present",
       icon: "https://images.saasworthy.com/tr:w-160,h-0,c-at_max,e-sharpen-1/gimbooks_5728_logo_1603873959_nmaat.jpg",
-      project: "GimBooks India (GST Invoice Manager)",
-      company: "GimBooks",
-      description: [
-        "Shipped new features across billing and GST invoice flows",
-        "Built and updated UI screens using SwiftUI",
-        "Integrated APIs for invoices, customers, GST tools, and ledger sync",
-        "Fixed crashes and improved performance based on user reports",
-        "Managed App Store releases, TestFlight builds, and version rollout",
+      summary:
+        "I own the layers every feature sits on — networking, security, reliability, and the tooling the team builds with.",
+      tech: "Swift | SwiftUI | UIKit | Kotlin",
+      highlights: [
+        "Rewrote the app-wide networking & error-handling layer the whole codebase runs on",
+        "Ran the iOS security-compliance program — Keychain migration, jailbreak detection, token hardening",
+        "Framework-level work on an embedded payment SDK — host integration, shared-Keychain auth, self-contained bundling",
+        "Wrote the architecture guardrails the team builds by",
+        "Built a config-driven dynamic form engine, then led its Android port (Clean Architecture)",
+        "Hardened reliability across the app — retain cycles, threading, and decode-safety",
       ],
-      tech: "iOS | Swift | SwiftUI",
-      platforms: ["iOS"],
-      links: {
-        appstore:
-          "https://apps.apple.com/in/app/gst-invoice-manager-gimbooks/id1673454277",
-        playstore: null,
-      },
+      apps: [
+        {
+          name: "GimBooks",
+          appstore:
+            "https://apps.apple.com/in/app/gst-invoice-manager-gimbooks/id1673454277",
+          playstore: null,
+        },
+        {
+          name: "GimBooks Pay",
+          appstore: "https://apps.apple.com/in/app/gimbooks-pay/id6738347497",
+          playstore: null,
+        },
+      ],
+      shipped:
+        "15+ feature modules delivered end-to-end · owned App Store archive → submit → rollout across many releases",
+      details: [
+        {
+          title: "Networking & error handling",
+          points: [
+            "Rewrote the request/error layer the whole app runs on",
+            "One parser for every backend error shape — users see the real message, never a blank “something went wrong”",
+            "Killed the “400 treated as success” bug class across every create/update flow",
+            "Split session-expired from token-expired so a forced logout routes cleanly instead of looping",
+            "No raw error object ever reaches a user-facing toast",
+          ],
+        },
+        {
+          title: "Security & compliance",
+          points: [
+            "Removed a permanent, non-expiring auth token app-wide; verified on staging before prod",
+            "Moved tokens into the Keychain; wipe-on-reinstall so a fresh install never inherits stale state",
+            "Jailbreak / debugger detection with a dev-mode guard so it never kills local testing",
+            "Enforced ATS/HTTPS; diagnosed and reported a token-in-URL exposure in a web view",
+          ],
+        },
+        {
+          title: "Reliability — memory, threading, crashes",
+          points: [
+            "Fixed 6 retain cycles + a main-thread violation in a single view-model",
+            "Traced an infinite-shimmer bug to a loader-stack thread desync, then swept ~8 components for the same pattern",
+            "Made stopping an already-stopped loader a safe no-op + a timeout so a loader can never hang forever",
+            "Killed a race where data arrived but the screen rendered empty",
+          ],
+        },
+        {
+          title: "Data resilience",
+          points: [
+            "Hardened decoding so one malformed record can’t blank an entire screen",
+            "Fixed several white-screen bugs caused by backend type drift (Bool vs Int, String vs Number)",
+          ],
+        },
+        {
+          title: "Framework-level — embedded payment SDK",
+          points: [
+            "Worked on a payment product shipped as an embedded dynamic .framework, not just an app",
+            "Host↔framework handshake over a shared Keychain, public entry points, and a URL scheme",
+            "Its own independent networking & security layer; self-contained resource bundling",
+            "Wrote the internal deep-dive the team onboards from",
+          ],
+        },
+        {
+          title: "Architecture & team standards",
+          points: [
+            "Audited the whole codebase and wrote the architecture guardrails the team now builds by",
+            "Named the real risks — a token-refresh race, high-blast-radius view-controllers, a branching enum that was a bug farm",
+            "Set the rule: new features get clean architecture; existing screens get fixed, not refactored",
+          ],
+        },
+        {
+          title: "Cross-platform",
+          points: [
+            "Built a config-driven dynamic form engine on iOS (backend decides fields, sections, pricing)",
+            "Diagnosed a data-loss bug from two same-timestamp logs — a hydrate/callback race",
+            "Led the Android port as an outcome-parity rebuild (MVVM + Clean Architecture), not a line-by-line copy",
+          ],
+        },
+        {
+          title: "Developer tooling",
+          points: [
+            "Authored the codebase architecture guides the team’s AI agents and new devs build from",
+            "An automated work-report pipeline; a QR-over-LAN debug installer for device testing with no emulator",
+            "Screen-name logging via runtime swizzle; a screenshot resizer; a file-map to prevent wrong-file edits",
+          ],
+        },
+      ],
     },
     {
-      icon: "https://play-lh.googleusercontent.com/-yW3qjDm909W0sQf9IEUg0v1RvX5lehGDhlrzr855GKk-lM0G843Ap9PVvEdqotuynUv=w480-h960-rw",
-      project: "GimBooks Pay",
-      company: "GimBooks",
-      description: [
-        "Developed payment modules and related business logic using SwiftUI",
-        "Integrated secure payment APIs and verification flows",
-        "Built onboarding, transaction history, and payout screens",
-        "Solved production issues based on QA and user feedback",
-        "Improved app stability and optimized API interactions",
+      role: "Mobile Developer",
+      company: "Codenicely",
+      period: "Feb 2025 — Aug 2025",
+      icon: "../assets/logos/codenicely.png",
+      summary:
+        "Owned client mobile apps end-to-end and shipped them to both stores.",
+      tech: "Flutter | Dart | GetX",
+      highlights: [
+        "Built & shipped a research-analyst trading app end-to-end — trading, offers, delivery & dispute flows, charts",
+        "Integrated Razorpay payments, KYC, realtime chat (image + PDF) and push notifications",
+        "Refactored state management (GetX) and hardened cross-device UX",
+        "Released to the App Store and Play Store",
       ],
-      tech: "iOS | Swift | SwiftUI",
-      platforms: ["iOS"],
-      links: {
-        appstore: "https://apps.apple.com/in/app/gimbooks-pay/id6738347497",
-        playstore: null,
-      },
+      apps: [
+        {
+          name: "Sauda 360",
+          appstore: "https://apps.apple.com/in/app/sauda360/id6747579557",
+          playstore:
+            "https://play.google.com/store/apps/details?id=com.sauda360.codenicely.sauda360&hl=en",
+        },
+        {
+          name: "Covesto",
+          appstore: null,
+          playstore:
+            "https://play.google.com/store/apps/details?id=com.shell.covesto&hl=en",
+        },
+      ],
+      shipped: "Sauda 360 + Covesto · shipped to the App Store and Play Store",
+      details: [
+        {
+          title: "Owned a trading app end-to-end",
+          points: [
+            "Trading screen, offers & counter-offers (time-windowed), delivery & dispute flows",
+            "Live charts — spline graphs with location filters and gauge-diff views",
+            "Interaction-validated forms with confirmation/success sheets and offline PDF viewing",
+          ],
+        },
+        {
+          title: "Payments & onboarding",
+          points: [
+            "Razorpay integration + payments history (all / completed / failed, paginated)",
+            "KYC flow (UI + API); subscriptions with coupons; account delete",
+          ],
+        },
+        {
+          title: "Realtime & media",
+          points: [
+            "Chat with image + PDF support; FCM push with unread counts and mark-all-read",
+            "Deep linking; no-internet and empty states",
+          ],
+        },
+        {
+          title: "Craft & delivery",
+          points: [
+            "Refactored state management (GetX/Obx) and hardened cross-device UX",
+            "Released iOS + Android to both stores; ran client demos and coordination",
+          ],
+        },
+      ],
     },
     {
-      icon: "https://play-lh.googleusercontent.com/5sidDmZjniBUORxeNB0NFBDOSFhwSe2_aztJ3zRrjYh_SUDEpkuwLBXaKJcCKu25mVg=w480-h960-rw",
-      project: "Sauda 360",
-      company: "Confidential - company name available upon request",
-      description: [
-        "Released multiple versions on App Store & Play Store",
-        "Implemented chat with image upload",
-        "Built time picker and other business logic features",
-      ],
-      tech: "Flutter | Dart",
-      platforms: ["Android", "iOS"],
-      links: {
-        appstore: "https://apps.apple.com/in/app/sauda360/id6747579557",
-        playstore:
-          "https://play.google.com/store/apps/details?id=com.sauda360.codenicely.sauda360&hl=en",
-      },
-    },
-    {
-      icon: "https://play-lh.googleusercontent.com/pjsMMOaI1j5vC9YTXtQwNoGZ6FFrcZfWCD3vmo2dVtstONCLsQuXLBuw-8_YaqHVqMAi=w480-h960-rw",
-      project: "Covesto",
-      company: "Confidential - company name available upon request",
-      description: [
-        "Built core modules from the ground up",
-        "Two modules remaining for completion",
-        "Integrated Razorpay payment gateway for secure in-app transactions.",
-        "Image compression and optimization for faster loading times.",
-        // "App live on Play Store and App Store (original version not authored)",
-      ],
-      tech: "Flutter | Dart",
-      platforms: ["Android"],
-      links: {
-        // appstore: "https://apps.apple.com/app/idxxxxxxxx",
-        playstore:
-          "https://play.google.com/store/apps/details?id=com.shell.covesto&hl=en",
-      },
-    },
-    {
+      role: "React Native Intern",
+      company: "Spark Link Media",
+      period: "Nov 2024 — Jan 2025",
       icon: "https://play-lh.googleusercontent.com/BF7Pz_j7z655RfIgGwuyuZQX8TDQtLcNiB6wOgJZP0NiF9k7e2dXHpRPloNAt1OZee2V=w480-h960-rw",
-      project: "Seeme",
-      company: "Confidential - company name available upon request",
-      description: [
-        "Implemented call and chat features from using webRTC and sockets",
-        "Worked on image filters",
-        "One India One App initiative",
+      summary: "First production role — realtime communication on mobile.",
+      tech: "React Native | TypeScript | WebRTC",
+      highlights: [
+        "Built realtime call & chat with WebRTC + sockets",
+        "Implemented in-app image filters",
+        "Part of the 'One India One App' initiative",
       ],
-      tech: "React Native | TypeScript",
-      platforms: ["Android"],
-      links: {
-        playstore:
-          "https://play.google.com/store/apps/details?id=com.seeme.social&hl=en",
-        appstore: null,
-      },
+      apps: [
+        {
+          name: "Seeme",
+          appstore: null,
+          playstore:
+            "https://play.google.com/store/apps/details?id=com.seeme.social&hl=en",
+        },
+      ],
+      shipped: "Seeme · live on the Play Store",
+      details: [
+        {
+          title: "Realtime calling — WebRTC",
+          points: [
+            "Built 1:1 audio + video calling — started on raw WebRTC with Google’s STUN server and socket signaling",
+            "Migrated the client to the LiveKit SDK (TURN-relayed) and integrated it against sparse docs — reverse-engineered the API by trial",
+            "Trickled ICE candidates as they arrived; live audio/video tracks with in-call controls (mute, camera, hang-up)",
+          ],
+        },
+        {
+          title: "Call state & the race that bit me",
+          points: [
+            "Modeled the call as explicit states — ringing, connecting, active, ended — instead of scattered flags",
+            "Chased a race where the call dropped the instant it connected: a side effect was tearing the peer connection down right after setup",
+            "Traced it and made setup/teardown deterministic so the connection stayed up",
+          ],
+        },
+        {
+          title: "Chat & state",
+          points: [
+            "Socket-driven 1:1 chat with simple message states (sent / delivered) and correct ordering",
+            "State carried across multiple coordinated screens — incoming / outgoing call, in-call, chat list, thread",
+            "Shared one socket connection and state stores across both chat and calls",
+          ],
+        },
+        {
+          title: "Media & platform",
+          points: [
+            "In-app image filters on the camera pipeline",
+            "First production role, on React Native — part of the “One India One App” initiative",
+          ],
+        },
+      ],
     },
   ],
   projectData: [
