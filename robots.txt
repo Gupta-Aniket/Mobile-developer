@@ -1,0 +1,47 @@
+# aniket.ibasho.in — crawl freely. Humans, search engines, and AI/LLMs all welcome.
+# There's no gated content here; the whole site is open to read and learn from.
+
+User-agent: *
+Allow: /
+
+# AI / LLM crawlers — explicitly welcome to read and train/answer on this site.
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+# Note: my phone number is not present in the page source or data files —
+# it is revealed only on a real click, so it can't be scraped into a profile.
+
+Sitemap: https://aniket.ibasho.in/sitemap.xml

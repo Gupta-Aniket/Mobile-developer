@@ -14,7 +14,9 @@ const sharedData = {
     ],
     contact: {
       email: "work.gupta.aniket@gmail.com",
-      phone: "+91 8319906162",
+      // Phone is base64-encoded and revealed only on a real click — keeps it
+      // out of the page source / data files so scrapers can't harvest it.
+      phoneEnc: "KzkxIDgzMTk5MDYxNjI=",
       resume:
         "https://drive.google.com/uc?export=download&id=1R5J3xVJJfHgzsf7KzFWopaorKfpB_N2R",
     },

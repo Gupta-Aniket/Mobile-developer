@@ -539,9 +539,21 @@ function renderContactInfo() {
   emailLink.href = `mailto:${contact.email}`;
   document.getElementById("emailText").textContent = contact.email;
 
-  phoneLink.href = `tel:${contact.phone.replace(/\s+/g, "")}`;
-
-  document.getElementById("phoneText").textContent = contact.phone;
+  // Phone privacy: never put the number in the DOM up front. It's stored
+  // base64-encoded and only decoded on a real user click, so crawlers and
+  // marketing scrapers can't harvest it into a profile.
+  const phoneText = document.getElementById("phoneText");
+  phoneText.textContent = "Tap to reveal";
+  phoneLink.href = "#";
+  phoneLink.setAttribute("rel", "nofollow");
+  phoneLink.addEventListener("click", (e) => {
+    if (phoneLink.dataset.revealed) return; // revealed → let tel: link work
+    e.preventDefault();
+    const num = atob(contact.phoneEnc || "");
+    phoneText.textContent = num;
+    phoneLink.href = `tel:${num.replace(/\s+/g, "")}`;
+    phoneLink.dataset.revealed = "1";
+  });
 
   resumeLink.href = contact.resume;
   resumeLink.target = "_blank";

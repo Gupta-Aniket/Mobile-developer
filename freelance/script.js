@@ -56,9 +56,21 @@ function renderContactInfo() {
   emailLink.href = `mailto:${contact.email}`;
   document.getElementById("emailText").textContent = contact.email;
 
-  phoneLink.href = `tel:${contact.phone.replace(/\s+/g, "")}`;
-
-  document.getElementById("phoneText").textContent = contact.phone;
+  // Phone privacy — base64, revealed only on click (see main script.js).
+  const phoneText = document.getElementById("phoneText");
+  if (phoneLink && phoneText) {
+    phoneText.textContent = "Tap to reveal";
+    phoneLink.href = "#";
+    phoneLink.setAttribute("rel", "nofollow");
+    phoneLink.addEventListener("click", (e) => {
+      if (phoneLink.dataset.revealed) return;
+      e.preventDefault();
+      const num = atob(contact.phoneEnc || "");
+      phoneText.textContent = num;
+      phoneLink.href = `tel:${num.replace(/\s+/g, "")}`;
+      phoneLink.dataset.revealed = "1";
+    });
+  }
 
   resumeLink.href = contact.resume;
   resumeLink.target = "_blank";
@@ -178,9 +190,18 @@ function loadContactSection() {
     emailText.textContent = contact.email;
   }
 
-  if (phoneLink && contact.phone) {
-    phoneLink.href = `tel:${contact.phone.replace(/\s+/g, "")}`;
-    phoneText.textContent = contact.phone;
+  if (phoneLink && phoneText && contact.phoneEnc) {
+    phoneText.textContent = "Tap to reveal";
+    phoneLink.href = "#";
+    phoneLink.setAttribute("rel", "nofollow");
+    phoneLink.addEventListener("click", (e) => {
+      if (phoneLink.dataset.revealed) return;
+      e.preventDefault();
+      const num = atob(contact.phoneEnc);
+      phoneText.textContent = num;
+      phoneLink.href = `tel:${num.replace(/\s+/g, "")}`;
+      phoneLink.dataset.revealed = "1";
+    });
   }
 
   if (resumeLink && contact.resume) {
