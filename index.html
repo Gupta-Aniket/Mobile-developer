@@ -173,6 +173,26 @@
         <h2 class="section-title">Experience</h2>
       </div>
       <div id="experienceTimeline" class="exp-list"></div>
+
+      <!-- Static, crawlable summary for non-JS crawlers (search engines & AI/LLMs).
+           The interactive version above replaces this for real users. -->
+      <noscript>
+        <div class="static-summary">
+          <article>
+            <h3>iOS Developer — GimBooks (Aug 2025 – Present)</h3>
+            <p>Swift · SwiftUI · UIKit · Kotlin. Rewrote the app-wide networking &amp; error-handling layer the whole codebase runs on; ran the iOS security-compliance program (Keychain migration, jailbreak detection, token hardening); framework-level work on an embedded payment SDK (host integration, shared-Keychain auth, self-contained bundling); wrote the architecture guardrails the team builds by; built a config-driven dynamic form engine and led its Android port (MVVM + Clean Architecture); hardened reliability across the app (retain cycles, threading, decode-safety). Shipped: GimBooks, GimBooks Pay (App Store).</p>
+          </article>
+          <article>
+            <h3>Mobile Developer — Codenicely (Feb 2025 – Aug 2025)</h3>
+            <p>Flutter · Dart · GetX. Built and shipped a research-analyst trading app end-to-end (trading screen, offers &amp; counter-offers, delivery &amp; dispute flows, charts); integrated Razorpay payments, KYC, realtime chat (image + PDF) and push; refactored state management (GetX/Obx); released iOS + Android to the App Store and Play Store. Shipped: Sauda 360, Covesto.</p>
+          </article>
+          <article>
+            <h3>React Native Intern — Spark Link Media (Nov 2024 – Jan 2025)</h3>
+            <p>React Native · TypeScript · WebRTC. Built 1:1 audio + video calling — started on raw WebRTC (Google STUN, socket signaling), then migrated the client to the LiveKit SDK (TURN); trickled ICE; 1:1 socket chat (sent/delivered); in-app image filters. Diagnosed and fixed a race where the call dropped the instant it connected. Shipped: Seeme (Play Store).</p>
+          </article>
+        </div>
+      </noscript>
+
       <p class = "disclaimer">* All projects shown are owned by their respective companies. I contributed as a developer, either partially or fully.</p>
     </section>
 
@@ -228,6 +248,24 @@
         <div class="projects-grid" id="projectsGrid">
           <!-- Projects will be dynamically inserted here -->
         </div>
+
+        <!-- Static, crawlable project summary for non-JS crawlers (search & AI/LLMs). -->
+        <noscript>
+          <div class="static-summary">
+            <ul>
+              <li><strong>nemo</strong> — cross-platform remote logging framework: a device streams structured logs (level, source location, session, JSON payload) over WebSocket to a zero-config desktop viewer, paired by QR code. Native Flutter and Swift clients. (Dart, Swift, WebSockets)</li>
+              <li><strong>Kabootar</strong> — PIN-based, login-less WebRTC video calling with Firebase signalling and Google STUN. (React Native, WebRTC, Firebase)</li>
+              <li><strong>Corporate Mask</strong> — instant AI-powered professional message rewrites using the Google Gemini API; iOS-style dark UI, secure local key storage. (Flutter, Gemini API)</li>
+              <li><strong>JobTrail</strong> — Chrome extension that scans pages for job opportunities, injects actionable links, and adds quick-search buttons. (Content scripts, MutationObserver)</li>
+              <li><strong>Branched LLM</strong> — an experiment in branched LLM reasoning.</li>
+              <li><strong>File Context Generator</strong> — Python CLI that bundles a codebase into LLM-ready context.</li>
+              <li><strong>Kundali Lock</strong> — vault app with an astrology-based pattern unlock. (Flutter, encryption)</li>
+              <li><strong>WebSocket Chat</strong> — realtime group chat over a custom Node WebSocket backend, terminal + React Native clients.</li>
+              <li><strong>Project Sharer</strong> — Gemini-powered shareable content generator.</li>
+              <li>…and more mobile, extension, and CLI projects across Flutter, React Native, and Python.</li>
+            </ul>
+          </div>
+        </noscript>
       </div>
     </section>
 

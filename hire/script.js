@@ -340,23 +340,27 @@ function renderExperience() {
       .filter(Boolean)
       .join("  ·  ");
 
-    // Shipped apps as proof — public store links only.
+    // Shipped apps — pressable button-links with a tinted 45° redirect arrow
+    // (blue = App Store / iOS, green = Play Store / Android). Whole tag clicks.
+    const storeArrow = `<svg class="exp-app-arrow" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M5 11L11 5M11 5H6.2M11 5V9.8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
     const apps = (exp.apps || [])
       .map((app) => {
         const stores = [];
-        if (app.appstore) {
-          stores.push(
-            `<a href="${app.appstore}" target="_blank" rel="noopener" class="exp-app-store" aria-label="${app.name} on the App Store">
-               <img src="${cdn("apple")}" alt="App Store"></a>`,
-          );
-        }
-        if (app.playstore) {
-          stores.push(
-            `<a href="${app.playstore}" target="_blank" rel="noopener" class="exp-app-store" aria-label="${app.name} on Google Play">
-               <img src="${cdn("googleplay")}" alt="Play Store"></a>`,
-          );
-        }
-        return `<span class="exp-app"><span class="exp-app-name">${app.name}</span>${stores.join("")}</span>`;
+        if (app.appstore) stores.push({ url: app.appstore, ios: true });
+        if (app.playstore) stores.push({ url: app.playstore, ios: false });
+        const segs = stores
+          .map((s, i) => {
+            const label = s.ios ? "the App Store" : "Google Play";
+            const name =
+              i === 0 ? `<span class="exp-app-name">${app.name}</span>` : "";
+            return `<a class="exp-app-link ${
+              s.ios ? "is-ios" : "is-android"
+            }" href="${s.url}" target="_blank" rel="noopener" aria-label="${
+              app.name
+            } on ${label}">${name}${storeArrow}</a>`;
+          })
+          .join("");
+        return segs ? `<span class="exp-app">${segs}</span>` : "";
       })
       .join("");
     const appsHtml = apps

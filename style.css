@@ -3181,39 +3181,62 @@ cursor: pointer;
   color: var(--tertiary-label);
   margin-right: 0.15rem;
 }
+/* Shipped-app tag = a pressable button. Whole tag is the link; the
+   45° arrow tints blue (App Store) or green (Play Store). */
 .exp-app {
   display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.3rem 0.65rem;
+  align-items: stretch;
   border-radius: 980px;
   background: var(--fill-quaternary);
   border: 1px solid var(--separator);
-  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  overflow: hidden;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease,
+    transform 0.14s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .exp-app:hover {
-  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--primary) 28%, var(--separator));
+  box-shadow: var(--shadow-sm);
+}
+.exp-app:active {
+  transform: scale(0.97);
+}
+.exp-app-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.38rem 0.72rem;
+  text-decoration: none;
+  color: var(--label);
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.18s ease;
+}
+.exp-app-link:hover {
+  background: color-mix(in srgb, var(--label) 7%, transparent);
+}
+.exp-app-link:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
+}
+.exp-app-link + .exp-app-link {
+  border-left: 1px solid var(--separator);
 }
 .exp-app-name {
   font-size: 0.76rem;
   font-weight: 600;
   color: var(--label);
 }
-.exp-app-store {
-  display: inline-flex;
-  align-items: center;
-  opacity: 0.65;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+.exp-app-arrow {
+  flex-shrink: 0;
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.exp-app-store:hover {
-  opacity: 1;
-  transform: scale(1.12);
+.exp-app-link:hover .exp-app-arrow {
+  transform: translate(1.5px, -1.5px);
 }
-.exp-app-store img {
-  width: 14px;
-  height: 14px;
-  object-fit: contain;
-  display: block;
+.exp-app-link.is-ios .exp-app-arrow {
+  color: var(--primary);
+}
+.exp-app-link.is-android .exp-app-arrow {
+  color: var(--success);
 }
 
 /* Staggered reveal — content rises in as the card opens.
