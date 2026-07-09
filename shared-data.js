@@ -140,13 +140,13 @@ const sharedData = {
       period: "Feb 2025 — Aug 2025",
       icon: "../assets/logos/codenicely.png",
       summary:
-        "Owned client mobile apps end-to-end and shipped them to both stores.",
+        "Built Covesto end-to-end; contributed broadly to Sauda 360 in a small, fast team. Shipped to both stores.",
       tech: "Flutter | Dart | GetX",
       highlights: [
-        "Built & shipped a research-analyst trading app end-to-end — trading, offers, delivery & dispute flows, charts",
-        "Integrated Razorpay payments, KYC, realtime chat (image + PDF) and push notifications",
-        "Refactored state management (GetX) and hardened cross-device UX",
-        "Released to the App Store and Play Store",
+        "Built Covesto end-to-end — every screen, incl. its Razorpay payment gateway",
+        "LERP-based & micro-animations and a full-screen banner (Covesto)",
+        "Contributed broadly to Sauda 360 in a small, fast team — trading, offers, delivery & dispute flows, charts",
+        "Refactored state (GetX/Obx); released to the App Store and Play Store",
       ],
       apps: [
         {
@@ -165,32 +165,28 @@ const sharedData = {
       shipped: "Sauda 360 + Covesto · shipped to the App Store and Play Store",
       details: [
         {
-          title: "Owned a trading app end-to-end",
+          title: "Covesto — built end-to-end",
           points: [
-            "Trading screen, offers & counter-offers (time-windowed), delivery & dispute flows",
-            "Live charts — spline graphs with location filters and gauge-diff views",
-            "Interaction-validated forms with confirmation/success sheets and offline PDF viewing",
+            "Every screen of the app, front to back",
+            "Razorpay payment-gateway integration",
+            "LERP-based animations, micro-interactions, and a full-screen banner",
+            "Image compression/optimization; worked with backend teams to learn the RA / profile domain",
           ],
         },
         {
-          title: "Payments & onboarding",
+          title: "Sauda 360 — team contributions",
           points: [
-            "Razorpay integration + payments history (all / completed / failed, paginated)",
-            "KYC flow (UI + API); subscriptions with coupons; account delete",
+            "Contributed across a large part of the app in a small team — paired to resolve merge conflicts while shipping every few days",
+            "A time picker that remembers the previously selected time, and a multi-location selector whose selection persists across tab changes",
+            "Trading screen, offers & counter-offers, delivery & dispute flows, spline charts, chat (image + PDF)",
           ],
         },
         {
-          title: "Realtime & media",
+          title: "State, realtime & delivery",
           points: [
-            "Chat with image + PDF support; FCM push with unread counts and mark-all-read",
-            "Deep linking; no-internet and empty states",
-          ],
-        },
-        {
-          title: "Craft & delivery",
-          points: [
-            "Refactored state management (GetX/Obx) and hardened cross-device UX",
-            "Released iOS + Android to both stores; ran client demos and coordination",
+            "GetX/Obx state refactor; screenshot-blocking on sensitive pages",
+            "FCM push (unread counts, mark-all-read); deep linking; no-internet & empty states",
+            "Released iOS + Android to both stores; client demos & coordination",
           ],
         },
       ],
