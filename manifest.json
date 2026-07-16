@@ -1,0 +1,38 @@
+{
+  "name": "Aniket Gupta — Mobile App Developer",
+  "short_name": "Aniket Gupta",
+  "description": "Aniket Gupta — mobile app developer (iOS, Flutter, React Native). I build the foundations that make apps feel effortless: networking, security, reliability, and framework-level engineering.",
+  "lang": "en",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#007aff",
+  "categories": ["portfolio", "developer", "business"],
+  "icons": [
+    {
+      "src": "/assets/fav-icon/favicon-48.png",
+      "sizes": "48x48",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/fav-icon/android-chrome-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/fav-icon/android-chrome-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/fav-icon/android-chrome-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

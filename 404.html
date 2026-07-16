@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>404 — Page not found · Aniket Gupta</title>
+    <meta name="robots" content="noindex, follow" />
+    <meta name="theme-color" content="#007aff" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" href="/assets/fav-icon/favicon-32.png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/assets/fav-icon/apple-touch-icon.png" />
+    <style>
+      :root {
+        --accent: #007aff;
+        --bg: #ffffff;
+        --fg: #1d1d1f;
+        --muted: #6e6e73;
+        --card: #f5f5f7;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #000000;
+          --fg: #f5f5f7;
+          --muted: #a1a1a6;
+          --card: #1c1c1e;
+        }
+      }
+      * { box-sizing: border-box; }
+      html, body { height: 100%; margin: 0; }
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 24px;
+        background: var(--bg);
+        color: var(--fg);
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+          "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        text-align: center;
+        line-height: 1.5;
+      }
+      .wrap { max-width: 520px; }
+      img.bear { width: 96px; height: 96px; margin-bottom: 20px; }
+      .code {
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin: 0 0 8px;
+      }
+      h1 { font-size: clamp(28px, 6vw, 40px); font-weight: 800; margin: 0 0 12px; }
+      p { color: var(--muted); font-size: 17px; margin: 0 0 28px; }
+      .links { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+      a.btn {
+        display: inline-block;
+        padding: 12px 22px;
+        border-radius: 980px;
+        font-size: 16px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: transform 0.15s ease, opacity 0.15s ease;
+      }
+      a.btn:hover { transform: translateY(-1px); opacity: 0.92; }
+      a.primary { background: var(--accent); color: #fff; }
+      a.ghost { background: var(--card); color: var(--fg); }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+      <img class="bear" src="/assets/fav-icon/bear-sleeping.png" alt="" />
+      <p class="code">404 — Not found</p>
+      <h1>This page wandered off.</h1>
+      <p>
+        The link may be broken or the page may have moved. Everything else is
+        still here — head back to the portfolio.
+      </p>
+      <div class="links">
+        <a class="btn primary" href="/">Back to home</a>
+        <a class="btn ghost" href="/#projects">See projects</a>
+        <a class="btn ghost" href="/#contact">Contact</a>
+      </div>
+    </main>
+  </body>
+</html>

@@ -15,6 +15,14 @@
     <meta name="theme-color" content="#007aff" />
     <link rel="canonical" href="https://aniket.ibasho.in/" />
 
+    <!-- Search engine verification.
+         Uncomment ONE line per engine and paste your real token from:
+           Google:  https://search.google.com/search-console  (HTML tag method)
+           Bing:    https://www.bing.com/webmasters             (Meta tag method)
+         Leave commented until you have the real value — never ship a fake token. -->
+    <!-- <meta name="google-site-verification" content="PASTE_GOOGLE_TOKEN_HERE" /> -->
+    <!-- <meta name="msvalidate.01" content="PASTE_BING_TOKEN_HERE" /> -->
+
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Aniket Gupta" />
@@ -36,17 +44,36 @@
       content="I build the foundations that make apps feel effortless — the parts you never see. iOS · Flutter · React Native."
     />
     <meta name="twitter:image" content="https://aniket.ibasho.in/assets/og-image.png" />
+    <meta name="twitter:image:alt" content="Aniket Gupta — Mobile App Developer" />
+    <meta name="twitter:site" content="@adbhut_praani" />
+    <meta name="twitter:creator" content="@adbhut_praani" />
+    <meta property="og:image:alt" content="Aniket Gupta — Mobile App Developer" />
 
     <!-- Structured data (Person) — intentionally omits phone/email so crawlers can't harvest contact info -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "Person",
+        "@id": "https://aniket.ibasho.in/#person",
         "name": "Aniket Gupta",
+        "alternateName": "Aniket",
         "url": "https://aniket.ibasho.in/",
         "image": "https://aniket.ibasho.in/assets/og-image.png",
         "jobTitle": "Mobile App Developer",
-        "description": "Mobile app developer specializing in iOS, Flutter and React Native — building the foundations that make apps feel effortless.",
+        "description": "Mobile app developer specializing in iOS, Flutter and React Native — building the foundations (networking, security, reliability, framework-level engineering) that make apps feel effortless.",
+        "address": {
+          "@type": "PostalAddress",
+          "addressCountry": "IN"
+        },
+        "worksFor": {
+          "@type": "Organization",
+          "name": "GimBooks"
+        },
+        "hasOccupation": {
+          "@type": "Occupation",
+          "name": "Mobile App Developer",
+          "skills": "iOS, Swift, SwiftUI, UIKit, Flutter, Dart, React Native, TypeScript, mobile app security, WebRTC, mobile architecture"
+        },
         "sameAs": [
           "https://github.com/Gupta-Aniket/",
           "https://www.linkedin.com/in/work-gupta-aniket/",
@@ -56,7 +83,9 @@
           "iOS",
           "Swift",
           "SwiftUI",
+          "UIKit",
           "Flutter",
+          "Dart",
           "React Native",
           "Mobile Architecture",
           "App Security",
@@ -64,12 +93,33 @@
         ]
       }
     </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "@id": "https://aniket.ibasho.in/#website",
+        "url": "https://aniket.ibasho.in/",
+        "name": "Aniket Gupta — Mobile App Developer",
+        "description": "Portfolio of Aniket Gupta, a mobile app developer working across iOS, Flutter and React Native.",
+        "inLanguage": "en",
+        "author": { "@id": "https://aniket.ibasho.in/#person" }
+      }
+    </script>
     <link
       href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600;700;800&family=SF+Pro+Text:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../style.css" />
-    <!-- HEAD of your index.html -->
+
+    <!-- Icons & PWA manifest -->
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/fav-icon/favicon-16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/fav-icon/favicon-32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/fav-icon/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Dynamic favicon (swaps the bear on load / tab-visibility). Kept last so
+         it is the active rel="icon" the script below toggles. -->
     <link id="favicon" rel="icon" href="../assets/fav-icon/bear-awake.png" />
     <script>
       const favicon = document.getElementById("favicon");

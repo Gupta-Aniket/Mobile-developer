@@ -45,3 +45,5 @@ Allow: /
 # it is revealed only on a real click, so it can't be scraped into a profile.
 
 Sitemap: https://aniket.ibasho.in/sitemap.xml
+
+# Structured summary for AI/LLM crawlers: https://aniket.ibasho.in/llms.txt
