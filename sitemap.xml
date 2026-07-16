@@ -12,6 +12,18 @@
     </image:image>
   </url>
   <url>
+    <loc>https://aniket.ibasho.in/blog/</loc>
+    <lastmod>2026-07-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://aniket.ibasho.in/blog/why-ios-why-now/</loc>
+    <lastmod>2026-07-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://aniket.ibasho.in/hire/</loc>
     <lastmod>2026-07-16</lastmod>
     <changefreq>monthly</changefreq>

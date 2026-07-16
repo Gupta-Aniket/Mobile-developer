@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blog — Aniket Gupta</title>
+
+    <!-- SEO -->
+    <meta
+      name="description"
+      content="Writing by Aniket Gupta — a chronological series on becoming an iOS engineer, and notes on mobile systems work: networking, security, reliability."
+    />
+    <meta name="author" content="Aniket Gupta" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+    <meta name="theme-color" content="#007aff" />
+    <link rel="canonical" href="https://aniket.ibasho.in/blog/" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Aniket Gupta" />
+    <meta property="og:title" content="Blog — Aniket Gupta" />
+    <meta
+      property="og:description"
+      content="A chronological series on becoming an iOS engineer, and notes on mobile systems work."
+    />
+    <meta property="og:url" content="https://aniket.ibasho.in/blog/" />
+    <meta property="og:image" content="https://aniket.ibasho.in/assets/og-image.png" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Blog — Aniket Gupta" />
+    <meta name="twitter:image" content="https://aniket.ibasho.in/assets/og-image.png" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Blog",
+        "@id": "https://aniket.ibasho.in/blog/#blog",
+        "name": "Aniket Gupta — Blog",
+        "description": "A chronological series on becoming an iOS engineer, and notes on mobile systems work.",
+        "url": "https://aniket.ibasho.in/blog/",
+        "author": {
+          "@type": "Person",
+          "name": "Aniket Gupta",
+          "url": "https://aniket.ibasho.in/"
+        },
+        "blogPost": [
+          {
+            "@type": "BlogPosting",
+            "headline": "Why iOS, why now.",
+            "url": "https://aniket.ibasho.in/blog/why-ios-why-now/",
+            "datePublished": "2026-07-16"
+          }
+        ]
+      }
+    </script>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600;700;800&family=SF+Pro+Text:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../style.css" />
+
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/fav-icon/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <link id="favicon" rel="icon" href="../assets/fav-icon/bear-awake.png" />
+    <script>
+      const favicon = document.getElementById("favicon");
+      window.addEventListener("beforeunload", () => {
+        favicon.href = "../assets/fav-icon/bear-loading.png";
+      });
+      window.addEventListener("load", () => {
+        favicon.href = "../assets/fav-icon/bear-awake.png";
+      });
+      document.addEventListener("visibilitychange", () => {
+        favicon.href = document.hidden
+          ? "../assets/fav-icon/bear-sleeping.png"
+          : "../assets/fav-icon/bear-awake.png";
+      });
+    </script>
+
+    <style>
+      .blog-wrap {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 120px var(--spacing-md) var(--spacing-xxl);
+      }
+      .blog-head { margin-bottom: var(--spacing-xxl); }
+      .blog-head h1 {
+        font-family: var(--font-display);
+        font-size: clamp(34px, 6vw, 46px);
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        color: var(--label);
+        margin: 0 0 var(--spacing-sm);
+      }
+      .blog-head p {
+        font-family: var(--font-text);
+        font-size: 18px;
+        line-height: 1.6;
+        color: var(--secondary-label);
+        margin: 0;
+        max-width: 560px;
+      }
+
+      .series-label {
+        font-family: var(--font-text);
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--tertiary-label);
+        margin-bottom: var(--spacing-md);
+      }
+
+      .post-card {
+        display: block;
+        text-decoration: none;
+        background: var(--tertiary-background);
+        border: 1px solid var(--separator);
+        border-radius: var(--radius-lg);
+        padding: var(--spacing-lg);
+        box-shadow: var(--shadow-sm);
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+      }
+      .post-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+      }
+      .post-card .idx {
+        font-family: var(--font-text);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--primary);
+        margin-bottom: 6px;
+      }
+      .post-card h2 {
+        font-family: var(--font-display);
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--label);
+        margin: 0 0 6px;
+      }
+      .post-card .card-meta {
+        font-family: var(--font-text);
+        font-size: 13px;
+        color: var(--tertiary-label);
+        margin-bottom: var(--spacing-sm);
+      }
+      .post-card p {
+        font-family: var(--font-text);
+        font-size: 16px;
+        line-height: 1.6;
+        color: var(--secondary-label);
+        margin: 0;
+      }
+      .post-card .read-more {
+        display: inline-block;
+        margin-top: var(--spacing-md);
+        font-family: var(--font-text);
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--primary);
+      }
+
+      .upcoming {
+        margin-top: var(--spacing-xl);
+        font-family: var(--font-text);
+        font-size: 14px;
+        color: var(--tertiary-label);
+        line-height: 1.6;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="nav">
+      <div class="nav-content">
+        <a href="/" class="nav-title" style="text-decoration: none; color: inherit;">Aniket</a>
+        <div class="nav-links">
+          <a href="/#about" class="nav-link">About</a>
+          <a href="/#experience" class="nav-link">Experience</a>
+          <a href="/#skills" class="nav-link">Skills</a>
+          <a href="/#projects" class="nav-link">Projects</a>
+          <a href="/blog/" class="nav-link">Blog</a>
+        </div>
+      </div>
+    </nav>
+
+    <main class="blog-wrap">
+      <div class="blog-head">
+        <h1>Writing</h1>
+        <p>
+          Notes on mobile engineering, and a chronological series on how I ended
+          up doing native iOS systems work.
+        </p>
+      </div>
+
+      <p class="series-label">Series · Becoming an iOS Engineer</p>
+
+      <a class="post-card" href="/blog/why-ios-why-now/">
+        <div class="idx">Post 1 · Origin</div>
+        <h2>Why iOS, why now.</h2>
+        <div class="card-meta">July 2026 · ~2 min read</div>
+        <p>
+          Looking back at two years — React Native intern → Flutter developer →
+          native iOS. The arc wasn't wandering between stacks; it was narrowing
+          and going deep.
+        </p>
+        <span class="read-more">Read →</span>
+      </a>
+
+      <p class="upcoming">
+        More in this series soon — the networking rewrite, the security-compliance
+        work, and the cross-platform Android port, each as its own post.
+      </p>
+    </main>
+  </body>
+</html>
