@@ -337,20 +337,67 @@
         font-size: 12.5px;
         font-variant-numeric: tabular-nums;
       }
-      .reader-track {
+      /* Seek slider — native <input type=range> for reliable touch/drag on
+         iOS + desktop, styled with a fill and a round thumb. --pct is set in JS. */
+      .reader-range {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 100%;
+        height: 22px;
+        margin: 0;
+        background: transparent;
+        cursor: pointer;
+        touch-action: none;
+        --pct: 0%;
+      }
+      /* WebKit / Blink (Safari, Chrome, iOS) */
+      .reader-range::-webkit-slider-runnable-track {
+        height: 6px;
+        border-radius: 3px;
+        background: linear-gradient(
+          to right,
+          var(--primary) var(--pct),
+          var(--quaternary-label) var(--pct)
+        );
+      }
+      .reader-range::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 15px;
+        height: 15px;
+        margin-top: -4.5px;
+        border-radius: 50%;
+        background: var(--primary);
+        border: 2px solid var(--system-background);
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.28);
+      }
+      /* Firefox */
+      .reader-range::-moz-range-track {
         height: 6px;
         border-radius: 3px;
         background: var(--quaternary-label);
-        overflow: hidden;
-        touch-action: none;
       }
-      .reader.is-audio .reader-track { cursor: pointer; }
-      .reader-fill {
-        height: 100%;
-        width: 0%;
+      .reader-range::-moz-range-progress {
+        height: 6px;
+        border-radius: 3px;
         background: var(--primary);
-        border-radius: 2px;
-        transition: width 0.1s linear;
+      }
+      .reader-range::-moz-range-thumb {
+        width: 15px;
+        height: 15px;
+        border: 2px solid var(--system-background);
+        border-radius: 50%;
+        background: var(--primary);
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.28);
+      }
+      .reader-range:focus-visible { outline: none; }
+      .reader-range:focus-visible::-webkit-slider-thumb {
+        outline: 2px solid var(--primary);
+        outline-offset: 2px;
+      }
+      .reader-range:focus-visible::-moz-range-thumb {
+        outline: 2px solid var(--primary);
+        outline-offset: 2px;
       }
       .reader-speed {
         flex: 0 0 auto;
@@ -469,13 +516,20 @@
             <span id="readerLabel">Listen to this post</span>
             <span class="reader-sub" id="readerSub"></span>
           </div>
-          <div class="reader-track" id="readerTrack">
-            <div class="reader-fill" id="readerFill"></div>
-          </div>
+          <input
+            class="reader-range"
+            id="readerRange"
+            type="range"
+            min="0"
+            max="100"
+            step="any"
+            value="0"
+            aria-label="Seek"
+          />
         </div>
         <button class="reader-speed" id="readerSpeed" aria-label="Playback speed" type="button">1×</button>
         <!-- preload="metadata": only the small header loads on page view; the
-             full audio streams on play (m4a ~1.6MB preferred, mp3 fallback). -->
+             full audio streams on play. -->
         <audio id="readerAudio" preload="metadata">
           <source src="audio.m4a" type="audio/mp4" />
         </audio>
@@ -634,14 +688,14 @@
         if (!reader) return;
         const btn = document.getElementById("readerBtn");
         const sub = document.getElementById("readerSub");
-        const track = document.getElementById("readerTrack");
-        const fill = document.getElementById("readerFill");
+        const range = document.getElementById("readerRange");
         const speedBtn = document.getElementById("readerSpeed");
         const audio = document.getElementById("readerAudio");
         if (!audio) return;
 
         const SPEEDS = [1, 1.25, 1.5, 0.9];
         let speedIdx = 0;
+        let scrubbing = false;
 
         const ICON_PLAY =
           '<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 5.14v13.72a1 1 0 0 0 1.54.84l10.6-6.86a1 1 0 0 0 0-1.68L9.54 4.3A1 1 0 0 0 8 5.14z"/></svg>';
@@ -652,8 +706,13 @@
           btn.innerHTML = p ? ICON_PAUSE : ICON_PLAY;
           btn.setAttribute("aria-label", p ? "Pause" : "Play");
         };
-        const setFill = (pct) =>
-          (fill.style.width = Math.max(0, Math.min(100, pct)) + "%");
+        // Paint the slider's filled portion (webkit needs the gradient var; the
+        // thumb rides the end of the fill automatically).
+        const paint = () => {
+          const d = audio.duration;
+          const pct = d && isFinite(d) ? (range.value / d) * 100 : 0;
+          range.style.setProperty("--pct", Math.max(0, Math.min(100, pct)) + "%");
+        };
         const fmt = (s) => {
           if (!isFinite(s)) return "0:00";
           const m = Math.floor(s / 60);
@@ -666,15 +725,23 @@
         reader.hidden = false; // audio exists — show at once; no bytes downloaded yet
 
         audio.addEventListener("loadedmetadata", () => {
+          range.max = audio.duration || 0;
+          range.value = 0;
+          paint();
           sub.textContent = "0:00 / " + fmt(audio.duration);
         });
         audio.addEventListener("timeupdate", () => {
-          if (audio.duration) setFill((audio.currentTime / audio.duration) * 100);
-          sub.textContent = fmt(audio.currentTime) + " / " + fmt(audio.duration);
+          if (!scrubbing) {
+            range.value = audio.currentTime;
+            paint();
+          }
+          const shown = scrubbing ? +range.value : audio.currentTime;
+          sub.textContent = fmt(shown) + " / " + fmt(audio.duration);
         });
         audio.addEventListener("ended", () => {
           setPlaying(false);
-          setFill(0);
+          range.value = 0;
+          paint();
           sub.textContent = "0:00 / " + fmt(audio.duration);
         });
         // If every source fails to load, hide the player rather than show a dead one.
@@ -697,26 +764,16 @@
           audio.playbackRate = SPEEDS[speedIdx];
         });
 
-        // Seek: click or drag anywhere on the track.
-        let scrubbing = false;
-        const seekToClientX = (clientX) => {
-          if (!isFinite(audio.duration) || audio.duration <= 0) return;
-          const r = track.getBoundingClientRect();
-          const ratio = (clientX - r.left) / r.width;
-          audio.currentTime = Math.max(0, Math.min(1, ratio)) * audio.duration;
-          setFill(ratio * 100);
-        };
-        track.addEventListener("pointerdown", (e) => {
+        // Seek via the native range slider — a real draggable thumb, reliable
+        // touch handling on iOS. Drag previews the time; release commits the seek.
+        range.addEventListener("input", () => {
           scrubbing = true;
-          track.setPointerCapture(e.pointerId);
-          seekToClientX(e.clientX);
+          paint();
+          sub.textContent = fmt(+range.value) + " / " + fmt(audio.duration);
         });
-        track.addEventListener("pointermove", (e) => {
-          if (scrubbing) seekToClientX(e.clientX);
-        });
-        track.addEventListener("pointerup", (e) => {
+        range.addEventListener("change", () => {
+          if (isFinite(audio.duration)) audio.currentTime = +range.value;
           scrubbing = false;
-          try { track.releasePointerCapture(e.pointerId); } catch (_) {}
         });
       })();
     </script>
