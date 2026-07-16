@@ -290,6 +290,90 @@
       .post-footer a { color: var(--primary); text-decoration: none; font-weight: 500; }
       .post-footer a:hover { opacity: 0.75; }
 
+      /* Listen / audio reader — native <audio> when a narration file exists,
+         otherwise the browser's speech voice. Hidden until JS confirms one works. */
+      .reader {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: var(--secondary-background);
+        border: 1px solid var(--separator);
+        border-radius: var(--radius-lg);
+        padding: 12px 14px;
+        margin: 0 0 var(--spacing-xl);
+      }
+      .reader[hidden] { display: none; }
+      .reader-btn {
+        flex: 0 0 auto;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        border: none;
+        cursor: pointer;
+        background: var(--primary);
+        color: #fff;
+        display: grid;
+        place-items: center;
+        font-size: 15px;
+        line-height: 1;
+        transition: transform 0.15s ease, opacity 0.15s ease;
+      }
+      .reader-btn:hover { transform: scale(1.06); }
+      .reader-btn:active { transform: scale(0.95); }
+      .reader-main { flex: 1 1 auto; min-width: 0; }
+      .reader-label {
+        font-family: var(--font-text);
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--label);
+        margin-bottom: 7px;
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+      }
+      .reader-sub {
+        font-weight: 400;
+        color: var(--tertiary-label);
+        font-size: 12.5px;
+        font-variant-numeric: tabular-nums;
+      }
+      .reader-track {
+        height: 4px;
+        border-radius: 2px;
+        background: var(--quaternary-label);
+        overflow: hidden;
+      }
+      .reader.is-audio .reader-track { cursor: pointer; }
+      .reader-fill {
+        height: 100%;
+        width: 0%;
+        background: var(--primary);
+        border-radius: 2px;
+        transition: width 0.1s linear;
+      }
+      .reader-speed {
+        flex: 0 0 auto;
+        font-family: var(--font-text);
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--primary);
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 6px 8px;
+        border-radius: var(--radius-sm);
+        font-variant-numeric: tabular-nums;
+      }
+      .reader-speed:hover { background: var(--fill-quaternary); }
+      .reader-btn:focus-visible,
+      .reader-speed:focus-visible {
+        outline: 2px solid var(--primary);
+        outline-offset: 2px;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .reader-btn, .reader-fill { transition: none; }
+      }
+
       @media (max-width: 620px) {
         .timeline-track { grid-template-columns: 1fr; gap: 0; }
         .timeline-track::before {
@@ -331,6 +415,21 @@
         <span>July 2026</span>
         <span class="dot">·</span>
         <span>~4 min read</span>
+      </div>
+
+      <!-- Listen / reader (progressively enhanced; hidden until JS confirms playback) -->
+      <div class="reader" id="reader" hidden>
+        <button class="reader-btn" id="readerBtn" aria-label="Play" type="button">▶</button>
+        <div class="reader-main">
+          <div class="reader-label">
+            <span id="readerLabel">Listen to this post</span>
+            <span class="reader-sub" id="readerSub"></span>
+          </div>
+          <div class="reader-track" id="readerTrack">
+            <div class="reader-fill" id="readerFill"></div>
+          </div>
+        </div>
+        <button class="reader-speed" id="readerSpeed" aria-label="Playback speed" type="button">1×</button>
       </div>
 
       <div class="post-body">
@@ -458,5 +557,171 @@
         <a href="/blog/">← Back to all posts</a>
       </div>
     </article>
+
+    <script>
+      (function () {
+        const reader = document.getElementById("reader");
+        if (!reader) return;
+        const btn = document.getElementById("readerBtn");
+        const sub = document.getElementById("readerSub");
+        const track = document.getElementById("readerTrack");
+        const fill = document.getElementById("readerFill");
+        const speedBtn = document.getElementById("readerSpeed");
+
+        const AUDIO_SRC = "audio.mp3"; // drop a narration file here to upgrade quality
+        const SPEEDS = [1, 1.25, 1.5, 0.9];
+        let speedIdx = 0;
+        const PLAY = "▶";
+        const PAUSE = "❚❚";
+        let mode = null; // "audio" | "speech"
+        let audio = null;
+        let utter = null;
+
+        // Narration text = the article prose, in order, skipping the timeline.
+        const narration = (function () {
+          const body = document.querySelector(".post-body");
+          if (!body) return document.title;
+          const parts = [];
+          body.querySelectorAll(":scope > h2, :scope > p").forEach((el) => {
+            const t = el.textContent.replace(/\s+/g, " ").trim();
+            if (t) parts.push(t);
+          });
+          return parts.join("\n\n");
+        })();
+
+        const setPlaying = (p) => {
+          btn.textContent = p ? PAUSE : PLAY;
+          btn.setAttribute("aria-label", p ? "Pause" : "Play");
+        };
+        const setFill = (pct) =>
+          (fill.style.width = Math.max(0, Math.min(100, pct)) + "%");
+        const fmt = (s) => {
+          if (!isFinite(s)) return "";
+          const m = Math.floor(s / 60);
+          const ss = Math.floor(s % 60);
+          return m + ":" + String(ss).padStart(2, "0");
+        };
+
+        // ---- Audio mode (used only if audio.mp3 loads) ----
+        function initAudio() {
+          audio = new Audio(AUDIO_SRC);
+          audio.preload = "metadata";
+          audio.addEventListener("loadedmetadata", () => {
+            if (mode) return;
+            mode = "audio";
+            reader.classList.add("is-audio");
+            sub.textContent = fmt(audio.duration);
+            reader.hidden = false;
+          });
+          audio.addEventListener("timeupdate", () => {
+            if (audio.duration) setFill((audio.currentTime / audio.duration) * 100);
+            sub.textContent = fmt(audio.currentTime) + " / " + fmt(audio.duration);
+          });
+          audio.addEventListener("ended", () => {
+            setPlaying(false);
+            setFill(0);
+            sub.textContent = fmt(audio.duration);
+          });
+          audio.addEventListener("error", initSpeech, { once: true });
+        }
+
+        // ---- Speech mode (browser voice fallback) ----
+        function initSpeech() {
+          if (mode) return;
+          if (!("speechSynthesis" in window)) {
+            reader.hidden = true;
+            return;
+          }
+          mode = "speech";
+          sub.textContent = "browser voice";
+          reader.hidden = false;
+        }
+        function pickVoice() {
+          const vs = speechSynthesis
+            .getVoices()
+            .filter((v) => /^en[-_]/i.test(v.lang));
+          const pref = [
+            "Samantha", "Ava", "Allison", "Siri", "Google US English",
+            "Microsoft Aria", "Microsoft Jenny", "Microsoft Guy",
+          ];
+          for (const name of pref) {
+            const m = vs.find((v) => v.name.includes(name));
+            if (m) return m;
+          }
+          return vs.find((v) => v.default) || vs[0] || null;
+        }
+
+        // ---- Controls ----
+        btn.addEventListener("click", () => {
+          if (mode === "audio") {
+            if (audio.paused) {
+              audio.playbackRate = SPEEDS[speedIdx];
+              audio.play();
+              setPlaying(true);
+            } else {
+              audio.pause();
+              setPlaying(false);
+            }
+          } else if (mode === "speech") {
+            if (speechSynthesis.speaking && !speechSynthesis.paused) {
+              speechSynthesis.pause();
+              setPlaying(false);
+              return;
+            }
+            if (speechSynthesis.paused) {
+              speechSynthesis.resume();
+              setPlaying(true);
+              return;
+            }
+            speechSynthesis.cancel();
+            utter = new SpeechSynthesisUtterance(narration);
+            const v = pickVoice();
+            if (v) utter.voice = v;
+            utter.rate = SPEEDS[speedIdx];
+            utter.onboundary = (e) => {
+              if (e.charIndex != null)
+                setFill((e.charIndex / narration.length) * 100);
+            };
+            utter.onend = () => {
+              setPlaying(false);
+              setFill(0);
+            };
+            speechSynthesis.speak(utter);
+            setPlaying(true);
+          }
+        });
+
+        speedBtn.addEventListener("click", () => {
+          speedIdx = (speedIdx + 1) % SPEEDS.length;
+          speedBtn.textContent = SPEEDS[speedIdx] + "×";
+          if (mode === "audio") {
+            audio.playbackRate = SPEEDS[speedIdx];
+          } else if (mode === "speech" && speechSynthesis.speaking) {
+            const wasPlaying = !speechSynthesis.paused;
+            speechSynthesis.cancel();
+            setPlaying(false);
+            setFill(0);
+            if (wasPlaying) btn.click();
+          }
+        });
+
+        track.addEventListener("click", (e) => {
+          if (mode !== "audio" || !audio.duration) return;
+          const r = track.getBoundingClientRect();
+          audio.currentTime = ((e.clientX - r.left) / r.width) * audio.duration;
+        });
+
+        window.addEventListener("beforeunload", () => {
+          try { speechSynthesis.cancel(); } catch (_) {}
+        });
+        if ("speechSynthesis" in window) {
+          speechSynthesis.onvoiceschanged = () => {};
+        }
+
+        // Prefer the audio file; fall back to the browser voice if it's absent.
+        initAudio();
+        setTimeout(() => { if (!mode) initSpeech(); }, 1500);
+      })();
+    </script>
   </body>
 </html>
