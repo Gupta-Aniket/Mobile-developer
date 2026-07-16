@@ -375,6 +375,34 @@
         .reader-btn, .reader-fill { transition: none; }
       }
 
+      /* Back-to-top button */
+      .to-top {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        border: none;
+        cursor: pointer;
+        background: var(--primary);
+        color: #fff;
+        display: grid;
+        place-items: center;
+        box-shadow: var(--shadow-md);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(10px);
+        transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+        z-index: 900;
+      }
+      .to-top.show { opacity: 1; visibility: visible; transform: translateY(0); }
+      .to-top:hover { transform: translateY(-2px); }
+      .to-top:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+      @media (prefers-reduced-motion: reduce) {
+        .to-top { transition: opacity 0.2s ease; }
+      }
+
       @media (max-width: 620px) {
         .timeline-track { grid-template-columns: 1fr; gap: 0; }
         .timeline-track::before {
@@ -402,8 +430,23 @@
           <a href="/#projects" class="nav-link">Projects</a>
           <a href="/blog/" class="nav-link">Blog</a>
         </div>
+        <div class="nav-hamburger" id="nav-hamburger">
+          <span></span><span></span><span></span>
+        </div>
+        <div class="nav-dropdown" id="nav-dropdown">
+          <a href="/">Home</a>
+          <a href="/#about">About</a>
+          <a href="/#experience">Experience</a>
+          <a href="/#skills">Skills</a>
+          <a href="/#projects">Projects</a>
+          <a href="/blog/">Blog</a>
+        </div>
       </div>
     </nav>
+
+    <button class="to-top" id="toTop" type="button" aria-label="Back to top">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V6"/><path d="M6 12l6-6 6 6"/></svg>
+    </button>
 
     <article class="post-wrap">
       <a class="post-back" href="/blog/">← All posts</a>
@@ -415,7 +458,7 @@
         <span class="dot">·</span>
         <span>July 2026</span>
         <span class="dot">·</span>
-        <span>~4 min read</span>
+        <span>~5 min read</span>
       </div>
 
       <!-- Listen / reader (progressively enhanced; hidden until JS confirms playback) -->
@@ -447,10 +490,26 @@
         <h2>Why apps, not the web</h2>
         <p>
           Looking back, what pulled me in was a feeling I couldn't shake: the best
-          apps are <strong>smooth</strong> in conditions that have no business
-          being smooth. WhatsApp holding a conversation on a few kbps. Telegram,
-          Duolingo, Zomato, Blinkit, ChatGPT — fast and steady when the network
-          barely is. The web, meanwhile, kept frustrating me: spinners that never
+          apps <strong>do the hard thing without letting you notice</strong>. And
+          it was never just one thing.
+        </p>
+        <p>
+          Part of it is the network. WhatsApp holding a real conversation on a few
+          kbps. ChatGPT — and later Claude — staying usable through flaky
+          connections, retrying and reconnecting so quietly you never think about
+          it. But the other part is the craft you feel and don't clock: Zomato and
+          Swiggy taking a genuinely complex flow and making it feel obvious;
+          Duolingo's micro-animations turning a lesson into something you actually
+          want to come back to; Blinkit and Swiggy again, every tap acknowledged,
+          the whole thing shaped around the person using it; District now, that
+          same user-first instinct.
+        </p>
+        <p>
+          None of it announces itself. That's the whole point — the network
+          resilience, the security, the tiny animations, the user-first decisions
+          all disappear into "it just works." It was never only the plumbing that
+          hooked me; it was that <em>all</em> of it is invisible when it's done
+          right. The web, meanwhile, kept frustrating me: spinners that never
           resolve, dropped requests, layouts reshuffling under my thumb. We all
           choose our battles. I chose apps.
         </p>
@@ -542,12 +601,14 @@
 
         <h2>Why iOS, why now</h2>
         <p>
-          So — why iOS? Because the same instinct that made me pick apps over the
-          web, and water over the safe shore, kept pointing the same way: down,
-          toward the layer under the feature. Cross-platform got me building.
-          Native iOS is where I finally get to work at the depth I always wanted —
-          and <em>now</em> is when I'm doing it for real, in production, on the
-          parts of an app you never see.
+          So — why iOS? That invisible craft pulls two ways: toward the polish
+          (the animations, the feel) and toward the plumbing (the network, the
+          security, the reliability). I went toward the plumbing — but it's the
+          same instinct either way: make the hard part disappear. That's the layer
+          under the feature, and it's where the pull that made me choose apps over
+          the web kept sending me — down. Cross-platform got me building; native
+          iOS is where I finally get to work at that depth, for real, in
+          production, on the parts of an app you never see.
         </p>
         <p>
           This is post 1. The rest gets specific — the networking rewrite, the
@@ -657,6 +718,37 @@
           scrubbing = false;
           try { track.releasePointerCapture(e.pointerId); } catch (_) {}
         });
+      })();
+    </script>
+
+    <script>
+      // Mobile nav toggle + back-to-top
+      (function () {
+        const ham = document.getElementById("nav-hamburger");
+        const dd = document.getElementById("nav-dropdown");
+        if (ham && dd) {
+          ham.addEventListener("click", (e) => {
+            e.stopPropagation();
+            ham.classList.toggle("active");
+            dd.classList.toggle("show");
+          });
+          document.addEventListener("click", (e) => {
+            if (!dd.contains(e.target) && !ham.contains(e.target)) {
+              dd.classList.remove("show");
+              ham.classList.remove("active");
+            }
+          });
+        }
+        const top = document.getElementById("toTop");
+        if (top) {
+          const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+          const onScroll = () => top.classList.toggle("show", window.scrollY > 500);
+          window.addEventListener("scroll", onScroll, { passive: true });
+          onScroll();
+          top.addEventListener("click", () =>
+            window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" })
+          );
+        }
       })();
     </script>
   </body>
