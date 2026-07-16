@@ -431,6 +431,12 @@
           </div>
         </div>
         <button class="reader-speed" id="readerSpeed" aria-label="Playback speed" type="button">1×</button>
+        <!-- preload="metadata": only the small header loads on page view; the
+             full audio streams on play (m4a ~1.6MB preferred, mp3 fallback). -->
+        <audio id="readerAudio" preload="metadata">
+          <source src="audio.m4a" type="audio/mp4" />
+          <source src="audio.mp3" type="audio/mpeg" />
+        </audio>
       </div>
 
       <div class="post-body">
@@ -560,9 +566,9 @@
     </article>
 
     <script>
-      // Audio-only "Listen" player. Stays hidden until a narration file loads,
-      // so it is invisible on the live site until an audio.mp3 is added.
-      // (No browser text-to-speech — that voice was intentionally removed.)
+      // Audio-only "Listen" player, backed by a pre-recorded narration file.
+      // Nothing but the small metadata header loads on page view; the full
+      // audio streams only when the visitor presses play.
       (function () {
         const reader = document.getElementById("reader");
         if (!reader) return;
@@ -571,8 +577,9 @@
         const track = document.getElementById("readerTrack");
         const fill = document.getElementById("readerFill");
         const speedBtn = document.getElementById("readerSpeed");
+        const audio = document.getElementById("readerAudio");
+        if (!audio) return;
 
-        const AUDIO_SRC = "audio.mp3"; // add this file to enable + reveal the player
         const SPEEDS = [1, 1.25, 1.5, 0.9];
         let speedIdx = 0;
 
@@ -580,9 +587,6 @@
           '<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 5.14v13.72a1 1 0 0 0 1.54.84l10.6-6.86a1 1 0 0 0 0-1.68L9.54 4.3A1 1 0 0 0 8 5.14z"/></svg>';
         const ICON_PAUSE =
           '<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><rect x="6.5" y="5" width="4" height="14" rx="1.2"/><rect x="13.5" y="5" width="4" height="14" rx="1.2"/></svg>';
-
-        const audio = new Audio(AUDIO_SRC);
-        audio.preload = "metadata";
 
         const setPlaying = (p) => {
           btn.innerHTML = p ? ICON_PAUSE : ICON_PLAY;
@@ -598,12 +602,11 @@
         };
 
         setPlaying(false);
+        reader.classList.add("is-audio");
+        reader.hidden = false; // audio exists — show at once; no bytes downloaded yet
 
-        // Reveal the player only once real audio is confirmed to load.
         audio.addEventListener("loadedmetadata", () => {
-          reader.classList.add("is-audio");
           sub.textContent = "0:00 / " + fmt(audio.duration);
-          reader.hidden = false;
         });
         audio.addEventListener("timeupdate", () => {
           if (audio.duration) setFill((audio.currentTime / audio.duration) * 100);
@@ -614,8 +617,8 @@
           setFill(0);
           sub.textContent = "0:00 / " + fmt(audio.duration);
         });
-        // No file (404) or decode error → leave the player hidden. Nothing shows.
-        audio.addEventListener("error", () => {}, { once: true });
+        // If every source fails to load, hide the player rather than show a dead one.
+        audio.addEventListener("error", () => { reader.hidden = true; }, { once: true });
 
         btn.addEventListener("click", () => {
           if (audio.paused) {
@@ -655,8 +658,6 @@
           scrubbing = false;
           try { track.releasePointerCapture(e.pointerId); } catch (_) {}
         });
-
-        audio.load();
       })();
     </script>
   </body>
