@@ -435,7 +435,6 @@
              full audio streams on play (m4a ~1.6MB preferred, mp3 fallback). -->
         <audio id="readerAudio" preload="metadata">
           <source src="audio.m4a" type="audio/mp4" />
-          <source src="audio.mp3" type="audio/mpeg" />
         </audio>
       </div>
 
@@ -640,7 +639,7 @@
         // Seek: click or drag anywhere on the track.
         let scrubbing = false;
         const seekToClientX = (clientX) => {
-          if (!audio.duration) return;
+          if (!isFinite(audio.duration) || audio.duration <= 0) return;
           const r = track.getBoundingClientRect();
           const ratio = (clientX - r.left) / r.width;
           audio.currentTime = Math.max(0, Math.min(1, ratio)) * audio.duration;
