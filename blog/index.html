@@ -298,6 +298,14 @@
             ham.classList.toggle("active");
             dd.classList.toggle("show");
           });
+          // Close after picking a destination — same-page anchors don't reload,
+          // so the dropdown would otherwise stay open over the new section.
+          dd.querySelectorAll("a").forEach((link) => {
+            link.addEventListener("click", () => {
+              dd.classList.remove("show");
+              ham.classList.remove("active");
+            });
+          });
           document.addEventListener("click", (e) => {
             if (!dd.contains(e.target) && !ham.contains(e.target)) {
               dd.classList.remove("show");

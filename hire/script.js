@@ -35,6 +35,15 @@ window.addEventListener("DOMContentLoaded", () => {
     dropdown.classList.toggle("show");
   });
 
+  // Close after picking a destination — same-page anchors don't reload, so the
+  // dropdown would otherwise stay open over the section you just jumped to.
+  dropdown.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => {
+      dropdown.classList.remove("show");
+      hamburger.classList.remove("active");
+    });
+  });
+
   // Close when clicking outside
   document.addEventListener("click", (e) => {
     if (!dropdown.contains(e.target) && !hamburger.contains(e.target)) {

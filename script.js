@@ -23,7 +23,6 @@ window.addEventListener("DOMContentLoaded", () => {
   activateScrollAnimations();
   renderSkillsList();
   renderDeploymentSection();
-  attachProjectShareButtons();
   checkHashSituation();
 
   const hamburger = document.getElementById("nav-hamburger");
@@ -33,6 +32,15 @@ window.addEventListener("DOMContentLoaded", () => {
     e.stopPropagation();
     hamburger.classList.toggle("active");
     dropdown.classList.toggle("show");
+  });
+
+  // Close after picking a destination — same-page anchors don't reload, so the
+  // dropdown would otherwise stay open over the section you just jumped to.
+  dropdown.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => {
+      dropdown.classList.remove("show");
+      hamburger.classList.remove("active");
+    });
   });
 
   // Close when clicking outside
@@ -76,6 +84,9 @@ function checkHashSituation() {
       // Check if this part matches a project ID
       const project = projects.find((p) => p.id === part);
       if (project) {
+        // Rewrite the landing entry to the section first, so the modal's own
+        // history entry has somewhere to go back to on a shared deep link.
+        history.replaceState(null, "", "#projects");
         openProjectModal(project.id);
       }
     }
@@ -237,7 +248,9 @@ function buildExpSheet() {
   overlay.innerHTML = `
     <div class="exp-sheet" role="dialog" aria-modal="true" tabindex="-1">
       <div class="exp-sheet-grip"></div>
-      <button class="exp-sheet-close" aria-label="Close">✕</button>
+      <button class="exp-sheet-close" aria-label="Close">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
       <div class="exp-sheet-scroll">
         <header class="exp-sheet-head">
           <span class="exp-icon" data-letter=""><img alt="" onerror="this.remove()"></span>
@@ -307,16 +320,24 @@ function openExpSheet(exp) {
   shipped.style.display = exp.shipped ? "" : "none";
   overlay.querySelector(".exp-sheet-scroll").scrollTop = 0;
   document.body.style.overflow = "hidden";
+  pushOverlayState("exp", "#experience");
   overlay.setAttribute("aria-hidden", "false");
   requestAnimationFrame(() => overlay.classList.add("open"));
   overlay.querySelector(".exp-sheet").focus();
 }
 
-function closeExpSheet() {
-  if (!__expSheet) return;
+// UI-only close, called by the popstate handler.
+function closeExpSheetUI() {
+  if (!__expSheet || !__expSheet.classList.contains("open")) return;
   __expSheet.classList.remove("open");
   __expSheet.setAttribute("aria-hidden", "true");
   document.body.style.overflow = "";
+}
+
+// What the ✕ / backdrop / Escape call: goes through history so back and the
+// close button unwind the same way.
+function closeExpSheet() {
+  dismissOverlay(closeExpSheetUI, "#experience");
 }
 
 function renderExperience() {
@@ -577,7 +598,7 @@ function renderContactInfo() {
 function openProjectModal(projectId) {
   const project = projects.find((p) => p.id === projectId);
   if (!project) return;
-  history.replaceState(null, null, `#projects#${projectId}`);
+  pushOverlayState("project", `#projects#${projectId}`);
 
   const modal = document.getElementById("projectModal");
   const modalTitle = document.getElementById("modalTitle");
@@ -679,14 +700,18 @@ function openProjectModal(projectId) {
   const indicatorsHTML = Array.from({ length: mediaSlides.length })
     .map(
       (_, i) =>
-        `<span class="modal-indicator${
+        `<button type="button" class="modal-indicator${
           i === 0 ? " active" : ""
-        }" data-index="${i}"></span>`,
+        }" data-index="${i}" aria-label="Go to media ${i + 1}"></button>`,
     )
     .join("");
 
-  const mediaCount =
-    (project.images?.length || 0) + (project.videoLinks?.length || 0);
+  const mediaCount = mediaSlides.length;
+
+  const arrowSVG = (dir) =>
+    `<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M${
+      dir === "left" ? "15 5l-7 7 7 7" : "9 5l7 7-7 7"
+    }"/></svg>`;
 
   const sliderHTML =
     mediaSlides.length > 0
@@ -694,20 +719,32 @@ function openProjectModal(projectId) {
     <div class="modal-slider-wrapper">
       ${
         mediaCount > 1
-          ? `<button class="slider-arrow left" aria-label="Previous media">➱</button>`
+          ? `<button class="slider-arrow left" aria-label="Previous media">${arrowSVG(
+              "left",
+            )}</button>`
           : ""
       }
-      <div class="modal-slider">
+      <div class="modal-slider" tabindex="0" role="group" aria-label="${
+        project.title
+      } media">
         ${mediaSlides.join("")}
       </div>
       ${
         mediaCount > 1
-          ? `<button class="slider-arrow right" aria-label="Next media">➱</button>`
+          ? `<button class="slider-arrow right" aria-label="Next media">${arrowSVG(
+              "right",
+            )}</button>`
           : ""
       }
-      <div class="modal-indicators">
-        ${indicatorsHTML}
-      </div>
+      ${
+        mediaCount > 1
+          ? `<div class="modal-indicators">${indicatorsHTML}</div>
+             <p class="modal-slider-hint">
+               <span class="hint-desktop">Use ← / → to browse</span>
+               <span class="hint-touch">Swipe to browse</span>
+             </p>`
+          : ""
+      }
     </div>
   `
       : `<div class="modal-hero-placeholder">No previews available</div>`;
@@ -738,154 +775,298 @@ function openProjectModal(projectId) {
 
   requestAnimationFrame(() => modal.classList.add("active"));
 
-  const slides = modal.querySelectorAll(".modal-slide");
-  const indicators = modal.querySelectorAll(".modal-indicator");
+  setupModalSlider(modal);
+  attachProjectShare(project);
+  modal.focus();
+}
+
+/* Swipe/scroll carousel for the project media: the first slide is the main
+   one, the slide nearest the centre is the hero, and pointer devices get
+   arrows + ← / → keys. Same behaviour as the blog's Dream Space carousel. */
+function setupModalSlider(modal) {
+  const track = modal.querySelector(".modal-slider");
+  if (!track) return;
+
+  const slides = Array.from(track.querySelectorAll(".modal-slide"));
+  const indicators = Array.from(modal.querySelectorAll(".modal-indicator"));
   const leftArrow = modal.querySelector(".slider-arrow.left");
   const rightArrow = modal.querySelector(".slider-arrow.right");
+  if (!slides.length) return;
 
-  let activeIndex = 0;
+  let current = 0;
+  let raf = null;
 
-  function loadYouTubeIframe(slide) {
-    if (slide.dataset.type === "youtube" && !slide.querySelector("iframe")) {
-      const videoId = slide.dataset.videoId;
-      const iframe = document.createElement("iframe");
-      iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
-      iframe.loading = "lazy";
-      iframe.allow =
-        "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-      iframe.allowFullscreen = true;
-      iframe.className = "modal-video-iframe";
-      slide.innerHTML = "";
-      slide.appendChild(iframe);
-    }
-  }
+  // Slide widths are content-driven, so the room needed to centre the first
+  // and last slide has to be measured rather than hard-coded.
+  const setEdgePadding = () => {
+    const first = slides[0].getBoundingClientRect().width;
+    const last = slides[slides.length - 1].getBoundingClientRect().width;
+    track.style.paddingLeft = `${Math.max(0, (track.clientWidth - first) / 2)}px`;
+    track.style.paddingRight = `${Math.max(0, (track.clientWidth - last) / 2)}px`;
+  };
 
-  function setActiveSlide(index) {
-    slides.forEach((s, i) => s.classList.toggle("active", i === index));
-    indicators.forEach((d, i) => d.classList.toggle("active", i === index));
-    activeIndex = index;
-    loadYouTubeIframe(slides[activeIndex]);
-  }
+  const centerSlide = (i, smooth) => {
+    const s = slides[i];
+    if (!s) return;
+    const left = s.offsetLeft - (track.clientWidth - s.clientWidth) / 2;
+    track.scrollTo({ left, behavior: smooth ? "smooth" : "auto" });
+  };
 
-  indicators.forEach((dot) => {
-    dot.addEventListener("click", () => {
-      setActiveSlide(parseInt(dot.dataset.index));
+  const update = () => {
+    raf = null;
+    const mid = track.scrollLeft + track.clientWidth / 2;
+    let best = 0;
+    let bestDist = Infinity;
+    slides.forEach((s, i) => {
+      const d = Math.abs(s.offsetLeft + s.clientWidth / 2 - mid);
+      if (d < bestDist) {
+        bestDist = d;
+        best = i;
+      }
     });
+    current = best;
+    slides.forEach((s, i) => s.classList.toggle("is-hero", i === best));
+    indicators.forEach((d, i) => d.classList.toggle("active", i === best));
+    if (leftArrow) leftArrow.disabled = best === 0;
+    if (rightArrow) rightArrow.disabled = best === slides.length - 1;
+    loadYouTubeIframe(slides[best]);
+  };
+
+  track.addEventListener(
+    "scroll",
+    () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    },
+    { passive: true },
+  );
+
+  indicators.forEach((dot) =>
+    dot.addEventListener("click", () =>
+      centerSlide(parseInt(dot.dataset.index, 10), true),
+    ),
+  );
+  const step = (dir) =>
+    centerSlide(Math.max(0, Math.min(slides.length - 1, current + dir)), true);
+  leftArrow?.addEventListener("click", () => step(-1));
+  rightArrow?.addEventListener("click", () => step(1));
+
+  // Arrow keys drive the carousel whenever the modal is open — the share menu
+  // and any focused text field keep their own key handling.
+  modal.__sliderKeys = (e) => {
+    if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+    if (!modal.classList.contains("active")) return;
+    e.preventDefault();
+    step(e.key === "ArrowRight" ? 1 : -1);
+  };
+  window.addEventListener("keydown", modal.__sliderKeys);
+
+  const relayout = () => {
+    setEdgePadding();
+    centerSlide(current, false);
+    update();
+  };
+  window.addEventListener("resize", relayout);
+  modal.__sliderResize = relayout;
+
+  // Images arrive after render and change slide widths, so re-measure as
+  // each one lands.
+  slides.forEach((s) => {
+    const img = s.querySelector("img");
+    if (img && !img.complete) img.addEventListener("load", relayout, { once: true });
   });
 
-  leftArrow?.addEventListener("click", () => {
-    setActiveSlide((activeIndex - 1 + slides.length) % slides.length);
+  requestAnimationFrame(() => {
+    setEdgePadding();
+    centerSlide(0, false); // first slide is the main one
+    update();
   });
+}
 
-  rightArrow?.addEventListener("click", () => {
-    setActiveSlide((activeIndex + 1) % slides.length);
-  });
+function loadYouTubeIframe(slide) {
+  if (!slide) return;
+  if (slide.dataset.type === "youtube" && !slide.querySelector("iframe")) {
+    const videoId = slide.dataset.videoId;
+    const iframe = document.createElement("iframe");
+    iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+    iframe.loading = "lazy";
+    iframe.allow =
+      "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+    iframe.allowFullscreen = true;
+    iframe.className = "modal-video-iframe";
+    slide.innerHTML = "";
+    slide.appendChild(iframe);
+  }
+}
 
-  document.addEventListener("keydown", handleModalKeyEvents);
-  modal.focus();
-  loadYouTubeIframe(slides[activeIndex]); // preload first slide
+/* ---------------------------------------------------------------
+   Overlay history: opening the project modal or the experience sheet
+   pushes one history entry, so the browser/Android back gesture closes
+   the overlay instead of leaving the site. Exactly one entry is kept —
+   opening a second overlay replaces the first rather than stacking.
+   --------------------------------------------------------------- */
+function pushOverlayState(kind, url) {
+  if (history.state && history.state.overlay) {
+    history.replaceState({ overlay: kind }, "", url);
+  } else {
+    history.pushState({ overlay: kind }, "", url);
+  }
+}
+
+// Ask to close: rewind history if we own the current entry, which fires
+// popstate and closes the overlay there. Otherwise close directly.
+function dismissOverlay(closeFn, fallbackURL) {
+  if (history.state && history.state.overlay) {
+    history.back();
+  } else {
+    closeFn();
+    history.replaceState(null, "", fallbackURL);
+  }
+}
+
+function closeProjectModalUI() {
+  const modal = document.getElementById("projectModal");
+  if (!modal || !modal.classList.contains("active")) return;
+  modal.classList.remove("active");
+  if (modal.__sliderKeys) {
+    window.removeEventListener("keydown", modal.__sliderKeys);
+    modal.__sliderKeys = null;
+  }
+  if (modal.__sliderResize) {
+    window.removeEventListener("resize", modal.__sliderResize);
+    modal.__sliderResize = null;
+  }
+  // Stops any playing YouTube embed dead.
+  const body = document.getElementById("modalBody");
+  if (body) body.innerHTML = "";
 }
 
 function attachModalHandlers() {
   const modal = document.getElementById("projectModal");
-  const closeModal = () => {
-    modal.classList.remove("active");
-    history.replaceState(null, null, `#projects`);
-  };
+  const requestClose = () => dismissOverlay(closeProjectModalUI, "#projects");
 
-  // 1️⃣ Close on modal close button
-  document.querySelector(".modal-close").addEventListener("click", closeModal);
+  modal
+    .querySelector(".modal-close")
+    .addEventListener("click", requestClose);
 
   document.addEventListener("click", (e) => {
-    if (e.target === modal) closeModal();
+    if (e.target === modal) requestClose();
   });
 
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Backspace" && modal.classList.contains("active")) {
+    if (!modal.classList.contains("active")) return;
+    if (e.key === "Escape" || e.key === "Backspace") {
       e.preventDefault();
-      closeModal();
+      requestClose();
     }
   });
 
+  // One listener closes whichever overlay is open — back always unwinds the
+  // topmost thing on screen first.
   window.addEventListener("popstate", () => {
-    if (modal.classList.contains("active")) {
-      closeModal();
-    }
+    closeProjectModalUI();
+    closeExpSheetUI();
   });
+}
+
+/* Share the open project by its deep link, using the same menu as the blog. */
+function attachProjectShare(project) {
+  const wrap = document.getElementById("projectShare");
+  if (!wrap) return;
+  const btn = document.getElementById("projectShareBtn");
+  const menu = document.getElementById("projectShareMenu");
+  const label = document.getElementById("projectShareLabel");
+
+  // Absolute, so a copied link works off-site (location.href would carry
+  // whatever hash happens to be current).
+  const url = `${location.origin}${location.pathname}#projects#${project.id}`;
+  const text = `${project.title} — ${project.description || "Check this out"}`;
+
+  document.getElementById("projectShareLinkedIn").href =
+    "https://www.linkedin.com/sharing/share-offsite/?url=" + encodeURIComponent(url);
+  document.getElementById("projectShareX").href =
+    "https://twitter.com/intent/tweet?text=" +
+    encodeURIComponent(project.title) +
+    "&url=" +
+    encodeURIComponent(url);
+  document.getElementById("projectShareWhatsApp").href =
+    "https://wa.me/?text=" + encodeURIComponent(text + "\n" + url);
+
+  const close = () => {
+    menu.classList.remove("show");
+    btn.setAttribute("aria-expanded", "false");
+  };
+
+  // Rebuilt per project, so replace the node to drop the previous listeners.
+  const freshBtn = btn.cloneNode(true);
+  btn.replaceWith(freshBtn);
+  freshBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const open = menu.classList.toggle("show");
+    freshBtn.setAttribute("aria-expanded", open ? "true" : "false");
+  });
+
+  if (!wrap.__wired) {
+    document.addEventListener("click", (e) => {
+      if (!wrap.contains(e.target)) close();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") close();
+    });
+    wrap.__wired = true;
+  }
+  menu.querySelectorAll("a").forEach((a) => (a.onclick = close));
+
+  let flashTimer;
+  const flash = (msg) => {
+    const el = document.getElementById("projectShareLabel") || label;
+    el.textContent = msg;
+    clearTimeout(flashTimer);
+    flashTimer = setTimeout(() => {
+      el.textContent = "Share";
+    }, 1800);
+  };
+
+  document.getElementById("projectShareCopy").onclick = async () => {
+    close();
+    try {
+      await navigator.clipboard.writeText(url);
+      flash("Copied");
+      return;
+    } catch (err) {
+      // navigator.clipboard needs a secure context; fall back to a selection.
+    }
+    const ta = document.createElement("textarea");
+    ta.value = url;
+    ta.setAttribute("readonly", "");
+    ta.style.cssText = "position:fixed;top:0;left:0;opacity:0";
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+      document.execCommand("copy");
+      flash("Copied");
+    } catch (err) {
+      flash("Copy failed");
+    }
+    ta.remove();
+  };
+
+  const nativeBtn = document.getElementById("projectShareNative");
+  if (navigator.share) {
+    nativeBtn.hidden = false;
+    nativeBtn.onclick = async () => {
+      close();
+      try {
+        await navigator.share({ title: project.title, text, url });
+      } catch (err) {
+        /* user dismissed the sheet */
+      }
+    };
+  }
 }
 
 function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
-function attachProjectShareButtons() {
-  document.querySelectorAll(".share-project-btn").forEach((btn, idx) => {
-    btn.addEventListener("click", () => {
-      const project = portfolioData.projects[idx];
-      const slug =
-        project.slug || project.title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-      const projectURL = `${window.location.href}`;
-
-      const shareModal = document.getElementById("shareModal");
-      shareModal.style.display = "block";
-
-      shareModal.querySelectorAll(".share-option").forEach((option) => {
-        option.onclick = () => {
-          const platform = option.dataset.platform;
-          const shareText = `${project.title} - ${
-            project.description || "Check this out"
-          }`;
-
-          switch (platform) {
-            case "linkedin":
-              window.open(
-                `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
-                  projectURL,
-                )}`,
-              );
-              break;
-            case "twitter":
-              window.open(
-                `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-                  shareText,
-                )}&url=${encodeURIComponent(projectURL)}`,
-              );
-              break;
-            case "whatsapp":
-              window.open(
-                `https://wa.me/?text=${encodeURIComponent(
-                  shareText + "\n" + projectURL,
-                )}`,
-              );
-              break;
-            case "copy":
-              navigator.clipboard
-                .writeText(projectURL)
-                .then(() => showToast("Copied to clipboard"));
-              break;
-            case "markdown":
-              navigator.clipboard
-                .writeText(`[${project.title}](${projectURL})`)
-                .then(() => showToast("Markdown copied"));
-              break;
-            case "devto":
-              const devContent = `---\ntitle: ${project.title}\ndescription: ${project.description}\n---\n\nCheck it out 👉 ${projectURL}`;
-              navigator.clipboard
-                .writeText(devContent)
-                .then(() => showToast("Dev.to blog draft copied!"));
-              break;
-          }
-
-          shareModal.style.display = "none";
-        };
-      });
-
-      shareModal.querySelector(".modal-close").onclick = () => {
-        shareModal.style.display = "none";
-      };
-    });
-  });
-}
-
 document.addEventListener("DOMContentLoaded", () => {
   const sections = document.querySelectorAll(".section");
 

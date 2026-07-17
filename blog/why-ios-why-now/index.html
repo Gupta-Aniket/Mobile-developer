@@ -471,7 +471,7 @@
         }
         .tl-stage::before { left: 0; transform: none; }
       }
-    </style>
+        </style>
   </head>
   <body>
     <!-- Navigation (matches site pattern; links resolve to the home page sections) -->
@@ -514,6 +514,30 @@
         <span>July 2026</span>
         <span class="dot">·</span>
         <span>~5 min read</span>
+        <div class="share" id="share">
+          <button class="share-btn" id="shareBtn" type="button" aria-haspopup="true" aria-expanded="false">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>
+            <span id="shareBtnLabel">Share</span>
+          </button>
+          <div class="share-menu" id="shareMenu" role="menu">
+            <button type="button" id="shareCopy" role="menuitem">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>
+              Copy link
+            </button>
+            <a id="shareLinkedIn" role="menuitem" target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-.95 1.83-1.95 3.76-1.95C20.6 8.75 22 11 22 14.5V21h-4v-5.8c0-1.4-.03-3.2-2-3.2-2 0-2.3 1.5-2.3 3.1V21H9z"/></svg>
+              LinkedIn
+            </a>
+            <a id="shareX" role="menuitem" target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M18.2 2H21l-6.5 7.4L22.2 22h-6l-4.7-6.2L6.1 22H3.3l7-8L2.1 2h6.2l4.3 5.7zm-1 18.3h1.6L7.1 3.6H5.4z"/></svg>
+              X
+            </a>
+            <button type="button" id="shareNative" role="menuitem" hidden>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>
+              More…
+            </button>
+          </div>
+        </div>
       </div>
 
       <!-- Listen / reader (progressively enhanced; hidden until JS confirms playback) -->
@@ -801,6 +825,14 @@
             ham.classList.toggle("active");
             dd.classList.toggle("show");
           });
+          // Close after picking a destination — same-page anchors don't reload,
+          // so the dropdown would otherwise stay open over the new section.
+          dd.querySelectorAll("a").forEach((link) => {
+            link.addEventListener("click", () => {
+              dd.classList.remove("show");
+              ham.classList.remove("active");
+            });
+          });
           document.addEventListener("click", (e) => {
             if (!dd.contains(e.target) && !ham.contains(e.target)) {
               dd.classList.remove("show");
@@ -817,6 +849,75 @@
           top.addEventListener("click", () =>
             window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" })
           );
+        }
+      })();
+    </script>
+
+    <script>
+      // Share menu — copy link, LinkedIn, X, plus the native sheet where it exists.
+      (function () {
+        const wrap = document.getElementById("share");
+        if (!wrap) return;
+        const btn = document.getElementById("shareBtn");
+        const menu = document.getElementById("shareMenu");
+        const label = document.getElementById("shareBtnLabel");
+
+        const canonical = document.querySelector('link[rel="canonical"]');
+        const url = canonical ? canonical.href : location.href;
+        const titleEl = document.querySelector(".post-title");
+        const title = (titleEl ? titleEl.textContent : document.title).trim();
+
+        document.getElementById("shareLinkedIn").href =
+          "https://www.linkedin.com/sharing/share-offsite/?url=" + encodeURIComponent(url);
+        document.getElementById("shareX").href =
+          "https://twitter.com/intent/tweet?text=" + encodeURIComponent(title) + "&url=" + encodeURIComponent(url);
+
+        const close = () => { menu.classList.remove("show"); btn.setAttribute("aria-expanded", "false"); };
+        const open = () => { menu.classList.add("show"); btn.setAttribute("aria-expanded", "true"); };
+
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          menu.classList.contains("show") ? close() : open();
+        });
+        document.addEventListener("click", (e) => { if (!wrap.contains(e.target)) close(); });
+        document.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
+        menu.querySelectorAll("a").forEach((a) => a.addEventListener("click", close));
+
+        let flashTimer;
+        const flash = (msg) => {
+          label.textContent = msg;
+          clearTimeout(flashTimer);
+          flashTimer = setTimeout(() => { label.textContent = "Share"; }, 1800);
+        };
+
+        document.getElementById("shareCopy").addEventListener("click", async () => {
+          close();
+          try {
+            await navigator.clipboard.writeText(url);
+            flash("Copied");
+            return;
+          } catch (err) {
+            // navigator.clipboard needs a secure context; fall back to a selection copy.
+          }
+          const ta = document.createElement("textarea");
+          ta.value = url;
+          ta.setAttribute("readonly", "");
+          ta.style.cssText = "position:fixed;top:0;left:0;opacity:0";
+          document.body.appendChild(ta);
+          ta.select();
+          try { document.execCommand("copy"); flash("Copied"); }
+          catch (err) { flash("Copy failed"); }
+          ta.remove();
+        });
+
+        const nativeBtn = document.getElementById("shareNative");
+        if (navigator.share) {
+          nativeBtn.hidden = false;
+          nativeBtn.addEventListener("click", async () => {
+            close();
+            try { await navigator.share({ title, url }); }
+            catch (err) { /* user dismissed the sheet */ }
+          });
         }
       })();
     </script>

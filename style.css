@@ -2366,108 +2366,113 @@ html {
   object-fit: cover;
   display: block;
 }
+/* ---------------------------------------------------------------
+   Project media carousel — swipe on touch, arrows/keys on desktop.
+   Slide widths are content-driven (height-locked, width auto) so a
+   phone screenshot and a wide desktop shot both stay uncropped; the
+   track's inline padding is set in JS so the first/last can center.
+   --------------------------------------------------------------- */
 .modal-slider-wrapper {
   position: relative;
   margin-bottom: var(--spacing-lg);
 }
+
 .modal-slider {
+  --track-h: clamp(240px, 52vh, 420px);
   display: flex;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
+  align-items: center;
   gap: var(--spacing-md);
-  scroll-behavior: smooth;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  padding-block: var(--spacing-sm);
 }
+.modal-slider::-webkit-scrollbar { display: none; }
+.modal-slider:focus { outline: none; }
+.modal-slider:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 4px;
+  border-radius: var(--radius-md);
+}
+
 .modal-slide {
-  flex: 0 0 100%;
+  flex: 0 0 auto;
+  height: var(--track-h);
   scroll-snap-align: center;
   border-radius: var(--radius-md);
   overflow: hidden;
-  transition: transform 0.3s ease;
+  background: var(--secondary-background);
+  transform: scale(0.88);
+  opacity: 0.5;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+.modal-slide.is-hero {
+  transform: scale(1);
+  opacity: 1;
 }
 .modal-slide img {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-.modal-indicators {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 12px;
-}
-.modal-indicator {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: var(--quaternary-label);
-  transition: all 0.2s ease;
-  cursor: pointer;
-}
-.modal-indicator.active {
-  background-color: var(--primary);
-}
-
-.modal-slider-wrapper {
-  position: relative;
-  margin-bottom: var(--spacing-lg);
-  overflow: hidden;
-  border-radius: var(--radius-md);
-}
-
-.modal-slider {
-  display: flex;
-  overflow: hidden;
-  width: 100%;
-  position: relative;
-  height: clamp(200px, 45vh, 360px);
-}
-
-.modal-slide {
-  flex: 0 0 100%;
-  transition: transform 0.3s ease;
-  display: none;
-}
-.modal-slide.active {
-  display: block;
-}
-.modal-slide img {
-  max-width: 100%;
-  max-height: 100%;
+  height: 100%;
   width: auto;
-  height: auto;
+  max-width: min(78vw, 560px);
   object-fit: contain;
   display: block;
-  margin: auto;
+}
+.modal-slide[data-type="youtube"] {
+  width: min(calc(var(--track-h) * 1.7778), 78vw, 560px);
+  background: #000;
+}
+.modal-slide[data-type="youtube"] iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+@media (prefers-reduced-motion: reduce) {
+  .modal-slide { transition: none; }
+  .modal-slider { scroll-behavior: auto; }
 }
 
-
+/* Arrows: pointer devices only — touch users swipe instead. */
 .slider-arrow {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
   z-index: 10;
-  font-size: 24px;
-  background-color: rgba(0, 0, 0, 0.4);
-  color: white;
-  border: none;
-  border-radius: 50%;
   width: 36px;
   height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  display: none;
+  place-items: center;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: background-color 0.2s ease, opacity 0.2s ease;
 }
-.slider-arrow:hover {
-  background-color: rgba(0, 0, 0, 0.6);
+.slider-arrow:hover { background-color: rgba(0, 0, 0, 0.68); }
+.slider-arrow:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.slider-arrow[disabled] { opacity: 0.25; cursor: default; }
+.slider-arrow.left { left: 8px; }
+.slider-arrow.right { right: 8px; }
+@media (hover: hover) and (pointer: fine) {
+  .slider-arrow { display: grid; }
 }
-.slider-arrow.left {
-  left: 12px;
-  transform: translateY(-50%) rotate(180deg); 
+
+.modal-slider-hint {
+  margin: 10px 0 0;
+  text-align: center;
+  font-family: var(--font-text);
+  font-size: 12px;
+  color: var(--tertiary-label);
 }
-.slider-arrow.right {
-  right: 12px;
+.hint-touch { display: none; }
+@media (pointer: coarse) {
+  .hint-desktop { display: none; }
+  .hint-touch { display: inline; }
 }
 
 .modal-indicators {
@@ -2477,16 +2482,20 @@ html {
   margin-top: 12px;
 }
 .modal-indicator {
-  width: 10px;
-  height: 10px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
+  border: none;
+  padding: 0;
   background-color: var(--quaternary-label);
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease, transform 0.2s ease;
   cursor: pointer;
 }
 .modal-indicator.active {
   background-color: var(--primary);
+  transform: scale(1.25);
 }
+
 .modal-bullets {
   list-style: disc inside;
   padding-left: 0;
@@ -2744,139 +2753,6 @@ select.wizard-input{
 .modal-content.small-modal {
   max-width: 400px;
   padding: 1.5rem;
-}
-/* Main Share Modal */
-.share-modal .modal-content {
-  padding: 2rem;
-  background: var(--tertiary-background);
-  color: var(--label);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-lg);
-  position: relative;
-  width: 90%;
-  max-width: 480px;
-  margin: auto;
-
-  /* Apple-style translucency */
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-
-  border: 1px solid var(--separator);
-}
-
-/* Modal Header */
-.share-modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--spacing-lg);
-}
-
-.share-modal-header h3 {
-  margin: 0;
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--label);
-}
-
-/* Close Button */
-.modal-close {
-  background: none;
-  border: none;
-  color: var(--secondary-label);
-  font-size: 1.5rem;
-  cursor: pointer;
-  transition: color 0.3s ease;
-}
-
-.modal-close:hover {
-  color: var(--label);
-}
-
-/* Share Options */
-.share-options {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
-}
-
-/* Individual Share Option */
-.share-option {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  font-weight: 500;
-  padding: 0.75rem 1rem;
-
-  background: var(--secondary-background);
-  border: 1px solid var(--separator);
-  border-radius: var(--radius-lg);
-  color: var(--label);
-
-  cursor: pointer;
-  transition: background 0.25s ease, transform 0.15s ease;
-}
-
-.share-option:hover {
-  background: color-mix(in srgb, var(--fill-quaternary) 40%, var(--secondary-background));
-  transform: scale(1.02);
-}
-
-/* Icons */
-.share-icon {
-  width: 24px;
-  height: 24px;
-  object-fit: contain;
-
-  /* color auto-adapts to theme */
-  filter: brightness(0) saturate(100%)
-          invert( var(--icon-invert, 0) ) 
-          sepia(0%) saturate(0%);
-}
-
-/* Light mode → dark icons */
-:root {
-  --icon-invert: 0;
-}
-
-/* Dark mode → white icons */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --icon-invert: 1;
-  }
-}
-
-/* Arrow (↗) */
-.share-button-css::after {
-  content: '';
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  border-top: 2px solid currentColor;
-  border-right: 2px solid currentColor;
-  transform: rotate(45deg);
-  top: 2px;
-  right: 0;
-}
-
-.share-project-btn {
-  border-radius: 50%;
-  padding-right: 1rem ;
-  color: var(--secondary-background);
-}
-.share-project-btn :hover {
-  border-radius: 50%;
-  background-color: var(--fill-quaternary);
-  color: var(--label);
-
-}
-.share-project-btn img {
-cursor: pointer;
-  filter: invert(0.5);
-}
-.share-project-btn img:hover {
-  filter: invert(1);
 }
 .modal-video {
   width: 100%;
@@ -3499,4 +3375,135 @@ cursor: pointer;
     transform: none !important;
     opacity: 1 !important;
   }
+}
+
+/* ---------------------------------------------------------------
+   Share menu — one definition, used by the blog posts and the
+   project modal. Copy link / LinkedIn / X (/ WhatsApp), plus the
+   native share sheet where the browser offers one.
+   --------------------------------------------------------------- */
+.share {
+  position: relative;
+  margin-left: auto;
+}
+.share-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--separator);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--secondary-label);
+  font-family: var(--font-text);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.share-btn:hover {
+  color: var(--primary);
+  border-color: var(--primary);
+}
+.share-btn:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+.share-btn svg { flex: 0 0 auto; }
+
+.share-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 950;
+  min-width: 170px;
+  padding: 6px;
+  display: grid;
+  gap: 2px;
+  background: var(--tertiary-background);
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+}
+.share-menu.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+.share-menu a,
+.share-menu button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 10px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--label);
+  text-decoration: none;
+  font-family: var(--font-text);
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+}
+.share-menu a:hover,
+.share-menu button:hover { background: var(--fill-quaternary); }
+.share-menu a:focus-visible,
+.share-menu button:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
+}
+.share-menu svg { flex: 0 0 auto; color: var(--tertiary-label); }
+.share-menu [hidden] { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .share-menu { transition: opacity 0.15s ease, visibility 0.15s; }
+}
+
+/* Close button — matches the share pill's weight, on both the
+   project modal and the experience sheet. Last definition wins over
+   the older .modal-close rules further up this file. */
+.modal-close,
+.exp-sheet-close {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--separator);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--secondary-label);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+}
+.modal-close:hover,
+.exp-sheet-close:hover {
+  color: var(--label);
+  border-color: var(--label);
+  background: var(--fill-quaternary);
+  transform: none;
+}
+.modal-close:focus-visible,
+.exp-sheet-close:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+.exp-sheet-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+}
+
+.modal-share-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-sm);
 }
