@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Building Kabootar: login-less, untraceable video calling — Aniket Gupta</title>
+
+    <!-- SEO -->
+    <meta
+      name="description"
+      content="A companion to The Layer Underneath: Kabootar, a PIN-based, login-less WebRTC video-calling app — how it works on Firebase signaling, and the honest known issues (no TURN, a connection that won't fully close, earpiece-only audio)."
+    />
+    <meta name="author" content="Aniket Gupta" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+    <meta name="theme-color" content="#007aff" />
+    <link rel="canonical" href="https://aniket.ibasho.in/blog/building-kabootar/" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Aniket Gupta" />
+    <meta property="og:title" content="Building Kabootar: login-less, untraceable video calling" />
+    <meta
+      property="og:description"
+      content="A PIN-based, no-account WebRTC video call — how it works, and the honest bugs I never fully fixed."
+    />
+    <meta property="og:url" content="https://aniket.ibasho.in/blog/building-kabootar/" />
+    <meta property="og:image" content="https://aniket.ibasho.in/assets/og-image.png" />
+    <meta property="article:published_time" content="2026-07-17" />
+    <meta property="article:author" content="Aniket Gupta" />
+    <meta property="article:section" content="The Layer Underneath" />
+    <meta property="article:tag" content="WebRTC" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Building Kabootar: login-less, untraceable video calling" />
+    <meta name="twitter:description" content="A PIN-based, no-account WebRTC video call — how it works, and the honest bugs I never fully fixed." />
+    <meta name="twitter:image" content="https://aniket.ibasho.in/assets/og-image.png" />
+    <meta name="twitter:creator" content="@adbhut_praani" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Building Kabootar: login-less, untraceable video calling",
+        "description": "A PIN-based, no-account WebRTC video-calling app — how it works on Firebase signaling, and the honest known issues.",
+        "url": "https://aniket.ibasho.in/blog/building-kabootar/",
+        "datePublished": "2026-07-17",
+        "image": "https://aniket.ibasho.in/assets/og-image.png",
+        "articleSection": "The Layer Underneath",
+        "keywords": ["Kabootar", "WebRTC", "React Native", "Firebase", "video calling", "STUN", "TURN"],
+        "author": { "@type": "Person", "name": "Aniket Gupta", "url": "https://aniket.ibasho.in/" },
+        "publisher": { "@type": "Person", "name": "Aniket Gupta", "url": "https://aniket.ibasho.in/" },
+        "mainEntityOfPage": { "@type": "WebPage", "@id": "https://aniket.ibasho.in/blog/building-kabootar/" }
+      }
+    </script>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600;700;800&family=SF+Pro+Text:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../style.css" />
+
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/fav-icon/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <link id="favicon" rel="icon" href="../../assets/fav-icon/bear-awake.png" />
+    <script>
+      const favicon = document.getElementById("favicon");
+      window.addEventListener("beforeunload", () => { favicon.href = "../../assets/fav-icon/bear-loading.png"; });
+      window.addEventListener("load", () => { favicon.href = "../../assets/fav-icon/bear-awake.png"; });
+      document.addEventListener("visibilitychange", () => {
+        favicon.href = document.hidden ? "../../assets/fav-icon/bear-sleeping.png" : "../../assets/fav-icon/bear-awake.png";
+      });
+    </script>
+
+    <style>
+      .post-wrap { max-width: 720px; margin: 0 auto; padding: 120px var(--spacing-md) var(--spacing-xxl); }
+      .post-back {
+        display: inline-flex; align-items: center; gap: 6px;
+        font-family: var(--font-text); font-size: 15px; font-weight: 500;
+        color: var(--primary); text-decoration: none; margin-bottom: var(--spacing-xl);
+      }
+      .post-back:hover { opacity: 0.75; }
+      .post-eyebrow {
+        font-family: var(--font-text); font-size: 13px; font-weight: 600;
+        letter-spacing: 0.08em; text-transform: uppercase; color: var(--primary);
+        margin-bottom: var(--spacing-sm);
+      }
+      .post-title {
+        font-family: var(--font-display); font-size: clamp(32px, 5.5vw, 44px);
+        font-weight: 800; line-height: 1.08; letter-spacing: -0.02em;
+        color: var(--label); margin: 0 0 var(--spacing-md); text-wrap: balance;
+      }
+      .post-meta {
+        display: flex; flex-wrap: wrap; align-items: center; gap: 9px 12px;
+        font-family: var(--font-text); font-size: 14px; color: var(--tertiary-label);
+        margin-bottom: var(--spacing-xl); padding-bottom: var(--spacing-lg);
+        border-bottom: 1px solid var(--separator);
+      }
+      .post-meta .dot {
+        flex: 0 0 auto; width: 3px; height: 3px; border-radius: 50%;
+        background: var(--tertiary-label); font-size: 0; line-height: 0;
+      }
+      .post-body { font-family: var(--font-text); }
+      .post-body p {
+        font-size: 18px; line-height: 1.72; color: var(--secondary-label);
+        margin: 0 0 var(--spacing-lg);
+      }
+      .post-body strong { color: var(--label); font-weight: 600; }
+      .post-body a { color: var(--primary); text-decoration: none; }
+      .post-body a:hover { text-decoration: underline; }
+      .post-body h2 {
+        font-family: var(--font-display); font-size: 15px; font-weight: 700;
+        letter-spacing: 0.02em; color: var(--label); margin: var(--spacing-xl) 0 var(--spacing-sm);
+      }
+      .steps { margin: 0 0 var(--spacing-lg); padding-left: 22px; }
+      .steps li {
+        font-family: var(--font-text); font-size: 17px; line-height: 1.6;
+        color: var(--secondary-label); margin-bottom: 8px;
+      }
+      .steps li strong { color: var(--label); }
+
+      /* Known issues — honest, warning-toned */
+      .issues { margin: var(--spacing-lg) 0; display: flex; flex-direction: column; gap: 10px; }
+      .issue {
+        border: 1px solid var(--separator);
+        border-left: 3px solid var(--warning);
+        border-radius: var(--radius-md);
+        padding: 12px 16px;
+        background: color-mix(in srgb, var(--warning) 5%, transparent);
+        font-family: var(--font-text); font-size: 16px; line-height: 1.6;
+        color: var(--secondary-label);
+      }
+      .issue strong { color: var(--label); }
+
+      .reader { display: flex; align-items: center; gap: 12px; background: var(--secondary-background); border: 1px solid var(--separator); border-radius: var(--radius-lg); padding: 12px 14px; margin: 0 0 var(--spacing-xl); }
+      .reader[hidden] { display: none; }
+      .reader-btn { flex: 0 0 auto; width: 44px; height: 44px; border-radius: 50%; border: none; cursor: pointer; background: var(--primary); color: #fff; display: grid; place-items: center; transition: transform 0.15s ease; }
+      .reader-btn:hover { transform: scale(1.06); }
+      .reader-main { flex: 1 1 auto; min-width: 0; }
+      .reader-label { font-family: var(--font-text); font-size: 14px; font-weight: 600; color: var(--label); margin-bottom: 7px; display: flex; align-items: baseline; gap: 8px; }
+      .reader-sub { font-weight: 400; color: var(--tertiary-label); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+      .reader-range { -webkit-appearance: none; appearance: none; width: 100%; height: 22px; margin: 0; background: transparent; cursor: pointer; touch-action: none; --pct: 0%; }
+      .reader-range::-webkit-slider-runnable-track { height: 6px; border-radius: 3px; background: linear-gradient(to right, var(--primary) var(--pct), var(--quaternary-label) var(--pct)); }
+      .reader-range::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 15px; height: 15px; margin-top: -4.5px; border-radius: 50%; background: var(--primary); border: 2px solid var(--system-background); box-shadow: 0 1px 4px rgba(0,0,0,0.28); }
+      .reader-range::-moz-range-track { height: 6px; border-radius: 3px; background: var(--quaternary-label); }
+      .reader-range::-moz-range-progress { height: 6px; border-radius: 3px; background: var(--primary); }
+      .reader-range::-moz-range-thumb { width: 15px; height: 15px; border: 2px solid var(--system-background); border-radius: 50%; background: var(--primary); box-shadow: 0 1px 4px rgba(0,0,0,0.28); }
+      .reader-speed { flex: 0 0 auto; font-family: var(--font-text); font-size: 13px; font-weight: 600; color: var(--primary); background: none; border: none; cursor: pointer; padding: 6px 8px; border-radius: var(--radius-sm); font-variant-numeric: tabular-nums; }
+      .reader-speed:hover { background: var(--fill-quaternary); }
+
+      .post-footer { margin-top: var(--spacing-xxl); padding-top: var(--spacing-lg); border-top: 1px solid var(--separator); font-family: var(--font-text); font-size: 15px; color: var(--tertiary-label); }
+      .post-footer a { color: var(--primary); text-decoration: none; font-weight: 500; }
+      .post-footer a:hover { opacity: 0.75; }
+      .post-colophon { margin-top: var(--spacing-lg); font-family: var(--font-text); font-size: 12.5px; font-style: italic; color: var(--tertiary-label); text-align: center; }
+
+      .to-top { position: fixed; bottom: 24px; right: 24px; width: 46px; height: 46px; border-radius: 50%; border: none; cursor: pointer; background: var(--primary); color: #fff; display: grid; place-items: center; box-shadow: var(--shadow-md); opacity: 0; visibility: hidden; transform: translateY(10px); transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s; z-index: 900; }
+      .to-top.show { opacity: 1; visibility: visible; transform: translateY(0); }
+      .to-top:hover { transform: translateY(-2px); }
+      @media (prefers-reduced-motion: reduce) { .reader-btn, .to-top { transition: opacity 0.2s ease; } }
+    </style>
+  </head>
+  <body>
+    <nav class="nav">
+      <div class="nav-content">
+        <a href="/" class="nav-title" style="text-decoration: none; color: inherit;">Aniket</a>
+        <div class="nav-links">
+          <a href="/#about" class="nav-link">About</a>
+          <a href="/#experience" class="nav-link">Experience</a>
+          <a href="/#skills" class="nav-link">Skills</a>
+          <a href="/#projects" class="nav-link">Projects</a>
+          <a href="/blog/" class="nav-link">Blog</a>
+        </div>
+        <div class="nav-hamburger" id="nav-hamburger"><span></span><span></span><span></span></div>
+        <div class="nav-dropdown" id="nav-dropdown">
+          <a href="/">Home</a>
+          <a href="/#about">About</a>
+          <a href="/#experience">Experience</a>
+          <a href="/#skills">Skills</a>
+          <a href="/#projects">Projects</a>
+          <a href="/blog/">Blog</a>
+        </div>
+      </div>
+    </nav>
+
+    <button class="to-top" id="toTop" type="button" aria-label="Back to top">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V6"/><path d="M6 12l6-6 6 6"/></svg>
+    </button>
+
+    <article class="post-wrap">
+      <a class="post-back" href="/blog/">← All posts</a>
+
+      <p class="post-eyebrow">The Layer Underneath · Companion to Post 2</p>
+      <h1 class="post-title">Building Kabootar: login-less, untraceable video calling.</h1>
+      <div class="post-meta">
+        <span>Project deep-dive</span>
+        <span class="dot">·</span>
+        <span>July 2026</span>
+        <span class="dot">·</span>
+        <span>~5 min read</span>
+      </div>
+
+      <div class="reader" id="reader" hidden>
+        <button class="reader-btn" id="readerBtn" aria-label="Play" type="button"></button>
+        <div class="reader-main">
+          <div class="reader-label">
+            <span id="readerLabel">Listen to this post</span>
+            <span class="reader-sub" id="readerSub"></span>
+          </div>
+          <input class="reader-range" id="readerRange" type="range" min="0" max="100" step="any" value="0" aria-label="Seek" />
+        </div>
+        <button class="reader-speed" id="readerSpeed" aria-label="Playback speed" type="button">1×</button>
+        <audio id="readerAudio" preload="metadata"><source src="audio.m4a" type="audio/mp4" /></audio>
+      </div>
+
+      <div class="post-body">
+        <p>
+          In <a href="/blog/video-calling-on-raw-webrtc/">Post 2</a> I mentioned
+          Kabootar in passing — the side project that got me the WebRTC calling
+          gig. It deserves its own page, because it's the clearest example of the
+          thing this whole series keeps circling: a demo that works, sitting on top
+          of an 80% I hadn't built yet.
+        </p>
+
+        <h2>The idea, in one line</h2>
+        <p>
+          <strong>Call someone without handing over anything about yourself.</strong>
+          No phone number, no email, no account, no login. Two people type the same
+          PIN and they're connected, peer to peer. When the call ends, nothing is
+          meant to be left behind. It came from a stubborn question I couldn't drop
+          — WhatsApp and Zoom have video calling, WebRTC is open, Google's STUN
+          server is free, so why does a call need an identity and a paper trail?
+        </p>
+
+        <h2>How it works</h2>
+        <ul class="steps">
+          <li>Both people enter the <strong>same PIN</strong>.</li>
+          <li>The WebRTC <strong>offer, answer, and ICE candidates</strong> get written under that PIN's node in <strong>Firebase</strong> — that's the signaling, and it stores no identity.</li>
+          <li>Each device watches that node; when both sides are present, they exchange and the <strong>peer connection</strong> forms.</li>
+          <li>From there the audio and video flow <strong>directly, peer to peer</strong> — no media server in the middle.</li>
+          <li>Built in <strong>React Native</strong> (bare workflow), with Expo modules for camera and mic permissions.</li>
+        </ul>
+
+        <h2>Where it works — and where it doesn't</h2>
+        <p>
+          This is the honest part, and it's why Kabootar taught me more than the
+          apps that "just worked." I shipped it knowing exactly which corners were
+          cut:
+        </p>
+        <div class="issues">
+          <div class="issue">
+            <strong>The connection doesn't fully close.</strong> When a call ends,
+            the peer-to-peer connection doesn't tear down cleanly — even after three
+            disconnect attempts. The workaround is grim: kill the app from Recents,
+            or the other person might still hear your mic. I never found the root
+            cause.
+          </div>
+          <div class="issue">
+            <strong>No TURN server.</strong> It relies only on Google's STUN. Behind
+            a strict NAT or firewall, the direct path never forms and the call just
+            won't connect — the exact STUN-vs-TURN wall from Post 2.
+          </div>
+          <div class="issue">
+            <strong>No back camera.</strong> There used to be a toggle, but switching
+            cameras killed the outgoing video stream, so I pulled it rather than ship
+            a broken button.
+          </div>
+          <div class="issue">
+            <strong>Earpiece-only audio.</strong> Audio routes through the earpiece by
+            default; I tried InCallManager to force the speaker and couldn't get it
+            working. Best experienced with a Bluetooth earphone.
+          </div>
+        </div>
+        <p>
+          None of these are exotic. They're the ordinary, unglamorous 80% — call
+          teardown, NAT traversal, hardware routing — that separates a working demo
+          from something a stranger can rely on. Naming them honestly is half the
+          point of this series.
+        </p>
+
+        <h2>What I'd add next</h2>
+        <ul class="steps">
+          <li><strong>File sharing</strong> over the WebRTC data channel — send images and PDFs P2P, no third-party server.</li>
+          <li><strong>Screen sharing</strong> via WebRTC's capture APIs.</li>
+          <li><strong>Real audio routing</strong> — clean switching between earpiece, speaker, and Bluetooth.</li>
+          <li><strong>Back-camera toggle</strong> that doesn't break the remote stream.</li>
+          <li><strong>Call timeout &amp; auto-cleanup</strong> so dropped and inactive calls close gracefully.</li>
+        </ul>
+
+        <h2>Where to find it</h2>
+        <p>
+          Kabootar is public — use it however you like. The code and an Android
+          build are on
+          <a href="https://github.com/Gupta-Aniket/Kabootar">GitHub</a>, and it's
+          in <a href="https://aniket.ibasho.in/#projects#kabootar">my projects</a>.
+          It's not a hardened product; I built it to learn, and it's the clearest
+          proof I have that connecting a call is the easy 20% — everything after is
+          the real work. Use it at your own risk.
+        </p>
+      </div>
+
+      <div class="post-footer">
+        Companion to <strong style="color:var(--label)">Post 2 — Building real-time video calling on raw WebRTC</strong>.
+        <br />
+        <a href="/blog/">← Back to all posts</a>
+      </div>
+
+      <p class="post-colophon">
+        The story and the experiences are mine — the writing is Claude's.
+      </p>
+    </article>
+
+    <script>
+      (function () {
+        const reader = document.getElementById("reader");
+        if (!reader) return;
+        const btn = document.getElementById("readerBtn");
+        const sub = document.getElementById("readerSub");
+        const range = document.getElementById("readerRange");
+        const speedBtn = document.getElementById("readerSpeed");
+        const audio = document.getElementById("readerAudio");
+        if (!audio) return;
+        const SPEEDS = [1, 1.25, 1.5, 0.9];
+        let speedIdx = 0;
+        let scrubbing = false;
+        const ICON_PLAY = '<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 5.14v13.72a1 1 0 0 0 1.54.84l10.6-6.86a1 1 0 0 0 0-1.68L9.54 4.3A1 1 0 0 0 8 5.14z"/></svg>';
+        const ICON_PAUSE = '<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><rect x="6.5" y="5" width="4" height="14" rx="1.2"/><rect x="13.5" y="5" width="4" height="14" rx="1.2"/></svg>';
+        const setPlaying = (p) => { btn.innerHTML = p ? ICON_PAUSE : ICON_PLAY; btn.setAttribute("aria-label", p ? "Pause" : "Play"); };
+        const paint = () => { const d = audio.duration; const pct = d && isFinite(d) ? (range.value / d) * 100 : 0; range.style.setProperty("--pct", Math.max(0, Math.min(100, pct)) + "%"); };
+        const fmt = (s) => { if (!isFinite(s)) return "0:00"; const m = Math.floor(s / 60); const ss = Math.floor(s % 60); return m + ":" + String(ss).padStart(2, "0"); };
+        setPlaying(false);
+        audio.addEventListener("loadedmetadata", () => { range.max = audio.duration || 0; range.value = 0; paint(); sub.textContent = "0:00 / " + fmt(audio.duration); reader.hidden = false; });
+        audio.addEventListener("timeupdate", () => { if (!scrubbing) { range.value = audio.currentTime; paint(); } const shown = scrubbing ? +range.value : audio.currentTime; sub.textContent = fmt(shown) + " / " + fmt(audio.duration); });
+        audio.addEventListener("ended", () => { setPlaying(false); range.value = 0; paint(); sub.textContent = "0:00 / " + fmt(audio.duration); });
+        audio.addEventListener("error", () => { reader.hidden = true; }, { once: true });
+        btn.addEventListener("click", () => { if (audio.paused) { audio.playbackRate = SPEEDS[speedIdx]; audio.play(); setPlaying(true); } else { audio.pause(); setPlaying(false); } });
+        speedBtn.addEventListener("click", () => { speedIdx = (speedIdx + 1) % SPEEDS.length; speedBtn.textContent = SPEEDS[speedIdx] + "×"; audio.playbackRate = SPEEDS[speedIdx]; });
+        range.addEventListener("input", () => { scrubbing = true; paint(); sub.textContent = fmt(+range.value) + " / " + fmt(audio.duration); });
+        range.addEventListener("change", () => { if (isFinite(audio.duration)) audio.currentTime = +range.value; scrubbing = false; });
+      })();
+    </script>
+    <script>
+      (function () {
+        const ham = document.getElementById("nav-hamburger");
+        const dd = document.getElementById("nav-dropdown");
+        if (ham && dd) {
+          ham.addEventListener("click", (e) => { e.stopPropagation(); ham.classList.toggle("active"); dd.classList.toggle("show"); });
+          document.addEventListener("click", (e) => { if (!dd.contains(e.target) && !ham.contains(e.target)) { dd.classList.remove("show"); ham.classList.remove("active"); } });
+        }
+        const top = document.getElementById("toTop");
+        if (top) {
+          const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+          const onScroll = () => top.classList.toggle("show", window.scrollY > 500);
+          window.addEventListener("scroll", onScroll, { passive: true });
+          onScroll();
+          top.addEventListener("click", () => window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" }));
+        }
+      })();
+    </script>
+  </body>
+</html>

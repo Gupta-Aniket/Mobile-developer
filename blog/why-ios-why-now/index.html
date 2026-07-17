@@ -289,6 +289,14 @@
       }
       .post-footer a { color: var(--primary); text-decoration: none; font-weight: 500; }
       .post-footer a:hover { opacity: 0.75; }
+      .post-colophon {
+        margin-top: var(--spacing-lg);
+        font-family: var(--font-text);
+        font-size: 12.5px;
+        font-style: italic;
+        color: var(--tertiary-label);
+        text-align: center;
+      }
 
       /* Listen / audio reader — native <audio> when a narration file exists,
          otherwise the browser's speech voice. Hidden until JS confirms one works. */
@@ -677,6 +685,10 @@
         <br />
         <a href="/blog/">← Back to all posts</a>
       </div>
+
+      <p class="post-colophon">
+        The story and the experiences are mine — the writing is Claude's.
+      </p>
     </article>
 
     <script>

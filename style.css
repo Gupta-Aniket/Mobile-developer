@@ -2921,6 +2921,7 @@ cursor: pointer;
   font-size: 0.85rem;
   text-align: center;
   padding: 1rem 2rem;
+  margin-top: var(--spacing-xxl);
   border-top: 1px solid #2c2c2e;
   position: sticky;
   bottom: 0;

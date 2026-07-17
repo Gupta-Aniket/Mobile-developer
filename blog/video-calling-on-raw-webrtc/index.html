@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Building real-time video calling on raw WebRTC — Aniket Gupta</title>
+
+    <!-- SEO -->
+    <meta
+      name="description"
+      content="Post 2 of The Layer Underneath: how an over-built dream-journal app and a Reddit post led to a WebRTC video-calling job — and what 'just connect a call' actually hides (STUN vs TURN, reconnection, drops)."
+    />
+    <meta name="author" content="Aniket Gupta" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+    <meta name="theme-color" content="#007aff" />
+    <link rel="canonical" href="https://aniket.ibasho.in/blog/video-calling-on-raw-webrtc/" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Aniket Gupta" />
+    <meta property="og:title" content="Building real-time video calling on raw WebRTC" />
+    <meta
+      property="og:description"
+      content="An over-built dream app, a Reddit post that blew up, and the WebRTC calling gig it led to — and why 'just connect a call' is the easy 20%."
+    />
+    <meta property="og:url" content="https://aniket.ibasho.in/blog/video-calling-on-raw-webrtc/" />
+    <meta property="og:image" content="https://aniket.ibasho.in/assets/dream-space/dream_space_dark.png" />
+    <meta property="article:published_time" content="2026-07-17" />
+    <meta property="article:author" content="Aniket Gupta" />
+    <meta property="article:section" content="The Layer Underneath" />
+    <meta property="article:tag" content="WebRTC" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Building real-time video calling on raw WebRTC" />
+    <meta
+      name="twitter:description"
+      content="An over-built dream app, a Reddit post that blew up, and the WebRTC calling gig it led to."
+    />
+    <meta name="twitter:image" content="https://aniket.ibasho.in/assets/dream-space/dream_space_dark.png" />
+    <meta name="twitter:creator" content="@adbhut_praani" />
+
+    <!-- Structured data (BlogPosting) -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Building real-time video calling on raw WebRTC",
+        "description": "How an over-built dream-journal app and a Reddit post led to a WebRTC video-calling job — and what 'just connect a call' actually hides.",
+        "url": "https://aniket.ibasho.in/blog/video-calling-on-raw-webrtc/",
+        "datePublished": "2026-07-17",
+        "image": "https://aniket.ibasho.in/assets/dream-space/dream_space_dark.png",
+        "articleSection": "The Layer Underneath",
+        "keywords": ["WebRTC", "STUN", "TURN", "React Native", "real-time", "video calling", "mobile"],
+        "author": { "@type": "Person", "name": "Aniket Gupta", "url": "https://aniket.ibasho.in/" },
+        "publisher": { "@type": "Person", "name": "Aniket Gupta", "url": "https://aniket.ibasho.in/" },
+        "mainEntityOfPage": {
+          "@type": "WebPage",
+          "@id": "https://aniket.ibasho.in/blog/video-calling-on-raw-webrtc/"
+        }
+      }
+    </script>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600;700;800&family=SF+Pro+Text:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../style.css" />
+
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/fav-icon/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <link id="favicon" rel="icon" href="../../assets/fav-icon/bear-awake.png" />
+    <script>
+      const favicon = document.getElementById("favicon");
+      window.addEventListener("beforeunload", () => {
+        favicon.href = "../../assets/fav-icon/bear-loading.png";
+      });
+      window.addEventListener("load", () => {
+        favicon.href = "../../assets/fav-icon/bear-awake.png";
+      });
+      document.addEventListener("visibilitychange", () => {
+        favicon.href = document.hidden
+          ? "../../assets/fav-icon/bear-sleeping.png"
+          : "../../assets/fav-icon/bear-awake.png";
+      });
+    </script>
+
+    <style>
+      .post-wrap {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 120px var(--spacing-md) var(--spacing-xxl);
+      }
+      .post-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-family: var(--font-text);
+        font-size: 15px;
+        font-weight: 500;
+        color: var(--primary);
+        text-decoration: none;
+        margin-bottom: var(--spacing-xl);
+      }
+      .post-back:hover { opacity: 0.75; }
+
+      .post-eyebrow {
+        font-family: var(--font-text);
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--primary);
+        margin-bottom: var(--spacing-sm);
+      }
+      .post-title {
+        font-family: var(--font-display);
+        font-size: clamp(32px, 5.5vw, 44px);
+        font-weight: 800;
+        line-height: 1.08;
+        letter-spacing: -0.02em;
+        color: var(--label);
+        margin: 0 0 var(--spacing-md);
+        text-wrap: balance;
+      }
+      .post-meta {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 9px 12px;
+        font-family: var(--font-text);
+        font-size: 14px;
+        color: var(--tertiary-label);
+        margin-bottom: var(--spacing-xl);
+        padding-bottom: var(--spacing-lg);
+        border-bottom: 1px solid var(--separator);
+      }
+      .post-meta .dot {
+        flex: 0 0 auto;
+        width: 3px;
+        height: 3px;
+        border-radius: 50%;
+        background: var(--tertiary-label);
+        font-size: 0;
+        line-height: 0;
+      }
+
+      .post-body { font-family: var(--font-text); }
+      .post-body p {
+        font-size: 18px;
+        line-height: 1.72;
+        color: var(--secondary-label);
+        margin: 0 0 var(--spacing-lg);
+      }
+      .post-body strong { color: var(--label); font-weight: 600; }
+      .post-body a { color: var(--primary); text-decoration: none; }
+      .post-body a:hover { text-decoration: underline; }
+      .post-body h2 {
+        font-family: var(--font-display);
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        color: var(--label);
+        margin: var(--spacing-xl) 0 var(--spacing-sm);
+      }
+
+      /* Figure / screenshot */
+      .figure {
+        margin: var(--spacing-xl) 0;
+      }
+      .figure img {
+        width: 100%;
+        height: auto;
+        display: block;
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--separator);
+      }
+      .figure figcaption {
+        margin-top: var(--spacing-sm);
+        font-size: 13.5px;
+        color: var(--tertiary-label);
+        text-align: center;
+      }
+
+      /* Dream Space — swipeable screenshot carousel (1-up on phones, hero+peeks on desktop) */
+      .ds-showcase {
+        margin: var(--spacing-xl) 0;
+        padding: 22px 0 16px;
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--separator);
+        background:
+          radial-gradient(80% 60% at 20% 0%, #15213a 0%, rgba(21, 33, 58, 0) 60%),
+          radial-gradient(80% 60% at 100% 100%, #191430 0%, rgba(25, 20, 48, 0) 55%),
+          #0a0a0f;
+        position: relative;
+        overflow: hidden;
+      }
+      .ds-showcase::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+          radial-gradient(1.2px 1.2px at 15% 20%, rgba(255, 255, 255, 0.4), transparent),
+          radial-gradient(1.2px 1.2px at 82% 14%, rgba(255, 255, 255, 0.35), transparent),
+          radial-gradient(1px 1px at 45% 85%, rgba(255, 255, 255, 0.35), transparent),
+          radial-gradient(1px 1px at 92% 60%, rgba(255, 255, 255, 0.28), transparent);
+      }
+      .ds-carousel {
+        position: relative;
+        display: flex;
+        gap: 16px;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        padding-inline: max(16px, calc(50% - 122px));
+        padding-block: 6px;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+      }
+      .ds-carousel::-webkit-scrollbar { display: none; }
+      .ds-slide {
+        flex: 0 0 auto;
+        width: min(244px, 66vw);
+        aspect-ratio: 0.475;
+        scroll-snap-align: center;
+        border-radius: 22px;
+        overflow: hidden;
+        background: #000;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        transform: scale(0.88);
+        opacity: 0.5;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+      }
+      .ds-slide.is-hero {
+        transform: scale(1);
+        opacity: 1;
+        box-shadow: 0 18px 44px rgba(0, 0, 0, 0.6);
+      }
+      .ds-slide img { width: 100%; height: 100%; object-fit: contain; display: block; }
+      .ds-dots {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        gap: 7px;
+        margin-top: 14px;
+      }
+      .ds-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        border: none;
+        padding: 0;
+        background: rgba(255, 255, 255, 0.25);
+        cursor: pointer;
+        transition: background 0.2s ease, transform 0.2s ease;
+      }
+      .ds-dot.active { background: #8b9bff; transform: scale(1.25); }
+      .ds-hint {
+        position: relative;
+        text-align: center;
+        margin-top: 10px;
+        font-family: var(--font-text);
+        font-size: 12px;
+        letter-spacing: 0.02em;
+        color: rgba(255, 255, 255, 0.4);
+      }
+      .ds-hint-touch { display: none; }
+      @media (pointer: coarse) {
+        .ds-hint-desktop { display: none; }
+        .ds-hint-touch { display: inline; }
+      }
+      .ds-carousel:focus-visible { outline: 2px solid #8b9bff; outline-offset: 3px; border-radius: 8px; }
+      .ds-showcase figcaption {
+        position: relative;
+        margin-top: 14px;
+        font-size: 13.5px;
+        color: #a1a1aa;
+        text-align: center;
+        padding: 0 16px;
+      }
+      .ds-showcase figcaption a { color: #8b9bff; }
+      @media (prefers-reduced-motion: reduce) {
+        .ds-slide { transition: none; }
+      }
+
+      /* WebRTC works/fails explainer */
+      .webrtc-card {
+        margin: var(--spacing-xl) 0;
+        border: 1px solid var(--separator);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+      }
+      .wc-row {
+        display: flex;
+        gap: var(--spacing-md);
+        padding: var(--spacing-md) var(--spacing-lg);
+        font-family: var(--font-text);
+        font-size: 16px;
+        line-height: 1.6;
+        color: var(--secondary-label);
+      }
+      .wc-row + .wc-row { border-top: 1px solid var(--separator); }
+      .wc-row strong { color: var(--label); }
+      .wc-tag {
+        flex: 0 0 auto;
+        align-self: flex-start;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        padding: 3px 9px;
+        border-radius: 999px;
+        margin-top: 2px;
+      }
+      .wc-ok { background: color-mix(in srgb, var(--success) 8%, transparent); }
+      .wc-ok .wc-tag { background: color-mix(in srgb, var(--success) 18%, transparent); color: var(--success); }
+      .wc-fail { background: color-mix(in srgb, var(--error) 7%, transparent); }
+      .wc-fail .wc-tag { background: color-mix(in srgb, var(--error) 16%, transparent); color: var(--error); }
+
+      /* Listen / reader */
+      .reader {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: var(--secondary-background);
+        border: 1px solid var(--separator);
+        border-radius: var(--radius-lg);
+        padding: 12px 14px;
+        margin: 0 0 var(--spacing-xl);
+      }
+      .reader[hidden] { display: none; }
+      .reader-btn {
+        flex: 0 0 auto;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        border: none;
+        cursor: pointer;
+        background: var(--primary);
+        color: #fff;
+        display: grid;
+        place-items: center;
+        transition: transform 0.15s ease;
+      }
+      .reader-btn:hover { transform: scale(1.06); }
+      .reader-btn:active { transform: scale(0.95); }
+      .reader-main { flex: 1 1 auto; min-width: 0; }
+      .reader-label {
+        font-family: var(--font-text);
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--label);
+        margin-bottom: 7px;
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+      }
+      .reader-sub {
+        font-weight: 400;
+        color: var(--tertiary-label);
+        font-size: 12.5px;
+        font-variant-numeric: tabular-nums;
+      }
+      .reader-range {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 100%;
+        height: 22px;
+        margin: 0;
+        background: transparent;
+        cursor: pointer;
+        touch-action: none;
+        --pct: 0%;
+      }
+      .reader-range::-webkit-slider-runnable-track {
+        height: 6px;
+        border-radius: 3px;
+        background: linear-gradient(to right, var(--primary) var(--pct), var(--quaternary-label) var(--pct));
+      }
+      .reader-range::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 15px;
+        height: 15px;
+        margin-top: -4.5px;
+        border-radius: 50%;
+        background: var(--primary);
+        border: 2px solid var(--system-background);
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.28);
+      }
+      .reader-range::-moz-range-track { height: 6px; border-radius: 3px; background: var(--quaternary-label); }
+      .reader-range::-moz-range-progress { height: 6px; border-radius: 3px; background: var(--primary); }
+      .reader-range::-moz-range-thumb {
+        width: 15px;
+        height: 15px;
+        border: 2px solid var(--system-background);
+        border-radius: 50%;
+        background: var(--primary);
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.28);
+      }
+      .reader-speed {
+        flex: 0 0 auto;
+        font-family: var(--font-text);
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--primary);
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 6px 8px;
+        border-radius: var(--radius-sm);
+        font-variant-numeric: tabular-nums;
+      }
+      .reader-speed:hover { background: var(--fill-quaternary); }
+
+      .post-footer {
+        margin-top: var(--spacing-xxl);
+        padding-top: var(--spacing-lg);
+        border-top: 1px solid var(--separator);
+        font-family: var(--font-text);
+        font-size: 15px;
+        color: var(--tertiary-label);
+      }
+      .post-footer a { color: var(--primary); text-decoration: none; font-weight: 500; }
+      .post-footer a:hover { opacity: 0.75; }
+      .post-colophon {
+        margin-top: var(--spacing-lg);
+        font-family: var(--font-text);
+        font-size: 12.5px;
+        font-style: italic;
+        color: var(--tertiary-label);
+        text-align: center;
+      }
+
+      .to-top {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        border: none;
+        cursor: pointer;
+        background: var(--primary);
+        color: #fff;
+        display: grid;
+        place-items: center;
+        box-shadow: var(--shadow-md);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(10px);
+        transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+        z-index: 900;
+      }
+      .to-top.show { opacity: 1; visibility: visible; transform: translateY(0); }
+      .to-top:hover { transform: translateY(-2px); }
+      @media (prefers-reduced-motion: reduce) {
+        .reader-btn, .to-top { transition: opacity 0.2s ease; }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="nav">
+      <div class="nav-content">
+        <a href="/" class="nav-title" style="text-decoration: none; color: inherit;">Aniket</a>
+        <div class="nav-links">
+          <a href="/#about" class="nav-link">About</a>
+          <a href="/#experience" class="nav-link">Experience</a>
+          <a href="/#skills" class="nav-link">Skills</a>
+          <a href="/#projects" class="nav-link">Projects</a>
+          <a href="/blog/" class="nav-link">Blog</a>
+        </div>
+        <div class="nav-hamburger" id="nav-hamburger"><span></span><span></span><span></span></div>
+        <div class="nav-dropdown" id="nav-dropdown">
+          <a href="/">Home</a>
+          <a href="/#about">About</a>
+          <a href="/#experience">Experience</a>
+          <a href="/#skills">Skills</a>
+          <a href="/#projects">Projects</a>
+          <a href="/blog/">Blog</a>
+        </div>
+      </div>
+    </nav>
+
+    <button class="to-top" id="toTop" type="button" aria-label="Back to top">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V6"/><path d="M6 12l6-6 6 6"/></svg>
+    </button>
+
+    <article class="post-wrap">
+      <a class="post-back" href="/blog/">← All posts</a>
+
+      <p class="post-eyebrow">The Layer Underneath · Post 2</p>
+      <h1 class="post-title">Building real-time video calling on raw WebRTC.</h1>
+      <div class="post-meta">
+        <span>SparkLink chapter</span>
+        <span class="dot">·</span>
+        <span>July 2026</span>
+        <span class="dot">·</span>
+        <span>~7 min read</span>
+      </div>
+
+      <!-- Listen / reader — stays hidden until an audio.m4a is added to this folder -->
+      <div class="reader" id="reader" hidden>
+        <button class="reader-btn" id="readerBtn" aria-label="Play" type="button"></button>
+        <div class="reader-main">
+          <div class="reader-label">
+            <span id="readerLabel">Listen to this post</span>
+            <span class="reader-sub" id="readerSub"></span>
+          </div>
+          <input class="reader-range" id="readerRange" type="range" min="0" max="100" step="any" value="0" aria-label="Seek" />
+        </div>
+        <button class="reader-speed" id="readerSpeed" aria-label="Playback speed" type="button">1×</button>
+        <audio id="readerAudio" preload="metadata">
+          <source src="audio.m4a" type="audio/mp4" />
+        </audio>
+      </div>
+
+      <div class="post-body">
+        <p>
+          This is the story of how I ended up writing real-time video calling on
+          raw WebRTC — but it doesn't start with WebRTC. It starts with an app
+          nobody asked me to make that good.
+        </p>
+
+        <h2>The app nobody asked me to make that good</h2>
+        <p>
+          A company handed me an assignment: build a dream tracker. Log a dream,
+          tag the emotion, done. I've genuinely forgotten their name — and they
+          never spoke to me again, so it doesn't matter much.
+        </p>
+        <p>
+          But I can't stop at 5 when I know I can get to 100. So I followed the
+          thread: dream → night → the sky. I built the entire app on a single
+          living background — a starry-sky engine in React Native and Expo, some
+          stars bright, some faint, the whole thing quietly breathing (the look
+          was inspired by Grok's background). Moods became phases of the moon. The
+          analytics came out genuinely beautiful.
+        </p>
+
+        <figure class="ds-showcase">
+          <div class="ds-carousel" id="dsCarousel">
+            <div class="ds-slide"><img src="/assets/dream-space/1.png" alt="Dream Space — starry login screen" loading="lazy" /></div>
+            <div class="ds-slide"><img src="/assets/dream-space/2.5.png" alt="Dream Space — the Observatory dream list" loading="lazy" /></div>
+            <div class="ds-slide"><img src="/assets/dream-space/2.png" alt="Dream Space — logging a dream, mood picked as a phase of the moon" loading="lazy" /></div>
+            <div class="ds-slide"><img src="/assets/dream-space/3.png" alt="Dream Space — analytics: mood distribution and mood over time" loading="lazy" /></div>
+            <div class="ds-slide"><img src="/assets/dream-space/4.png" alt="Dream Space — profile calendar with moon markers" loading="lazy" /></div>
+          </div>
+          <div class="ds-dots" id="dsDots" aria-hidden="true"></div>
+          <p class="ds-hint">
+            <span class="ds-hint-desktop">Use ← / → to browse</span>
+            <span class="ds-hint-touch">Swipe to browse</span>
+          </p>
+          <figcaption>
+            <a href="https://aniket.ibasho.in/#projects#dream-space">Dream Space</a>
+            — the moods are phases of the moon.
+          </figcaption>
+        </figure>
+
+        <p>
+          I sent them the codebase and the APK. Then — nothing. No reply. Ghosted.
+          I wouldn't be shocked to find it living in their app somewhere. I was
+          proud of it anyway.
+        </p>
+        <p>
+          (For the record, I've shipped plenty of duds too — a travel-ticket app
+          that never quite worked, a couple of wallpaper apps that went nowhere.
+          This one just happened to land.)
+        </p>
+
+        <h2>The Reddit post that changed the next year</h2>
+        <p>
+          So I did the only thing that made sense: I posted it on Reddit.
+        </p>
+        <p>
+          It blew up. More than two thousand people came to my site to see it.
+          Some appreciated it, some consoled me about the ghosting, and a few told
+          me to stop over-building — that going above and beyond isn't worth it.
+          (That's just not who I am; I read it, kept the tab open, moved on.) Some
+          asked for help designing their own apps. And a few reached out to
+          actually work with me. One of them had seen something else on my site:
+          <a href="https://aniket.ibasho.in/#projects#kabootar">Kabootar</a>.
+        </p>
+
+        <h2>Kabootar, and why Zoom gets to charge</h2>
+        <p>
+          Kabootar (silly name, I know) was a side project from when I was learning
+          React Native: login-less video calling, join by a PIN. It came from a
+          stubborn question — WhatsApp and Zoom have video calling, WebRTC is an
+          open protocol, and Google's STUN server is free. So why is Zoom charging
+          me?
+        </p>
+        <p>
+          I spent three or four nights finding out. The whole thing ran on
+          Firebase: both people type the same PIN, the offer, the answer, and the
+          ICE candidates all get written under that PIN's document in Firestore,
+          each device watches the document, and when both sides are present they
+          exchange and connect. I trickled the ICE candidates through Firestore as
+          they were discovered, instead of waiting for the full set.
+        </p>
+        <p>
+          It worked — but only about 80% of the time, and almost always on my own
+          SIM. On some Wi-Fi it just wouldn't connect. I hadn't thought about
+          backgrounding, reconnection, or dropped calls at all yet. It took me a
+          while to even understand the first reason it failed:
+        </p>
+
+        <div class="webrtc-card">
+          <div class="wc-row wc-ok">
+            <span class="wc-tag">Works</span>
+            <div>
+              <strong>Open network (often cellular):</strong> a free STUN server
+              lets both phones discover their public address, and the video flows
+              <strong>directly</strong>, peer to peer. No middleman.
+            </div>
+          </div>
+          <div class="wc-row wc-fail">
+            <span class="wc-tag">Fails</span>
+            <div>
+              <strong>Restrictive Wi-Fi / NAT:</strong> the peers can never reach
+              each other directly. STUN isn't enough — you need a <strong>TURN</strong>
+              server to relay the media through. That relay, run at scale, is a big
+              part of what Zoom is actually charging you for.
+            </div>
+          </div>
+        </div>
+
+        <p>
+          That was the first time I felt the shape of this: the demo is the easy
+          20%. (Kabootar has its own page now — how it works, and the bugs I never
+          fully fixed:
+          <a href="/blog/building-kabootar/">Building Kabootar</a>.)
+        </p>
+
+        <h2>The real job — making a call actually connect</h2>
+        <p>
+          The person who reached out needed exactly this. They'd seen Kabootar, and
+          they'd seen the detail on Dream Space — the micro-animations, the eye for
+          feel. It became a three-month remote role, building for an OTT actor
+          (someone who's shared the screen with Pankaj Tripathi — that's as much as
+          I can say). Everyone else was in-office; they let me work from anywhere.
+        </p>
+        <p>
+          The job was to make real-time video calling actually work, on WebRTC —
+          and I walked in with exactly the 20% I'd learned on Kabootar: a call that
+          connects, most of the time. The other 80% — the part that makes it feel
+          seamless — I didn't have yet.
+        </p>
+        <p>
+          Getting a call to connect once, in a demo, is easy. Getting it to
+          <em>survive</em> is not: backgrounding, reconnection, dropped calls,
+          acks, the renegotiation when the network shifts under you mid-call. And
+          the text chat that runs alongside the call taught me something I hadn't
+          expected — you can't spin up a fresh connection for every little thing,
+          so those messages ride the WebRTC data channel that's already open
+          between the two peers. The socket does the signaling to get the
+          connection up; once it's up, the data channel carries the rest. None of
+          that shows up when you're just proving it works, and all of it decides
+          whether a real person can hold a conversation. I learned it the way I
+          learn everything: jump in the water, start swimming.
+        </p>
+        <p>
+          Giving interviews around the same time hammered the same lesson from the
+          other side: theory and practice are two different things. You can explain
+          ICE on a whiteboard and still watch a call die on a hotel Wi-Fi.
+        </p>
+        <p>
+          I also made it feel like a real product. I leaned on Apple's Human
+          Interface Guidelines and WCAG for accessibility, and the app got maybe
+          10× better in feel. I added camera filters (a React Native library,
+          predefined LUTs). For a separate interview that wanted proof I could
+          handle sockets, I built a
+          <a href="https://aniket.ibasho.in/#projects#group-chat-socket-app">real-time chat</a>
+          between my Mac and my phone — my first proper WebSocket work, which fed
+          straight back into this app's signaling. And partway through, we moved
+          the client to LiveKit — but that's a post of its own.
+        </p>
+
+        <h2>What the surface was hiding</h2>
+        <p>
+          Every one of those gaps turned out to have a real answer I only picked up
+          later. A call that has to ring you when the app is closed needs the
+          operating system's help: on iOS an incoming call arrives as a VoIP push
+          (PushKit) that wakes the app just long enough to present the call. The
+          reason a WhatsApp or Instagram call <em>looks and behaves</em> like a
+          normal phone call — full screen, on the lock screen, in your Recents —
+          isn't the network; it's CallKit, the framework that hands VoIP apps the
+          native call UI. Doing real work while backgrounded needs specific
+          permissions and background modes, because iOS aggressively suspends apps
+          to save battery. And the connection itself is never promised a straight
+          line — ICE negotiates the best route it can find over whatever network
+          you're on (Wi-Fi or cellular), and relays through TURN when it must.
+        </p>
+        <p>
+          I didn't know any of that while I was building. I learned it by working
+          next to people who did, and by failing enough interviews that the gaps
+          finally had names.
+        </p>
+
+        <h2>Walking away from the good thing</h2>
+        <p>
+          They were happy with the work. They wanted me long-term, remote, from
+          anywhere — the kind of offer you're supposed to grab with both hands.
+        </p>
+        <p>
+          I let it go. Not because it wasn't good — because I could feel that most
+          of what I still needed to learn comes from sitting next to people who are
+          better than me. Remote and alone, I'd plateau. It was time to go back
+          into a system, learn, and come back stronger.
+        </p>
+
+        <h2>You can only connect the dots looking backward</h2>
+        <p>
+          Steve Jobs said you can't connect the dots looking forward, only
+          backward. I feel that now. If I hadn't thrown myself at random, ambitious,
+          over-built things — the dream app nobody asked for, the calling app I had
+          no business attempting — I'd be an average developer.
+        </p>
+        <p>
+          I'm still at an average job by the logos on the wall. Not MAANG. But on
+          the inside, I don't budge when it gets hard. If there's one thing to take
+          from this: take the challenge even when you know you'll probably fail. Do
+          it anyway. That's the only way the dots show up later.
+        </p>
+      </div>
+
+      <div class="post-footer">
+        Next in <strong style="color:var(--label)">The Layer Underneath</strong> —
+        migrating a live WebRTC client to LiveKit.
+        <br />
+        <a href="/blog/">← Back to all posts</a>
+      </div>
+
+      <p class="post-colophon">
+        The story and the experiences are mine — the writing is Claude's.
+      </p>
+    </article>
+
+    <script>
+      // Audio "Listen" player — stays hidden until an audio.m4a loads.
+      (function () {
+        const reader = document.getElementById("reader");
+        if (!reader) return;
+        const btn = document.getElementById("readerBtn");
+        const sub = document.getElementById("readerSub");
+        const range = document.getElementById("readerRange");
+        const speedBtn = document.getElementById("readerSpeed");
+        const audio = document.getElementById("readerAudio");
+        if (!audio) return;
+
+        const SPEEDS = [1, 1.25, 1.5, 0.9];
+        let speedIdx = 0;
+        let scrubbing = false;
+
+        const ICON_PLAY =
+          '<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 5.14v13.72a1 1 0 0 0 1.54.84l10.6-6.86a1 1 0 0 0 0-1.68L9.54 4.3A1 1 0 0 0 8 5.14z"/></svg>';
+        const ICON_PAUSE =
+          '<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><rect x="6.5" y="5" width="4" height="14" rx="1.2"/><rect x="13.5" y="5" width="4" height="14" rx="1.2"/></svg>';
+
+        const setPlaying = (p) => {
+          btn.innerHTML = p ? ICON_PAUSE : ICON_PLAY;
+          btn.setAttribute("aria-label", p ? "Pause" : "Play");
+        };
+        const paint = () => {
+          const d = audio.duration;
+          const pct = d && isFinite(d) ? (range.value / d) * 100 : 0;
+          range.style.setProperty("--pct", Math.max(0, Math.min(100, pct)) + "%");
+        };
+        const fmt = (s) => {
+          if (!isFinite(s)) return "0:00";
+          const m = Math.floor(s / 60);
+          const ss = Math.floor(s % 60);
+          return m + ":" + String(ss).padStart(2, "0");
+        };
+
+        setPlaying(false);
+
+        // Reveal only when real audio is confirmed to load.
+        audio.addEventListener("loadedmetadata", () => {
+          range.max = audio.duration || 0;
+          range.value = 0;
+          paint();
+          sub.textContent = "0:00 / " + fmt(audio.duration);
+          reader.hidden = false;
+        });
+        audio.addEventListener("timeupdate", () => {
+          if (!scrubbing) {
+            range.value = audio.currentTime;
+            paint();
+          }
+          const shown = scrubbing ? +range.value : audio.currentTime;
+          sub.textContent = fmt(shown) + " / " + fmt(audio.duration);
+        });
+        audio.addEventListener("ended", () => {
+          setPlaying(false);
+          range.value = 0;
+          paint();
+          sub.textContent = "0:00 / " + fmt(audio.duration);
+        });
+        // No file / error → leave hidden.
+        audio.addEventListener("error", () => { reader.hidden = true; }, { once: true });
+
+        btn.addEventListener("click", () => {
+          if (audio.paused) {
+            audio.playbackRate = SPEEDS[speedIdx];
+            audio.play();
+            setPlaying(true);
+          } else {
+            audio.pause();
+            setPlaying(false);
+          }
+        });
+        speedBtn.addEventListener("click", () => {
+          speedIdx = (speedIdx + 1) % SPEEDS.length;
+          speedBtn.textContent = SPEEDS[speedIdx] + "×";
+          audio.playbackRate = SPEEDS[speedIdx];
+        });
+        range.addEventListener("input", () => {
+          scrubbing = true;
+          paint();
+          sub.textContent = fmt(+range.value) + " / " + fmt(audio.duration);
+        });
+        range.addEventListener("change", () => {
+          if (isFinite(audio.duration)) audio.currentTime = +range.value;
+          scrubbing = false;
+        });
+      })();
+    </script>
+
+    <script>
+      // Mobile nav toggle + back-to-top
+      (function () {
+        const ham = document.getElementById("nav-hamburger");
+        const dd = document.getElementById("nav-dropdown");
+        if (ham && dd) {
+          ham.addEventListener("click", (e) => {
+            e.stopPropagation();
+            ham.classList.toggle("active");
+            dd.classList.toggle("show");
+          });
+          document.addEventListener("click", (e) => {
+            if (!dd.contains(e.target) && !ham.contains(e.target)) {
+              dd.classList.remove("show");
+              ham.classList.remove("active");
+            }
+          });
+        }
+        const top = document.getElementById("toTop");
+        if (top) {
+          const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+          const onScroll = () => top.classList.toggle("show", window.scrollY > 500);
+          window.addEventListener("scroll", onScroll, { passive: true });
+          onScroll();
+          top.addEventListener("click", () =>
+            window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" })
+          );
+        }
+      })();
+    </script>
+
+    <script>
+      // Dream Space carousel — hero-center emphasis, dots, moon screen centered by default
+      (function () {
+        const car = document.getElementById("dsCarousel");
+        const dotsWrap = document.getElementById("dsDots");
+        if (!car || !dotsWrap) return;
+        const slides = Array.from(car.querySelectorAll(".ds-slide"));
+        if (!slides.length) return;
+
+        let current = 0;
+        const HERO = Math.min(2, slides.length - 1); // moon "Log your Dream" screen
+
+        const dots = slides.map((_, i) => {
+          const d = document.createElement("button");
+          d.type = "button";
+          d.className = "ds-dot";
+          d.setAttribute("aria-label", "Go to screen " + (i + 1));
+          d.addEventListener("click", () => centerSlide(i, true));
+          dotsWrap.appendChild(d);
+          return d;
+        });
+
+        function centerSlide(i, smooth) {
+          const s = slides[i];
+          const left = s.offsetLeft - (car.clientWidth - s.clientWidth) / 2;
+          car.scrollTo({ left, behavior: smooth ? "smooth" : "auto" });
+        }
+
+        let raf = null;
+        function update() {
+          raf = null;
+          const center = car.scrollLeft + car.clientWidth / 2;
+          let best = 0, bd = Infinity;
+          slides.forEach((s, i) => {
+            const c = s.offsetLeft + s.clientWidth / 2;
+            const dd = Math.abs(c - center);
+            if (dd < bd) { bd = dd; best = i; }
+          });
+          current = best;
+          slides.forEach((s, i) => s.classList.toggle("is-hero", i === best));
+          dots.forEach((d, i) => d.classList.toggle("active", i === best));
+        }
+        car.addEventListener("scroll", () => { if (!raf) raf = requestAnimationFrame(update); }, { passive: true });
+        window.addEventListener("resize", () => centerSlide(current, false));
+
+        // Keyboard: ← / → browse when the carousel is focused or hovered
+        car.setAttribute("tabindex", "0");
+        car.setAttribute("role", "group");
+        car.setAttribute("aria-label", "Dream Space screenshots — use left and right arrow keys to browse");
+        let hovered = false;
+        car.addEventListener("mouseenter", () => { hovered = true; });
+        car.addEventListener("mouseleave", () => { hovered = false; });
+        window.addEventListener("keydown", (e) => {
+          if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+          if (!(hovered || document.activeElement === car)) return;
+          e.preventDefault();
+          const dir = e.key === "ArrowRight" ? 1 : -1;
+          centerSlide(Math.max(0, Math.min(slides.length - 1, current + dir)), true);
+        });
+
+        requestAnimationFrame(() => { centerSlide(HERO, false); update(); });
+      })();
+    </script>
+  </body>
+</html>
