@@ -30,6 +30,12 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://aniket.ibasho.in/blog/migrating-to-livekit/</loc>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://aniket.ibasho.in/blog/building-kabootar/</loc>
     <lastmod>2026-07-17</lastmod>
     <changefreq>monthly</changefreq>
