@@ -3,40 +3,40 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>The rewrite I didn't ask for: moving a WebRTC client to LiveKit — Aniket Gupta</title>
+    <title>Nobody noticed. That was the point. — LERP animations and micro-interactions — Aniket Gupta</title>
 
     <!-- SEO -->
     <meta
       name="description"
-      content="Post 3 of The Layer Underneath: a senior rebuilt our calling backend on LiveKit without telling me — why he turned out to be right (recording, group calls, a media server), and rebuilding the mobile client with no SDK docs and no iOS device."
+      content="Post 4 of The Layer Underneath: I spent four hours on a fifteen-minute tab switch — a LERP-based colour transition nobody ever mentioned. Why that silence was the goal, and why I'm prouder of it than the payment gateway."
     />
     <meta name="author" content="Aniket Gupta" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
     <meta name="theme-color" content="#007aff" />
-    <link rel="canonical" href="https://aniket.ibasho.in/blog/migrating-to-livekit/" />
+    <link rel="canonical" href="https://aniket.ibasho.in/blog/animations-should-be-intentional/" />
 
     <!-- Open Graph -->
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Aniket Gupta" />
-    <meta property="og:title" content="The rewrite I didn't ask for" />
+    <meta property="og:title" content="Nobody noticed. That was the point." />
     <meta
       property="og:description"
-      content="Someone rebuilt our calling backend on LiveKit without telling me. I was furious — and, it turned out, wrong. Why a media server changes everything: recording, group calls, and TURN."
+      content="Four hours on a fifteen-minute tab switch. A LERP colour transition nobody mentioned — and why I'm prouder of it than the payment gateway on the same app."
     />
-    <meta property="og:url" content="https://aniket.ibasho.in/blog/migrating-to-livekit/" />
+    <meta property="og:url" content="https://aniket.ibasho.in/blog/animations-should-be-intentional/" />
     <meta property="og:image" content="https://aniket.ibasho.in/assets/og-image.png" />
-    <meta property="article:published_time" content="2026-07-18" />
+    <meta property="article:published_time" content="2026-07-20" />
     <meta property="article:author" content="Aniket Gupta" />
     <meta property="article:section" content="The Layer Underneath" />
-    <meta property="article:tag" content="LiveKit" />
-    <meta property="article:tag" content="WebRTC" />
+    <meta property="article:tag" content="Animation" />
+    <meta property="article:tag" content="Flutter" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="The rewrite I didn't ask for" />
+    <meta name="twitter:title" content="Nobody noticed. That was the point." />
     <meta
       name="twitter:description"
-      content="Someone rebuilt our calling backend on LiveKit without telling me. I was furious — and wrong. Why a media server changes everything."
+      content="Four hours on a fifteen-minute tab switch — and why I'm prouder of it than the payment gateway."
     />
     <meta name="twitter:image" content="https://aniket.ibasho.in/assets/og-image.png" />
     <meta name="twitter:creator" content="@adbhut_praani" />
@@ -46,18 +46,18 @@
       {
         "@context": "https://schema.org",
         "@type": "BlogPosting",
-        "headline": "The rewrite I didn't ask for: moving a WebRTC client to LiveKit",
-        "description": "A senior rebuilt our calling backend on LiveKit without telling me — why he was right (recording, group calls, a media server), and rebuilding the mobile client with no SDK docs and no iOS device.",
-        "url": "https://aniket.ibasho.in/blog/migrating-to-livekit/",
-        "datePublished": "2026-07-18",
+        "headline": "Nobody noticed. That was the point.",
+        "description": "Four hours on a fifteen-minute tab switch — a LERP-based colour transition nobody ever mentioned, and why that silence was the goal.",
+        "url": "https://aniket.ibasho.in/blog/animations-should-be-intentional/",
+        "datePublished": "2026-07-20",
         "image": "https://aniket.ibasho.in/assets/og-image.png",
         "articleSection": "The Layer Underneath",
-        "keywords": ["LiveKit", "WebRTC", "TURN", "SFU", "media server", "React Native", "Expo", "video calling", "mobile"],
+        "keywords": ["animation", "LERP", "micro-interactions", "Flutter", "UX", "interaction design", "mobile"],
         "author": { "@type": "Person", "name": "Aniket Gupta", "url": "https://aniket.ibasho.in/" },
         "publisher": { "@type": "Person", "name": "Aniket Gupta", "url": "https://aniket.ibasho.in/" },
         "mainEntityOfPage": {
           "@type": "WebPage",
-          "@id": "https://aniket.ibasho.in/blog/migrating-to-livekit/"
+          "@id": "https://aniket.ibasho.in/blog/animations-should-be-intentional/"
         }
       }
     </script>
@@ -166,8 +166,6 @@
         color: var(--label);
         margin: var(--spacing-xl) 0 var(--spacing-sm);
       }
-
-      /* Pull-quote for the emotional beats */
       .post-body blockquote {
         margin: var(--spacing-xl) 0;
         padding: 2px 0 2px var(--spacing-lg);
@@ -180,40 +178,117 @@
         color: var(--label);
       }
 
-      /* Peer-to-peer vs media-server explainer */
-      .webrtc-card {
+      /* ---- Live snap-vs-LERP demo ---------------------------------- */
+      .anim-demo {
         margin: var(--spacing-xl) 0;
+        padding: var(--spacing-lg);
         border: 1px solid var(--separator);
         border-radius: var(--radius-lg);
-        overflow: hidden;
+        background: var(--secondary-background);
       }
-      .wc-row {
+      .demo-row {
         display: flex;
+        align-items: center;
+        justify-content: space-between;
         gap: var(--spacing-md);
-        padding: var(--spacing-md) var(--spacing-lg);
+        flex-wrap: wrap;
+      }
+      .demo-row + .demo-row {
+        margin-top: var(--spacing-lg);
+        padding-top: var(--spacing-lg);
+        border-top: 1px solid var(--separator);
+      }
+      .demo-head { display: flex; flex-direction: column; gap: 2px; }
+      .demo-name {
         font-family: var(--font-text);
-        font-size: 16px;
-        line-height: 1.6;
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--label);
+      }
+      .demo-note {
+        font-family: var(--font-text);
+        font-size: 12.5px;
+        color: var(--tertiary-label);
+      }
+      .demo-tabs {
+        display: inline-flex;
+        gap: 6px;
+        padding: 4px;
+        border-radius: 999px;
+        background: var(--fill-quaternary);
+      }
+      .demo-tab {
+        border: none;
+        cursor: pointer;
+        font-family: var(--font-text);
+        font-size: 14px;
+        font-weight: 600;
+        padding: 8px 18px;
+        border-radius: 999px;
+        white-space: nowrap;
+        background-color: var(--tertiary-background);
         color: var(--secondary-label);
       }
-      .wc-row + .wc-row { border-top: 1px solid var(--separator); }
-      .wc-row strong { color: var(--label); }
-      .wc-tag {
-        flex: 0 0 auto;
-        align-self: flex-start;
-        font-size: 12px;
-        font-weight: 700;
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
-        padding: 3px 9px;
-        border-radius: 999px;
-        margin-top: 2px;
-        white-space: nowrap;
+      .demo-tab.is-on {
+        background-color: var(--primary);
+        color: #ffffff;
       }
-      .wc-p2p { background: color-mix(in srgb, var(--primary) 7%, transparent); }
-      .wc-p2p .wc-tag { background: color-mix(in srgb, var(--primary) 16%, transparent); color: var(--primary); }
-      .wc-server { background: color-mix(in srgb, var(--secondary) 8%, transparent); }
-      .wc-server .wc-tag { background: color-mix(in srgb, var(--secondary) 18%, transparent); color: var(--secondary); }
+      .demo-tab:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+      /* The whole point: one interpolates the colours, one doesn't. */
+      .demo-tabs.is-lerp .demo-tab {
+        transition: background-color 0.22s cubic-bezier(0.4, 0, 0.2, 1),
+          color 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .demo-tabs.is-snap .demo-tab { transition: none; }
+
+      .demo-actions {
+        margin-top: var(--spacing-lg);
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-sm);
+        flex-wrap: wrap;
+      }
+      .demo-slowmo {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 7px 14px;
+        border: 1px solid var(--separator);
+        border-radius: 999px;
+        background: transparent;
+        color: var(--primary);
+        font-family: var(--font-text);
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: border-color 0.15s ease, opacity 0.15s ease;
+      }
+      .demo-slowmo:hover { border-color: var(--primary); }
+      .demo-slowmo:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+      .demo-slowmo[disabled] { opacity: 0.55; cursor: default; }
+      .demo-slowmo-note {
+        font-family: var(--font-text);
+        font-size: 12.5px;
+        color: var(--tertiary-label);
+      }
+      .anim-demo figcaption {
+        margin-top: var(--spacing-lg);
+        font-family: var(--font-text);
+        font-size: 13.5px;
+        line-height: 1.6;
+        color: var(--tertiary-label);
+      }
+      /* Knowing when not to animate is part of the job. */
+      @media (prefers-reduced-motion: reduce) {
+        .demo-tabs.is-lerp .demo-tab { transition: none; }
+      }
+      /* Slow motion is an explicit request, so it plays either way — and it has
+         to out-specify the reduced-motion rule above to do that. */
+      .demo-tabs.is-slow .demo-tab {
+        transition-property: background-color, color !important;
+        transition-duration: 2.2s !important;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
+      }
 
       /* Listen / reader */
       .reader {
@@ -387,10 +462,10 @@
     <article class="post-wrap">
       <a class="post-back" href="/blog/">← All posts</a>
 
-      <p class="post-eyebrow">The Layer Underneath · Post 3</p>
-      <h1 class="post-title">The rewrite I didn't ask for.</h1>
+      <p class="post-eyebrow">The Layer Underneath · Post 4</p>
+      <h1 class="post-title">Nobody noticed. That was the point.</h1>
       <div class="post-meta">
-        <span>SparkLink chapter</span>
+        <span>Flutter chapter</span>
         <span class="dot">·</span>
         <span>July 2026</span>
         <span class="dot">·</span>
@@ -439,150 +514,187 @@
 
       <div class="post-body">
         <p>
-          <a href="/blog/video-calling-on-raw-webrtc/">Last time</a>, the story ended
-          on a small win: the call connected. Raw WebRTC, my own signaling, a call
-          that came up most of the time. I was proud of it. This is what happened
-          next — and it starts with me being furious.
+          A while back I built an app end to end — every screen, front to back,
+          including its payment gateway. That's the line that reads well on a
+          résumé.
+        </p>
+        <p>
+          The part I'd rather talk about is a colour transition nobody ever
+          mentioned.
         </p>
 
-        <h2>I came back to a backend I didn't recognise</h2>
+        <h2>The fifteen-minute version</h2>
         <p>
-          I'd built the calling client. It worked. Then, without a word to me, one
-          of the seniors rebuilt the <em>entire</em> backend — off raw WebRTC and
-          onto the LiveKit SDK. Not "let's talk about moving to LiveKit." Not "here's
-          why." I came back and the ground had moved: the server my app talked to was
-          a different server now, speaking a different language, and my client had to
-          be redone to match.
+          The home page had two tabs. Both equally important — neither one is the
+          "main" tab, you move between them constantly. So the obvious build: tap a
+          tab, swap the content, update the button colour. Blue becomes white, white
+          becomes blue. Fifteen minutes, done.
         </p>
-        <blockquote>Why would I throw away something that already worked?</blockquote>
         <p>
-          I got on a call and lost it. Full rage. I'd done exactly what was asked —
-          the call connected, I'd earned that the hard way — and now it was being
-          swept aside without so much as a heads-up, and the redo landed squarely on
-          me. That's the person I was then: the work was <em>mine</em>, and someone
-          had thrown it out.
+          And it would have shipped. Nobody would have pointed a finger at it. Nobody
+          files a bug that says <em>the tab switch is fine</em>. That's exactly the
+          trap — the fifteen-minute version isn't wrong. It's just dead.
         </p>
 
-        <h2>The reasons I couldn't see yet</h2>
+        <h2>What I built instead</h2>
         <p>
-          Here's the part that stings a little to admit: the reasoning was good. There
-          were two things raw peer-to-peer WebRTC simply could not give the product,
-          and I couldn't see either of them from where I was standing.
+          Instead of letting the colours swap, I interpolated them.
         </p>
         <p>
-          The first was <strong>recording</strong>. Personal one-to-one calls can stay
-          peer-to-peer — the video flows straight between two phones, nothing in the
-          middle. That's private and it's cheap, but it also means there's nothing in
-          the path to capture. This product needed professional calls to be recorded
-          and their reports handled correctly — monitored, kept, accounted for. You
-          can't cleanly record a stream that never touches your servers. LiveKit put a
-          server back in the path that could.
+          LERP — linear interpolation — is one of the least glamorous ideas in
+          graphics. Give it a start, an end, and a position <em>t</em> between 0 and
+          1, and it hands back the value in between. At <em>t = 0</em> you're blue.
+          At <em>t = 1</em> you're white. At <em>t = 0.5</em> you're at the exact
+          midpoint nobody has a name for. Run <em>t</em> from 0 to 1 over a couple of
+          hundred milliseconds and you don't have two states any more — you have a
+          movement.
         </p>
         <p>
-          The second was <strong>group calls</strong>. A one-to-one call is nearly
-          free on every platform because it's just two peers. A group call over pure
-          peer-to-peer means everyone connects to everyone else — and those
-          connections pile up fast with each person you add, until phones simply can't
-          keep up. The fix is a <strong>media server</strong> — specifically an SFU, a
-          Selective Forwarding Unit: every participant sends <em>one</em> stream up to
-          the server, and the server fans it back out to the room. That server is a
-          big part of why Zoom gets to charge you, and why one-to-one stays basically
-          free everywhere. LiveKit <em>is</em> that server, managed for you.
+          That's the whole difference. <strong>A snap is a cut</strong>: two states
+          with nothing between them, so the eye reads it as one thing being replaced
+          by another. <strong>An interpolation is a movement</strong>: every frame in
+          between genuinely exists, so the eye tracks it as the same thing changing.
+          Same destination. Completely different feeling.
         </p>
 
-        <div class="webrtc-card">
-          <div class="wc-row wc-p2p">
-            <span class="wc-tag">Peer&#8209;to&#8209;peer</span>
-            <span
-              ><strong>Two phones, nothing in between.</strong> The video goes
-              straight across. Private, cheap, almost free — but there's nothing in
-              the middle to record, and it won't scale past a couple of people.</span
-            >
+        <figure class="anim-demo">
+          <div class="demo-row">
+            <div class="demo-head">
+              <span class="demo-name">Instant</span>
+              <span class="demo-note">the fifteen-minute version</span>
+            </div>
+            <div class="demo-tabs is-snap" data-demo aria-label="Instant tab switch demo">
+              <button type="button" class="demo-tab is-on">Overview</button>
+              <button type="button" class="demo-tab">Activity</button>
+            </div>
           </div>
-          <div class="wc-row wc-server">
-            <span class="wc-tag">Media server</span>
-            <span
-              ><strong>An SFU in the path (LiveKit).</strong> Each person sends one
-              stream up; the server fans it out to the group and can record the calls
-              that need recording. That server is the part you pay for.</span
-            >
+          <div class="demo-row">
+            <div class="demo-head">
+              <span class="demo-name">Interpolated</span>
+              <span class="demo-note">220ms, eased</span>
+            </div>
+            <div class="demo-tabs is-lerp" id="lerpDemo" data-demo aria-label="Interpolated tab switch demo">
+              <button type="button" class="demo-tab is-on">Overview</button>
+              <button type="button" class="demo-tab">Activity</button>
+            </div>
           </div>
-        </div>
+          <div class="demo-actions">
+            <button type="button" class="demo-slowmo" id="slowmo">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M8 5.14v13.72a1 1 0 0 0 1.54.84l10.6-6.86a1 1 0 0 0 0-1.68L9.54 4.3A1 1 0 0 0 8 5.14z"/></svg>
+              <span id="slowmoLabel">Show in slow motion</span>
+            </button>
+            <span class="demo-slowmo-note">10× slower — same transition, both directions</span>
+          </div>
+          <figcaption>
+            Click both. The first one works — you couldn't file a bug against it. The
+            second is the one you don't notice. At full speed the interpolation is
+            invisible, which is the entire point; slow it down and you can watch the
+            blue drain into white and the white fill into blue. (This demo uses CSS
+            transitions, so the browser interpolates for you. In Flutter I was
+            reaching for <em>Color.lerp</em> and a curve.)
+          </figcaption>
+        </figure>
 
+        <h2>Four hours for a fifteen-minute task</h2>
         <p>
-          So the senior wasn't wrong. He was right for reasons the product needed and
-          I hadn't been told about. He just decided it over my head — and that was the
-          part I actually had a right to be angry about. Being right and being
-          respectful aren't the same thing. But the technical call? Sound.
-        </p>
-
-        <h2>The damage was done — my half was left</h2>
-        <p>
-          None of my anger changed the facts. The backend was already on LiveKit.
-          What remained was the mobile client, and that's where my weakest ground came
-          due all at once. I didn't own an iOS device yet. My iOS knowledge was thin.
-          And we were on Expo's <em>managed</em> workflow — which is lovely until you
-          need the native layer, and calling needs the native layer for everything:
-          camera, microphone, permissions, staying alive in the background. The moment
-          the SDK reached for those, managed Expo started pushing back. With that setup,
-          the iOS-side friction was almost guaranteed.
-        </p>
-
-        <h2>No manual — just the source</h2>
-        <p>
-          And LiveKit, at the time, didn't hand me a tidy guide to follow. No
-          step-by-step for what I was doing. So I did the only thing I knew how to do:
-          I read the source, watched how the pieces actually talked to each other, and
-          went on instinct. It was the same reflex from the WebRTC build —
-          <em>jump in the water, start swimming</em> — except this time my brain was
-          already trained for it. So I just did it.
+          It took me more than four hours, and I want to be accurate about where they
+          went: <strong>I had never built an animation before.</strong> Not this one —
+          any. So most of that time wasn't craft, it was reading: what a curve is,
+          what an interpolation is, which widget drives it, why a value changes over
+          time at all. The four hours were tuition.
         </p>
         <p>
-          I built <strong>two calling types</strong> — the personal one-to-one and the
-          professional one — each with real connection states: <em>connecting</em>,
-          <em>connected</em>, <em>failed</em>. States sound trivial until you've stared
-          at a frozen screen wondering whether the call is dead or just slow; making
-          the app tell the truth about what the connection is doing is half of what
-          makes it feel trustworthy. I'll be honest about the gap, too: we still had no
-          idea how to properly manage the <em>background</em> state — keeping a call
-          alive when the app leaves the foreground. That one was still ahead of us.
+          The dialling-in — the curve, then the exact number of milliseconds — was the
+          smaller part at the end. Though it does matter: too fast and it may as well
+          have snapped, because the movement is there but nothing registers. Too slow
+          and the interface stops feeling responsive and starts feeling like it's
+          making you wait. There's a narrow band where motion stops being something
+          you see and becomes something you feel, and the only way to find it is to
+          keep changing the number.
         </p>
-
-        <h2>The TURN server that finally beat Wi-Fi</h2>
         <p>
-          There's a thread from the last post I got to tie off here. Raw WebRTC — and
-          Kabootar before it — kept dying on restrictive Wi-Fi, because STUN alone
-          can't punch through some networks. The answer was always TURN: a relay that
-          carries the media when a direct path isn't possible. With LiveKit we stood up
-          our own TURN server. On the backend that was real work; on my side it came
-          down to swapping a few URLs. But it <em>worked</em> — the calls that used to
-          fail on Wi-Fi came up. The exact thing the last post ended stuck on, finally
-          unstuck.
+          The relevant part isn't the four hours, it's what happened afterwards:
+          <strong>every animation after that one was quick.</strong> I'd bought the
+          concepts once. The second one wasn't a four-hour job, or a one-hour job — it
+          was just work. That's the actual shape of the cost, and it's why the first
+          one being slow isn't much of an argument against doing it.
         </p>
 
-        <h2>What being overruled taught me</h2>
+        <h2>Nobody noticed</h2>
         <p>
-          The lesson here isn't technical. I was right that the call worked. The senior
-          was right that "it works" was never the requirement — recording, compliance,
-          calls that scale past two people were, and I couldn't see any of it from
-          where I sat. That gap has a name I only understood later: seniority is often
-          just being able to see the requirement you don't yet have the vantage point
-          to see.
+          And then — nothing. No one said a word. Nobody mentioned the tabs, nobody
+          asked why they felt different, nobody sent a message saying <em>nice
+          transition</em>.
+        </p>
+        <blockquote>It's clearly there, and nobody knows why. That's the way it should be.</blockquote>
+        <p>
+          That silence was the correct result. If someone had noticed it — actually
+          stopped and looked at the animation — I'd have overdone it. Motion that
+          calls attention to itself has stopped doing its job and started performing.
+          The goal was never for anyone to see it. The goal was for the app to feel
+          alive while they were busy doing something else.
         </p>
         <p>
-          I'd handle the call differently now — less heat, more questions. The rage was
-          ego, plain and simple: my work, discarded. But the rewrite is what turned a
-          demo that connects into a product that records, scales, and holds up on a
-          hotel Wi-Fi. The layer underneath this one wasn't in the code. It was in the
-          decision I wasn't in the room for — and being junior enough to think that
-          made it wrong.
+          It's the same thing I wrote about in
+          <a href="/blog/why-ios-why-now/">the first post</a> — the apps I admire
+          most do their hardest work without ever letting you notice. This was the
+          first time I got to be on the other side of that, building the thing instead
+          of admiring it.
+        </p>
+
+        <h2>The gateway and the transition</h2>
+        <p>
+          I integrated the payment gateway on that same app. Money moves through it,
+          it has to be right, and it's the thing that sounds substantial when you list
+          it out.
+        </p>
+        <p>
+          But it's binary. It works or it doesn't. It had a spec, a test, and a
+          definition of done, and when it works nobody feels anything — they just
+          paid. There's a correct answer and you either reached it or you didn't.
+        </p>
+        <p>
+          The transition had none of those. No spec, no ticket, no failure state.
+          Skipping it would have cost nothing anyone could name, which is exactly what
+          makes it the easier thing to drop and the more interesting thing to work on.
+          Those are two genuinely different kinds of work, and I think the second kind
+          is underrated mostly because it never shows up as a line item.
+        </p>
+
+        <h2>Intentional cuts both ways</h2>
+        <p>
+          None of this is an argument for animating more. Motion that decorates is
+          noise — it costs frames, it costs attention, and it makes an app feel slower
+          the moment it stops earning its place. The discipline isn't adding movement,
+          it's deciding.
+        </p>
+        <p>
+          The clearest version of that: some people have motion turned down at the
+          system level, because animation makes them ill or makes an interface harder
+          to follow. Both platforms will tell you — and the browser will too. Taking
+          motion seriously means honouring that, and shipping the instant version to
+          the people who asked for it. The demo above already does. Intentional has to
+          include <em>when not to</em>, or it's just taste with extra steps.
+        </p>
+
+        <p>
+          The fifteen-minute version would have shipped and nothing bad would have
+          happened. No one was waiting on the transition, no one asked for it, and no
+          one would have known it was missing. That's the honest situation around most
+          of this kind of work — there's no forcing function, so it comes down to
+          whether you feel like doing it.
+        </p>
+        <p>
+          I did it because I wanted the thing to feel finished. That's the whole
+          reason; I don't have a better one. It cost four hours once and it hasn't
+          cost that since.
         </p>
       </div>
 
       <div class="post-footer">
         Next in <strong style="color:var(--label)">The Layer Underneath</strong> —
-        <a href="/blog/animations-should-be-intentional/">nobody noticed, and that
-        was the point</a>: four hours on a fifteen-minute tab switch.
+        still to come: shipping a product end to end, and the call that dropped
+        the instant it connected.
         <br />
         <a href="/blog/">← Back to all posts</a>
       </div>
@@ -591,6 +703,51 @@
         The story and the experiences are mine — the writing is Claude's.
       </p>
     </article>
+
+    <script>
+      // Snap-vs-LERP demo. Both switchers share this code — the only difference
+      // between them is the CSS transition, which is the entire point.
+      (function () {
+        const select = (group, tab) =>
+          group
+            .querySelectorAll(".demo-tab")
+            .forEach((x) => x.classList.toggle("is-on", x === tab));
+
+        document.querySelectorAll("[data-demo]").forEach(function (group) {
+          group.querySelectorAll(".demo-tab").forEach((t) =>
+            t.addEventListener("click", () => select(group, t))
+          );
+        });
+
+        // Slow motion: same transition, 10× longer, out and back so you see the
+        // blue→white and white→blue halves.
+        const btn = document.getElementById("slowmo");
+        const label = document.getElementById("slowmoLabel");
+        const demo = document.getElementById("lerpDemo");
+        if (!btn || !demo) return;
+
+        const SLOW_MS = 2200;
+        btn.addEventListener("click", () => {
+          const tabs = Array.from(demo.querySelectorAll(".demo-tab"));
+          const from = tabs.findIndex((t) => t.classList.contains("is-on"));
+          const to = from === 0 ? 1 : 0;
+
+          btn.disabled = true;
+          label.textContent = "Playing…";
+          demo.classList.add("is-slow");
+
+          select(demo, tabs[to]);
+          setTimeout(() => {
+            select(demo, tabs[from]); // …and back
+            setTimeout(() => {
+              demo.classList.remove("is-slow");
+              btn.disabled = false;
+              label.textContent = "Show in slow motion";
+            }, SLOW_MS + 150);
+          }, SLOW_MS + 150);
+        });
+      })();
+    </script>
 
     <script>
       // Audio "Listen" player — stays hidden until an audio.m4a loads.
@@ -692,8 +849,6 @@
             ham.classList.toggle("active");
             dd.classList.toggle("show");
           });
-          // Close after picking a destination — same-page anchors don't reload,
-          // so the dropdown would otherwise stay open over the new section.
           dd.querySelectorAll("a").forEach((link) => {
             link.addEventListener("click", () => {
               dd.classList.remove("show");
