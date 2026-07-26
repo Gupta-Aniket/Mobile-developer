@@ -232,7 +232,7 @@ body {
 }
 
 .nav-link:hover {
-  background-color: var(--fill-quaternary);
+  background-color: transparent;
   transform: translateY(-1px);
 }
 
@@ -247,7 +247,7 @@ body {
 }
 
 .theme-toggle:hover {
-  background-color: var(--fill-quaternary);
+  background-color: transparent;
   transform: scale(1.1);
 }
 
@@ -970,7 +970,7 @@ body {
 }
 
 .modal-close:hover {
-  background-color: var(--fill-quaternary);
+  background-color: transparent;
   color: var(--label);
 }
 
@@ -1192,7 +1192,7 @@ select.form-input {
 }
 
 .social-link:hover {
-  background-color: var(--fill-quaternary);
+  background-color: transparent;
   transform: translateY(-1px);
 }
  .nav-dropdown {
@@ -1498,7 +1498,7 @@ html {
 }
 
 .modal-close:hover {
-  background-color: rgba(120, 120, 128, 0.08);
+  background-color: transparent;
   color: #000000;
 }
 
@@ -1716,7 +1716,7 @@ html {
   }
 
   .modal-close:hover {
-    background-color: rgba(120, 120, 128, 0.16);
+    background-color: transparent;
     color: #ffffff;
   }
 
@@ -2913,7 +2913,7 @@ select.wizard-input{
 }
 @media (hover: hover) {
   .exp-head:hover {
-    background: color-mix(in srgb, var(--label) 3%, transparent);
+    background: transparent;
   }
 }
 /* tactile: it gives a little when pressed */
@@ -3088,7 +3088,7 @@ select.wizard-input{
   transition: background 0.18s ease;
 }
 .exp-app-link:hover {
-  background: color-mix(in srgb, var(--label) 7%, transparent);
+  background: transparent;
 }
 .exp-app-link:focus-visible {
   outline: 2px solid var(--primary);
@@ -3274,7 +3274,7 @@ select.wizard-input{
   transition: background 0.2s ease, transform 0.2s ease;
 }
 .exp-sheet-close:hover {
-  background: color-mix(in srgb, var(--label) 12%, transparent);
+  background: transparent;
   transform: scale(1.06);
 }
 .exp-sheet-scroll {
@@ -3486,7 +3486,7 @@ select.wizard-input{
 .exp-sheet-close:hover {
   color: var(--label);
   border-color: var(--label);
-  background: var(--fill-quaternary);
+  background: transparent;
   transform: none;
 }
 .modal-close:focus-visible,

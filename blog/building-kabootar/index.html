@@ -147,7 +147,7 @@
       .reader-range::-moz-range-progress { height: 6px; border-radius: 3px; background: var(--primary); }
       .reader-range::-moz-range-thumb { width: 15px; height: 15px; border: 2px solid var(--system-background); border-radius: 50%; background: var(--primary); box-shadow: 0 1px 4px rgba(0,0,0,0.28); }
       .reader-speed { flex: 0 0 auto; font-family: var(--font-text); font-size: 13px; font-weight: 600; color: var(--primary); background: none; border: none; cursor: pointer; padding: 6px 8px; border-radius: var(--radius-sm); font-variant-numeric: tabular-nums; }
-      .reader-speed:hover { background: var(--fill-quaternary); }
+      .reader-speed:hover { background: transparent; }
 
       .post-footer { margin-top: var(--spacing-xxl); padding-top: var(--spacing-lg); border-top: 1px solid var(--separator); font-family: var(--font-text); font-size: 15px; color: var(--tertiary-label); }
       .post-footer a { color: var(--primary); text-decoration: none; font-weight: 500; }
@@ -454,5 +454,6 @@
         }
       })();
     </script>
+    <script src="../../spark.js" type="module"></script>
   </body>
 </html>
